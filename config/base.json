@@ -1,0 +1,20 @@
+{
+  "env": "development",
+  "app_path": "frontend/index.html",
+  "checklist": {
+    "todosTemplate": [
+      "Start recording",
+      "Stop recording"
+    ]
+  },
+  "reminders": [
+    {
+      "title": "Remember to start recording",
+      "sendAt": "1835"
+    },
+    {
+      "title": "Remember to stop recording",
+      "sendAt": "1915"
+    }
+  ]
+}

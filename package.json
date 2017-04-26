@@ -1,0 +1,181 @@
+{
+  "name": "techeast",
+  "version": "1.0.0",
+  "description": "JK Tech East App.",
+  "main": "app/background.js",
+  "semistandard": {
+    "ignore": [
+      "node_modules/",
+      "app/",
+      "frontend/jspm_packages/",
+      "dist/"
+    ],
+    "globals": [
+      "SystemJS"
+    ]
+  },
+  "build": {
+    "appId": "com.humanflow.techeast",
+    "files": [
+      "app/*",
+      "frontend/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      "config",
+      {
+        "from": "frontend",
+        "to": "frontend",
+        "filter": [
+          "index.html",
+          "jspm_packages/system.js",
+          "dist/**",
+          "themes/base/styles/build/*.css",
+          "lib/**"
+        ]
+      }
+    ],
+    "win": {
+      "target": "zip"
+    }
+  },
+  "scripts": {
+    "postinstall": "install-app-deps",
+    "gulp": "node node_modules/gulp/bin/gulp.js",
+    "start": "npm run build-local && npm run gulp start",
+    "build": "npm run gulp build -- --env=production",
+    "build-local": "npm run gulp build",
+    "release-dev": "npm run build && build",
+    "release": "semistandard && npm run frontend-build && npm run build && build",
+    "frontend-build": "jspm build src/techeast frontend/dist/build.js",
+    "frontend-dev": "jspm build src/techeast frontend/dist/build.js -wd",
+    "jspm": "./node_modules/.bin/jspm"
+  },
+  "author": "Human Flow S.C.",
+  "private": true,
+  "dependencies": {
+    "continuation-local-storage": "^3.2.0",
+    "electron-context-menu": "^0.8.0",
+    "fs-jetpack": "^0.10.5",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "nconf": "^0.8.4",
+    "node-notifier": "^5.1.2",
+    "winston": "^2.3.1",
+    "winston-electron": "0.0.3"
+  },
+  "devDependencies": {
+    "bluebird": "^3.4.7",
+    "electron": "1.4.15",
+    "electron-builder": "^8.6.0",
+    "gulp": "^3.9.0",
+    "gulp-batch": "^1.0.5",
+    "gulp-less": "^3.0.3",
+    "gulp-plumber": "^1.1.0",
+    "gulp-util": "^3.0.6",
+    "gulp-watch": "^4.3.5",
+    "jspm": "0.17.0-beta.41",
+    "minimist": "^1.2.0",
+    "rollup": "^0.36.3",
+    "semistandard": "^9.2.1",
+    "systemjs": "^0.20.9",
+    "systemjs-builder": "^0.16.3",
+    "systemjs-plugin-babel": "0.0.21",
+    "uglify-js": "^2.8.5"
+  },
+  "jspm": {
+    "name": "techeast",
+    "main": "techeast.js",
+    "directories": {
+      "baseURL": "frontend"
+    },
+    "dependencies": {
+      "axios": "npm:axios@^0.15.3",
+      "bluebird": "npm:bluebird@^3.4.7",
+      "css": "github:systemjs/plugin-css@^0.1.33",
+      "json": "github:systemjs/plugin-json@^0.3.0",
+      "lodash": "npm:lodash@^4.17.4",
+      "mdi": "npm:mdi@^1.9.33",
+      "mrman/systemjs-plugin-vue-template-compiler": "gitlab:mrman/systemjs-plugin-vue-template-compiler@^2.2.1",
+      "text": "github:systemjs/plugin-text@^0.0.9",
+      "vue": "npm:vue@^2.2.6",
+      "vue-router": "npm:vue-router@^2.5.2"
+    },
+    "devDependencies": {
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.21"
+    },
+    "peerDependencies": {
+      "assert": "npm:jspm-nodelibs-assert@^0.2.0",
+      "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
+      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
+      "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
+      "events": "npm:jspm-nodelibs-events@^0.2.0",
+      "fs": "npm:jspm-nodelibs-fs@^0.2.0",
+      "http": "npm:jspm-nodelibs-http@^0.2.0",
+      "https": "npm:jspm-nodelibs-https@^0.2.0",
+      "os": "npm:jspm-nodelibs-os@^0.2.0",
+      "path": "npm:jspm-nodelibs-path@^0.2.0",
+      "process": "npm:jspm-nodelibs-process@^0.2.0",
+      "stream": "npm:jspm-nodelibs-stream@^0.2.0",
+      "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
+      "url": "npm:jspm-nodelibs-url@^0.2.0",
+      "util": "npm:jspm-nodelibs-util@^0.2.0",
+      "vm": "npm:jspm-nodelibs-vm@^0.2.0",
+      "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
+    },
+    "overrides": {
+      "npm:bluebird@3.5.0": {
+        "meta": {
+          "js/browser/bluebird.js": {
+            "format": "global"
+          },
+          "js/browser/bluebird.min.js": {
+            "format": "global"
+          }
+        }
+      },
+      "npm:browserify-zlib@0.1.4": {
+        "dependencies": {
+          "readable-stream": "^2.0.2",
+          "pako": "~0.2.0"
+        },
+        "map": {
+          "_stream_transform": "readable-stream/transform"
+        }
+      },
+      "npm:debug@2.6.3": {
+        "main": "src/browser.js",
+        "jspmNodeConversion": false,
+        "format": "cjs",
+        "map": {
+          "./src/browser.js": {
+            "node": "./src/node.js"
+          },
+          "./node.js": {
+            "browser": "./src/browser.js"
+          },
+          "fs": "@node/fs",
+          "net": "@node/net",
+          "tty": "@node/tty",
+          "util": "@node/util"
+        }
+      },
+      "npm:inherits@2.0.3": {
+        "ignore": [
+          "test.js"
+        ]
+      },
+      "npm:lodash@4.17.4": {
+        "map": {
+          "buffer": "@empty",
+          "process": "@empty"
+        }
+      },
+      "npm:ms@0.7.2": {
+        "jspmNodeConversion": false,
+        "format": "cjs"
+      }
+    }
+  }
+}

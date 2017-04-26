@@ -1,0 +1,8 @@
+npm_debug.log
+node_modules
+jspm_packages
+dist/
+frontend/themes
+config/local.json
+app/*
+!app/README.md

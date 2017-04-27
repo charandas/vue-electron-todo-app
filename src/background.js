@@ -61,14 +61,20 @@ if (runningEnv === 'development') {
 
 let mainWindow;
 
+if (runningEnv !== 'development') {
+  app.setLoginItemSettings({
+    openAtLogin: true
+  });
+}
+
 app.on('ready', () => {
   if (runningEnv === 'development') {
     setApplicationMenu();
   }
 
   mainWindow = createWindow('main', {
-    width: config.width || 1440,
-    height: config.height || 900,
+    width: config.get('width'),
+    height: config.get('height'),
     webPreferences: {
       plugins: true
     }
@@ -103,14 +109,6 @@ app.on('ready', () => {
   });
 });
 
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
-  // Someone tried to run a second instance, we should focus our window.
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.focus();
-  }
-});
-
-if (shouldQuit) {
+app.on('window-all-closed', () => {
   app.quit();
-}
+});

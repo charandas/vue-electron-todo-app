@@ -43,14 +43,16 @@ function schedule (_mainWindow) {
   mainWindow = _mainWindow;
   each(config.get('reminders'), reminder => {
     const millis = moment(reminder.sendAt, 'hmm').subtract(moment().valueOf(), 'ms');
-    // logger.info('Millis from now', millis.valueOf());
     const humanized = moment.duration(millis.valueOf(), 'milliseconds').humanize();
-    const msg = `${reminder.title} in ${humanized} from now`;
-    logger.verbose(msg);
-    _notify({ message: `Scheduled "${msg}"` });
-    setTimeout(() => {
-      _notify({ message: reminder.title });
-    }, millis);
+    if (millis.valueOf() < 0) {
+      _notify({ message: `Was to be done: "${reminder.title}" ${humanized} ago` });
+    } else {
+      logger.verbose(`Scheduled ${reminder.title}`);
+      _notify({ message: `Scheduled "${reminder.title}"  in ${humanized} from now` });
+      setTimeout(() => {
+        _notify({ message: reminder.title });
+      }, millis);
+    }
   });
 }
 

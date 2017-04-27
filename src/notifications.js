@@ -2,51 +2,60 @@ import _notifier from 'node-notifier';
 import moment from 'moment';
 import each from 'lodash/each';
 
+// Set by the schedule function
+let mainWindow;
+
 import getLogger from './logger/index';
 import config from './config-lib/index';
 
 const logger = getLogger({ label: 'notifications' });
 
-let notifier;
+const notifier = new _notifier.NotificationCenter({
+  withFallback: false
+});
 
-if (process.platform === 'darwin') {
-  notifier = new _notifier.NotificationCenter({
-    withFallback: false
-  });
-} else {
-  notifier = _notifier;
-}
-
-function _notify (message) {
-  notifier.notify({
-    'title': 'Jaya Kula Techeast',
+function _notify ({ message, reply = false }) {
+  const settings = {
+    'title': 'Tech Host Assistant',
     'message': message,
     'sound': false,
-    'icon': 'Terminal Icon',
-    'wait': true,
-    actions: 'Yes',
-    closeLabel: 'No',
-    reply: false
-  });
+    'icon': 'Terminal Icon'
+  };
   logger.silly('Sent notification to confirm new session');
+  if (reply) {
+    Object.assign(settings, {
+      actions: 'Yes',
+      closeLabel: 'No',
+      reply: reply,
+      timeout: 25
+    });
+  }
+  notifier.notify(settings, (err, response, metadata) => {
+    if (err) throw err;
+    if (reply) {
+      logger.info(metadata);
+      mainWindow.webContents.send('confirmNewSession', metadata.activationValue);
+    }
+  });
 }
 
-function schedule () {
+function schedule (_mainWindow) {
+  mainWindow = _mainWindow;
   each(config.get('reminders'), reminder => {
     const millis = moment(reminder.sendAt, 'hmm').subtract(moment().valueOf(), 'ms');
     // logger.info('Millis from now', millis.valueOf());
     const humanized = moment.duration(millis.valueOf(), 'milliseconds').humanize();
-    const msg = `"${reminder.title}" in ${humanized} from now`;
+    const msg = `${reminder.title} in ${humanized} from now`;
     logger.verbose(msg);
-    _notify(`Scheduled ${msg}`);
+    _notify({ message: `Scheduled "${msg}"` });
     setTimeout(() => {
-      _notify(reminder.title);
+      _notify({ message: reminder.title });
     }, millis);
   });
 }
 
 function confirmNewSession () {
-  _notify('Start new checklist? Please confirm.');
+  _notify({ message: 'Start new checklist? Please confirm.', reply: true });
   return notifier;
 }
 

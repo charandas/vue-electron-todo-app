@@ -1,6 +1,8 @@
 {
   "env": "development",
   "app_path": "frontend/index.html",
+  "width": 2560,
+  "height": 1600,
   "checklist": {
     "todosTemplate": [
       "Start recording",

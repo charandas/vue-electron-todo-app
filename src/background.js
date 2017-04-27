@@ -26,8 +26,6 @@ const runningEnv = config.get('env');
 
 logger.info(`Running as ${runningEnv} environment`);
 
-notifications.schedule();
-
 function setApplicationMenu () {
   const menus = [editMenuTemplate, devMenuTemplate];
   Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
@@ -42,7 +40,11 @@ if (runningEnv === 'development') {
   LOAD_URL = path.join(__dirname, '..', APP_PATH);
 
   const userDataPath = app.getPath('userData');
-  app.setPath('userData', `${userDataPath} ( ${runningEnv} )`);
+  if (runningEnv !== 'production') {
+    app.setPath('userData', `${userDataPath} ( ${runningEnv} )`);
+  } else {
+    app.setPath('userData', userDataPath);
+  }
 }
 app.commandLine.appendSwitch('disable-pinch');
 
@@ -57,18 +59,22 @@ if (runningEnv === 'development') {
   });
 }
 
+let mainWindow;
+
 app.on('ready', () => {
   if (runningEnv === 'development') {
     setApplicationMenu();
   }
 
-  const mainWindow = createWindow('main', {
-    width: 1080,
-    height: 1920,
+  mainWindow = createWindow('main', {
+    width: config.width || 1440,
+    height: config.height || 900,
     webPreferences: {
       plugins: true
     }
   });
+
+  notifications.schedule(mainWindow);
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -79,8 +85,6 @@ app.on('ready', () => {
 
   if (runningEnv === 'development') {
     mainWindow.openDevTools();
-  } else {
-    mainWindow.setFullScreen(true);
   }
 
   // NOTE:  (event, url) are the supported args for event callbacks
@@ -99,6 +103,14 @@ app.on('ready', () => {
   });
 });
 
-app.on('window-all-closed', () => {
-  app.quit();
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+  // Someone tried to run a second instance, we should focus our window.
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
+  }
 });
+
+if (shouldQuit) {
+  app.quit();
+}

@@ -1,11 +1,12 @@
 import Vue from 'vue';
+import VueSpinner from 'vue-spinner';
 import 'mdi/css/materialdesignicons.css!css';
 
 import { mapToTodos } from './utils/todos';
 import './styles.css!css';
 import template from './container.html!vtc';
 
-const { remote } = System._nodeRequire('electron');
+const { remote, ipcRenderer } = System._nodeRequire('electron');
 const notifications = remote.getGlobal('notifications');
 const config = remote.getGlobal('techeastConfig');
 
@@ -45,8 +46,12 @@ var filters = {
 const app = new Vue({
   // app initial state
   render: template.render,
+  components: {
+    RiseLoader: VueSpinner.RiseLoader
+  },
   data: {
     eventDate: new Date().toDateString(),
+    loading: false,
     todos: todoStorage.fetch(),
     newTodo: '',
     editedTodo: null,
@@ -94,11 +99,13 @@ const app = new Vue({
   // note there's no DOM manipulation here at all.
   methods: {
     startNewSession: function () {
-      const nc = notifications.confirmNewSession();
-      nc.on('replied', (obj, options, metadata) => {
-        console.log('User replied', metadata);
-        const todos = mapToTodos(config.get('checklist:todosTemplate'));
-        this.todos = todos;
+      notifications.confirmNewSession();
+      this.loading = true;
+      ipcRenderer.on('confirmNewSession', (event, message) => {
+        if (message === 'Yes') {
+          this.todos = mapToTodos(config.get('checklist:todosTemplate'));
+        }
+        this.loading = false;
       });
     },
     addTodo: function () {

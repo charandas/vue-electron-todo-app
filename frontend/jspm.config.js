@@ -58,6 +58,7 @@ SystemJS.config({
     'vm': 'npm:jspm-nodelibs-vm@0.2.1',
     'vue': 'npm:vue@2.2.6',
     'vue-router': 'npm:vue-router@2.5.2',
+    'vue-spinner': 'npm:vue-spinner@1.0.2',
     'zlib': 'npm:jspm-nodelibs-zlib@0.2.3'
   },
   packages: {

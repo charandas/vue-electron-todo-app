@@ -28,11 +28,16 @@ function getLogger ({ colorize = true, label = 'techeast', appPath }) {
     timestamp: timestampWithCorrelation
   };
 
+  const transports = [
+    new (ElectronConsole)(options)
+  ];
+
+  if (appPath) {
+    transports.push(new (winston.transports.File)(Object.assign(options, { filename: path.resolve(appPath, 'log'), maxsize: 102400 })));
+  }
+
   loggerInitialized = new (winston.Logger)({
-    transports: [
-      new (ElectronConsole)(options)
-      // new (winston.transports.File)(Object.assign(options, { filename: path.resolve(appPath, 'log'), maxsize: 102400 })) // rotates on 10K, suffixing with counter
-    ]
+    transports
   });
 
   return loggerInitialized;

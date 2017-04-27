@@ -16,6 +16,7 @@
   },
   "build": {
     "appId": "com.humanflow.techeast",
+    "productName": "TechHostAssistant",
     "files": [
       "app/*",
       "frontend/**/*",
@@ -30,6 +31,7 @@
         "filter": [
           "index.html",
           "jspm_packages/system.js",
+          "jspm_packages/npm/mdi@1.9.33/**",
           "dist/**",
           "themes/base/styles/build/*.css",
           "lib/**"
@@ -76,6 +78,7 @@
     "gulp-util": "^3.0.6",
     "gulp-watch": "^4.3.5",
     "jspm": "0.17.0-beta.41",
+    "jspm-git": "^0.7.0-beta.1",
     "minimist": "^1.2.0",
     "rollup": "^0.36.3",
     "semistandard": "^9.2.1",
@@ -100,7 +103,8 @@
       "mrman/systemjs-plugin-vue-template-compiler": "gitlab:mrman/systemjs-plugin-vue-template-compiler@^2.2.1",
       "text": "github:systemjs/plugin-text@^0.0.9",
       "vue": "npm:vue@^2.2.6",
-      "vue-router": "npm:vue-router@^2.5.2"
+      "vue-router": "npm:vue-router@^2.5.2",
+      "vue-spinner": "npm:vue-spinner@^1.0.2"
     },
     "devDependencies": {
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.21"
@@ -125,6 +129,17 @@
       "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
     },
     "overrides": {
+      "npm:vue@2.2.6": {
+        "main": "dist/vue.js"
+      },
+      "npm:vue-spinner@1.0.2": {
+        "main": "dist/vue-spinner.js",
+        "defaultExtension": false,
+        "format": "global",
+        "meta": {
+          "exports": "VueSpinner"
+        }
+      },
       "npm:bluebird@3.5.0": {
         "meta": {
           "js/browser/bluebird.js": {

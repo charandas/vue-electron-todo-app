@@ -1,4 +1,4 @@
-npm_debug.log
+npm-debug.log
 node_modules
 jspm_packages
 dist/
@@ -6,3 +6,4 @@ frontend/themes
 config/local.json
 app/*
 !app/README.md
+.DS_Store

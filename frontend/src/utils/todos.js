@@ -2,8 +2,8 @@ import map from 'lodash/map';
 
 export function mapToTodos (tasks) {
   return map(tasks, (task, index) => ({
-    id: index,
-    title: task,
+    id: task.id,
+    title: task.title,
     completed: false
   }));
 }

@@ -16,7 +16,7 @@
   },
   "build": {
     "appId": "com.humanflow.techeast",
-    "productName": "TechHostAssistant",
+    "productName": "Tech Host Assistant",
     "files": [
       "app/*",
       "frontend/**/*",

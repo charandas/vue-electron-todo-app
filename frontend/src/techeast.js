@@ -2,6 +2,8 @@ import Vue from 'vue';
 import VueSpinner from 'vue-spinner';
 import 'mdi/css/materialdesignicons.css!css';
 
+import find from 'lodash/find';
+
 import { mapToTodos } from './utils/todos';
 import './styles.css!css';
 import template from './container.html!vtc';
@@ -58,6 +60,17 @@ const app = new Vue({
     visibility: 'all'
   },
 
+  created: function () {
+    ipcRenderer.on('checkOffTodo', (event, todoId) => {
+      if (todoId) {
+        const found = find(this.todos, { id: todoId });
+        if (found) {
+          found.completed = true;
+        }
+      }
+    });
+  },
+
   // watch todos change for window.localStorage persistence
   watch: {
     todos: {
@@ -101,7 +114,7 @@ const app = new Vue({
     startNewSession: function () {
       notifications.confirmNewSession();
       this.loading = true;
-      ipcRenderer.on('confirmNewSession', (event, message) => {
+      ipcRenderer.once('confirmNewSession', (event, message) => {
         if (message === 'Yes') {
           this.todos = mapToTodos(config.get('checklist:todosTemplate'));
         }

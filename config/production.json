@@ -1,5 +1,3 @@
 {
-  "env": "production",
-  "host": "localhost",
-  "port": 88
+  "env": "production"
 }

@@ -5,18 +5,36 @@
   "height": 600,
   "checklist": {
     "todosTemplate": [
-      "Start recording",
-      "Stop recording"
+      {
+        "id": "d63d9233-6cdf-40bb-aacd-61532158e849",
+        "title": "Start recording"
+      },
+      {
+        "id": "a46076db-fd01-4a8f-91e1-8c9a5dfed986",
+        "title": "Stop recording"
+      }
     ]
   },
   "reminders": [
     {
       "title": "Remember to start recording",
+      "todoId": "d63d9233-6cdf-40bb-aacd-61532158e849",
       "sendAt": "1835"
     },
     {
       "title": "Remember to stop recording",
+      "todoId": "a46076db-fd01-4a8f-91e1-8c9a5dfed986",
       "sendAt": "1915"
+    },
+    {
+      "title": "Remember to start recording",
+      "todoId": "d63d9233-6cdf-40bb-aacd-61532158e849",
+      "sendAt": "1403"
+    },
+    {
+      "title": "Remember to stop recording",
+      "todoId": "a46076db-fd01-4a8f-91e1-8c9a5dfed986",
+      "sendAt": "1404"
     }
   ]
 }

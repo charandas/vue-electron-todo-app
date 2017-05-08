@@ -69,6 +69,7 @@
   },
   "devDependencies": {
     "bluebird": "^3.4.7",
+    "devtron": "^1.4.0",
     "electron": "1.4.15",
     "electron-builder": "^8.6.0",
     "gulp": "^3.9.0",
@@ -100,11 +101,12 @@
       "json": "github:systemjs/plugin-json@^0.3.0",
       "lodash": "npm:lodash@^4.17.4",
       "mdi": "npm:mdi@^1.9.33",
-      "mrman/systemjs-plugin-vue-template-compiler": "gitlab:mrman/systemjs-plugin-vue-template-compiler@^2.2.1",
       "text": "github:systemjs/plugin-text@^0.0.9",
-      "vue": "npm:vue@^2.2.6",
+      "vue-formly-bootstrap": "npm:vue-formly-bootstrap@^2.2.2",
+      "vue-hot-reload-api": "npm:vue-hot-reload-api@^2.1.0",
       "vue-router": "npm:vue-router@^2.5.2",
-      "vue-spinner": "npm:vue-spinner@^1.0.2"
+      "vue-spinner": "npm:vue-spinner@^1.0.2",
+      "mrman/systemjs-plugin-vue-template-compiler": "gitlab:mrman/systemjs-plugin-vue-template-compiler@^2.2.1"
     },
     "devDependencies": {
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.21"
@@ -126,11 +128,17 @@
       "url": "npm:jspm-nodelibs-url@^0.2.0",
       "util": "npm:jspm-nodelibs-util@^0.2.0",
       "vm": "npm:jspm-nodelibs-vm@^0.2.0",
+      "vue": "npm:vue@^2.2.6",
+      "vue-formly": "npm:vue-formly@^2.3.2",
       "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
     },
     "overrides": {
       "npm:vue@2.2.6": {
         "main": "dist/vue.js"
+      },
+      "npm:vue-router@2.5.2": {
+        "main": "dist/vue-router.js",
+        "format": "cjs"
       },
       "npm:vue-spinner@1.0.2": {
         "main": "dist/vue-spinner.js",

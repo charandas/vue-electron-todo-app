@@ -5,10 +5,11 @@
 import path from 'path';
 import url from 'url';
 import { app, Menu } from 'electron';
-import _ from 'lodash';
 
 import { devMenuTemplate } from './menu/dev_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
+import { mainMenuTemplate } from './menu/main_menu_template';
+
 import createWindow from './helpers/window';
 import contextMenu from 'electron-context-menu';
 
@@ -27,12 +28,11 @@ const runningEnv = config.get('env');
 logger.info(`Running as ${runningEnv} environment`);
 
 function setApplicationMenu () {
-  const menus = [editMenuTemplate, devMenuTemplate];
+  let menus = [ mainMenuTemplate ];
+  if (runningEnv === 'development') {
+    menus = menus.concat([editMenuTemplate, devMenuTemplate]);
+  }
   Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
-}
-
-function appReboot (urlToNavigate) {
-  return _.startsWith(urlToNavigate, LOAD_URL);
 }
 
 let LOAD_URL = path.join(__dirname, '..', '..', APP_PATH);
@@ -68,10 +68,7 @@ if (runningEnv !== 'development') {
 }
 
 app.on('ready', () => {
-  if (runningEnv === 'development') {
-    setApplicationMenu();
-  }
-
+  setApplicationMenu();
   mainWindow = createWindow('main', {
     width: config.get('width'),
     height: config.get('height'),
@@ -92,21 +89,6 @@ app.on('ready', () => {
   if (runningEnv === 'development') {
     mainWindow.openDevTools();
   }
-
-  // NOTE:  (event, url) are the supported args for event callbacks
-  // fetch web contents and disable navigation to outside the app.
-  mainWindow.webContents.on('will-navigate', (event, urlToNavigate) => {
-    if (appReboot(urlToNavigate)) {
-      return false;
-    }
-    logger.info(`Prevented navigation away from app: ${urlToNavigate}`);
-    event.preventDefault();
-  });
-
-  mainWindow.webContents.on('new-window', (event, urlOfNewWindow) => {
-    logger.info(`Prevented new window from opening: ${urlOfNewWindow}`);
-    event.preventDefault();
-  });
 });
 
 app.on('window-all-closed', () => {

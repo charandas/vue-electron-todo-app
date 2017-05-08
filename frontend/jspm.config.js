@@ -57,6 +57,9 @@ SystemJS.config({
     'util': 'npm:jspm-nodelibs-util@0.2.2',
     'vm': 'npm:jspm-nodelibs-vm@0.2.1',
     'vue': 'npm:vue@2.2.6',
+    'vue-formly': 'npm:vue-formly@2.3.2',
+    'vue-formly-bootstrap': 'npm:vue-formly-bootstrap@2.2.2',
+    'vue-hot-reload-api': 'npm:vue-hot-reload-api@2.1.0',
     'vue-router': 'npm:vue-router@2.5.2',
     'vue-spinner': 'npm:vue-spinner@1.0.2',
     'zlib': 'npm:jspm-nodelibs-zlib@0.2.3'
@@ -332,6 +335,17 @@ SystemJS.config({
         'bn.js': 'npm:bn.js@4.11.6',
         'inherits': 'npm:inherits@2.0.3',
         'minimalistic-assert': 'npm:minimalistic-assert@1.0.0'
+      }
+    },
+    'npm:vue-formly@2.3.2': {
+      'map': {
+        'babel-runtime': 'npm:babel-runtime@6.23.0'
+      }
+    },
+    'npm:babel-runtime@6.23.0': {
+      'map': {
+        'regenerator-runtime': 'npm:regenerator-runtime@0.10.5',
+        'core-js': 'npm:core-js@2.4.1'
       }
     }
   }

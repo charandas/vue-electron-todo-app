@@ -7,3 +7,4 @@ config/local.json
 app/*
 !app/README.md
 .DS_Store
+vue_devtools_3.1.2_0

@@ -1,6 +1,8 @@
 import _notifier from 'node-notifier';
 import moment from 'moment';
 import each from 'lodash/each';
+import remove from 'lodash/remove';
+import uuid from 'node-uuid';
 
 // Set by the schedule function
 let mainWindow;
@@ -11,18 +13,33 @@ import config from './config-lib/index';
 const SNOOZE_5 = '5m';
 const SNOOZE_2 = '2m';
 const SNOOZE_1 = '1m';
-const SNOOZE_5_MS = 300000;
-const SNOOZE_2_MS = 120000;
-const SNOOZE_1_MS = 60000;
 const TIMEOUT_SECS = 15;
 
+const snoozeMap = new Map();
+snoozeMap.set(SNOOZE_5, 300000);
+snoozeMap.set(SNOOZE_2, 120000);
+snoozeMap.set(SNOOZE_1, 60000);
+
 const logger = getLogger({ label: 'notifications' });
+const snoozed = [];
+global.snoozed = snoozed;
+
+function addToSnoozed (notification) {
+  remove(snoozed, { notificationId: notification.notificationId });
+  // this updates the humanized future time in case of a resnooze
+  snoozed.push(notification);
+}
+
+function removeFromSnoozed (notificationId) {
+  remove(snoozed, { notificationId });
+}
 
 const notifier = new _notifier.NotificationCenter({
   withFallback: false
 });
 
-function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', channelName, retryFn, todoId }) {
+function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', dropdownLabel, channelName, retryFn, todoId, notificationId }) {
+  const options = arguments[0];
   const settings = {
     'title': 'Tech Host Assistant',
     'message': message,
@@ -33,6 +50,7 @@ function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', 
   if (reply) {
     Object.assign(settings, {
       actions,
+      dropdownLabel,
       closeLabel,
       reply,
       timeout: TIMEOUT_SECS
@@ -51,17 +69,22 @@ function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', 
         mainWindow.webContents.send(channelName, metadata.activationValue);
       } else if (channelName === 'checkOffTodo') {
         if (metadata.activationValue === 'Done') {
+          if (notificationId) {
+            console.log(snoozed);
+            removeFromSnoozed(notificationId);
+          }
           mainWindow.webContents.send(channelName, todoId);
         } else if (retryFn) {
-          if (metadata.activationValue === SNOOZE_5) {
-            setTimeout(retryFn, SNOOZE_5_MS);
-          } else if (metadata.activationValue === SNOOZE_2) {
-            setTimeout(retryFn, SNOOZE_2_MS);
-          } else if (metadata.activationValue === SNOOZE_1) {
-            setTimeout(retryFn, SNOOZE_1_MS);
+          let snoozedMs;
+          if ((snoozedMs = snoozeMap.get(metadata.activationValue))) {
+            addToSnoozed(Object.assign(options, {
+              futureTime: moment.duration(snoozedMs, 'milliseconds').humanize()
+            }));
+            setTimeout(retryFn, snoozedMs);
           } else if (metadata.activationType === 'timeout') {
             // We timedout, remind in 1 minute
-            setTimeout(retryFn, SNOOZE_1_MS);
+            moment.duration(snoozeMap.get(SNOOZE_1), 'milliseconds').humanize();
+            setTimeout(retryFn, snoozeMap.get(SNOOZE_1));
           }
         }
       }
@@ -85,7 +108,8 @@ function scheduleReminder (reminder) {
         actions: [SNOOZE_5, SNOOZE_2, SNOOZE_1],
         closeLabel: 'Done',
         channelName: 'checkOffTodo',
-        todoId: reminder.todoId
+        todoId: reminder.todoId,
+        notificationId: uuid.v4()
       };
       const retryFn = _notify.bind(null, args);
       _notify(Object.assign(args, { retryFn }));

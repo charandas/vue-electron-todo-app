@@ -91,7 +91,7 @@ if (runningEnv !== 'development') {
 let menuCanQuit = false;
 const menu = menubar({
   dir: MENUBAR_LOAD_DIR,
-  showDockIcon: true
+  showDockIcon: false
 });
 
 function quitMenu () {

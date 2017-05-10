@@ -10,9 +10,6 @@ import settingsTpl from './settings.html!vtc';
 const { remote } = System._nodeRequire('electron');
 const config = remote.getGlobal('techeastConfig');
 
-console.log(VueFormly);
-console.log(VueFormlyBootstrap);
-
 Vue.use(VueFormly.default);
 Vue.use(VueFormlyBootstrap.default);
 

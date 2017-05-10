@@ -2,6 +2,7 @@ import _notifier from 'node-notifier';
 import moment from 'moment';
 import each from 'lodash/each';
 import remove from 'lodash/remove';
+// import map from 'lodash/map';
 import uuid from 'node-uuid';
 
 // Set by the schedule function
@@ -39,7 +40,9 @@ const notifier = new _notifier.NotificationCenter({
 });
 
 function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', dropdownLabel, channelName, retryFn, todoId, notificationId }) {
+  // ['message', 'futureTime', 'todoId', 'notificationId']
   const options = arguments[0];
+  console.log(options);
   const settings = {
     'title': 'Tech Host Assistant',
     'message': message,
@@ -70,7 +73,6 @@ function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', 
       } else if (channelName === 'checkOffTodo') {
         if (metadata.activationValue === 'Done') {
           if (notificationId) {
-            console.log(snoozed);
             removeFromSnoozed(notificationId);
           }
           mainWindow.webContents.send(channelName, todoId);
@@ -78,13 +80,16 @@ function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', 
           let snoozedMs;
           if ((snoozedMs = snoozeMap.get(metadata.activationValue))) {
             addToSnoozed(Object.assign(options, {
-              futureTime: moment.duration(snoozedMs, 'milliseconds').humanize()
+              futureTime: moment().add(snoozedMs, 'milliseconds')
             }));
             setTimeout(retryFn, snoozedMs);
           } else if (metadata.activationType === 'timeout') {
+            snoozedMs = snoozeMap.get(SNOOZE_1);
             // We timedout, remind in 1 minute
-            moment.duration(snoozeMap.get(SNOOZE_1), 'milliseconds').humanize();
-            setTimeout(retryFn, snoozeMap.get(SNOOZE_1));
+            addToSnoozed(Object.assign(options, {
+              futureTime: moment().add(snoozedMs, 'milliseconds')
+            }));
+            setTimeout(retryFn, snoozedMs);
           }
         }
       }

@@ -4,6 +4,7 @@ SystemJS.config({
       'npm:': 'jspm_packages/npm/',
       'github:': 'jspm_packages/github/',
       'gitlab:': 'jspm_packages/gitlab/',
+      'techeast_menubar/': 'src/menubar/',
       'techeast/': 'src/'
     }
   },
@@ -11,6 +12,15 @@ SystemJS.config({
   packages: {
     'techeast': {
       'main': 'techeast.js',
+      'format': 'esm',
+      'meta': {
+        '*.js': {
+          'loader': 'plugin-babel'
+        }
+      }
+    },
+    'techeast_menubar': {
+      'main': 'techeast_menubar.js',
       'format': 'esm',
       'meta': {
         '*.js': {
@@ -37,7 +47,7 @@ SystemJS.config({
     'assert': 'npm:jspm-nodelibs-assert@0.2.1',
     'axios': 'npm:axios@0.15.3',
     'bluebird': 'npm:bluebird@3.5.0',
-    'buffer': 'npm:jspm-nodelibs-buffer@0.2.2',
+    'buffer': 'npm:jspm-nodelibs-buffer@0.2.3',
     'constants': 'npm:jspm-nodelibs-constants@0.2.1',
     'crypto': 'npm:jspm-nodelibs-crypto@0.2.1',
     'css': 'github:systemjs/plugin-css@0.1.33',
@@ -56,24 +66,18 @@ SystemJS.config({
     'url': 'npm:jspm-nodelibs-url@0.2.1',
     'util': 'npm:jspm-nodelibs-util@0.2.2',
     'vm': 'npm:jspm-nodelibs-vm@0.2.1',
-    'vue': 'npm:vue@2.2.6',
-    'vue-formly': 'npm:vue-formly@2.3.2',
-    'vue-formly-bootstrap': 'npm:vue-formly-bootstrap@2.2.2',
+    'vue': 'npm:vue@2.3.3',
+    'vue-formly': 'npm:vue-formly@2.3.3',
+    'vue-formly-bootstrap': 'npm:vue-formly-bootstrap@2.2.3',
     'vue-hot-reload-api': 'npm:vue-hot-reload-api@2.1.0',
-    'vue-router': 'npm:vue-router@2.5.2',
+    'vue-router': 'npm:vue-router@2.5.3',
     'vue-spinner': 'npm:vue-spinner@1.0.2',
     'zlib': 'npm:jspm-nodelibs-zlib@0.2.3'
   },
   packages: {
     'gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1': {
       'map': {
-        'vue-template-compiler': 'npm:vue-template-compiler@2.2.6'
-      }
-    },
-    'npm:vue-template-compiler@2.2.6': {
-      'map': {
-        'he': 'npm:he@1.1.1',
-        'de-indent': 'npm:de-indent@1.0.2'
+        'vue-template-compiler': 'npm:vue-template-compiler@2.3.3'
       }
     },
     'npm:axios@0.15.3': {
@@ -83,17 +87,12 @@ SystemJS.config({
     },
     'npm:follow-redirects@1.0.0': {
       'map': {
-        'debug': 'npm:debug@2.6.3'
+        'debug': 'npm:debug@2.6.6'
       }
     },
     'npm:jspm-nodelibs-zlib@0.2.3': {
       'map': {
         'browserify-zlib': 'npm:browserify-zlib@0.1.4'
-      }
-    },
-    'npm:jspm-nodelibs-buffer@0.2.2': {
-      'map': {
-        'buffer': 'npm:buffer@4.9.1'
       }
     },
     'npm:jspm-nodelibs-url@0.2.1': {
@@ -103,19 +102,7 @@ SystemJS.config({
     },
     'npm:jspm-nodelibs-http@0.2.0': {
       'map': {
-        'http-browserify': 'npm:stream-http@2.7.0'
-      }
-    },
-    'npm:buffer@4.9.1': {
-      'map': {
-        'ieee754': 'npm:ieee754@1.1.8',
-        'isarray': 'npm:isarray@1.0.0',
-        'base64-js': 'npm:base64-js@1.2.0'
-      }
-    },
-    'npm:debug@2.6.3': {
-      'map': {
-        'ms': 'npm:ms@0.7.2'
+        'http-browserify': 'npm:stream-http@2.7.1'
       }
     },
     'npm:jspm-nodelibs-stream@0.2.1': {
@@ -131,34 +118,14 @@ SystemJS.config({
     },
     'npm:browserify-zlib@0.1.4': {
       'map': {
-        'readable-stream': 'npm:readable-stream@2.2.6',
+        'readable-stream': 'npm:readable-stream@2.2.9',
         'pako': 'npm:pako@0.2.9'
-      }
-    },
-    'npm:stream-http@2.7.0': {
-      'map': {
-        'readable-stream': 'npm:readable-stream@2.2.6',
-        'builtin-status-codes': 'npm:builtin-status-codes@3.0.0',
-        'to-arraybuffer': 'npm:to-arraybuffer@1.0.1',
-        'inherits': 'npm:inherits@2.0.3',
-        'xtend': 'npm:xtend@4.0.1'
       }
     },
     'npm:stream-browserify@2.0.1': {
       'map': {
         'inherits': 'npm:inherits@2.0.3',
-        'readable-stream': 'npm:readable-stream@2.2.6'
-      }
-    },
-    'npm:readable-stream@2.2.6': {
-      'map': {
-        'isarray': 'npm:isarray@1.0.0',
-        'inherits': 'npm:inherits@2.0.3',
-        'process-nextick-args': 'npm:process-nextick-args@1.0.7',
-        'core-util-is': 'npm:core-util-is@1.0.2',
-        'util-deprecate': 'npm:util-deprecate@1.0.2',
-        'buffer-shims': 'npm:buffer-shims@1.0.0',
-        'string_decoder': 'npm:string_decoder@0.10.31'
+        'readable-stream': 'npm:readable-stream@2.2.9'
       }
     },
     'npm:jspm-nodelibs-os@0.2.1': {
@@ -273,7 +240,7 @@ SystemJS.config({
       'map': {
         'bn.js': 'npm:bn.js@4.11.6',
         'inherits': 'npm:inherits@2.0.3',
-        'hmac-drbg': 'npm:hmac-drbg@1.0.0',
+        'hmac-drbg': 'npm:hmac-drbg@1.0.1',
         'brorand': 'npm:brorand@1.1.0',
         'minimalistic-assert': 'npm:minimalistic-assert@1.0.0',
         'minimalistic-crypto-utils': 'npm:minimalistic-crypto-utils@1.0.1',
@@ -312,13 +279,6 @@ SystemJS.config({
         'string_decoder': 'npm:string_decoder@0.10.31'
       }
     },
-    'npm:hmac-drbg@1.0.0': {
-      'map': {
-        'minimalistic-assert': 'npm:minimalistic-assert@1.0.0',
-        'minimalistic-crypto-utils': 'npm:minimalistic-crypto-utils@1.0.1',
-        'hash.js': 'npm:hash.js@1.0.3'
-      }
-    },
     'npm:hash.js@1.0.3': {
       'map': {
         'inherits': 'npm:inherits@2.0.3'
@@ -337,15 +297,69 @@ SystemJS.config({
         'minimalistic-assert': 'npm:minimalistic-assert@1.0.0'
       }
     },
-    'npm:vue-formly@2.3.2': {
-      'map': {
-        'babel-runtime': 'npm:babel-runtime@6.23.0'
-      }
-    },
     'npm:babel-runtime@6.23.0': {
       'map': {
         'regenerator-runtime': 'npm:regenerator-runtime@0.10.5',
         'core-js': 'npm:core-js@2.4.1'
+      }
+    },
+    'npm:jspm-nodelibs-buffer@0.2.3': {
+      'map': {
+        'buffer': 'npm:buffer@5.0.6'
+      }
+    },
+    'npm:vue-formly@2.3.3': {
+      'map': {
+        'babel-runtime': 'npm:babel-runtime@6.23.0'
+      }
+    },
+    'npm:buffer@5.0.6': {
+      'map': {
+        'ieee754': 'npm:ieee754@1.1.8',
+        'base64-js': 'npm:base64-js@1.2.0'
+      }
+    },
+    'npm:stream-http@2.7.1': {
+      'map': {
+        'builtin-status-codes': 'npm:builtin-status-codes@3.0.0',
+        'inherits': 'npm:inherits@2.0.3',
+        'readable-stream': 'npm:readable-stream@2.2.9',
+        'to-arraybuffer': 'npm:to-arraybuffer@1.0.1',
+        'xtend': 'npm:xtend@4.0.1'
+      }
+    },
+    'npm:readable-stream@2.2.9': {
+      'map': {
+        'string_decoder': 'npm:string_decoder@1.0.0',
+        'inherits': 'npm:inherits@2.0.3',
+        'core-util-is': 'npm:core-util-is@1.0.2',
+        'isarray': 'npm:isarray@1.0.0',
+        'process-nextick-args': 'npm:process-nextick-args@1.0.7',
+        'util-deprecate': 'npm:util-deprecate@1.0.2',
+        'buffer-shims': 'npm:buffer-shims@1.0.0'
+      }
+    },
+    'npm:debug@2.6.6': {
+      'map': {
+        'ms': 'npm:ms@0.7.3'
+      }
+    },
+    'npm:string_decoder@1.0.0': {
+      'map': {
+        'buffer-shims': 'npm:buffer-shims@1.0.0'
+      }
+    },
+    'npm:vue-template-compiler@2.3.3': {
+      'map': {
+        'de-indent': 'npm:de-indent@1.0.2',
+        'he': 'npm:he@1.1.1'
+      }
+    },
+    'npm:hmac-drbg@1.0.1': {
+      'map': {
+        'hash.js': 'npm:hash.js@1.0.3',
+        'minimalistic-assert': 'npm:minimalistic-assert@1.0.0',
+        'minimalistic-crypto-utils': 'npm:minimalistic-crypto-utils@1.0.1'
       }
     }
   }

@@ -10,6 +10,9 @@ import settingsTpl from './settings.html!vtc';
 const { remote } = System._nodeRequire('electron');
 const config = remote.getGlobal('techeastConfig');
 
+console.log(VueFormly);
+console.log(VueFormlyBootstrap);
+
 Vue.use(VueFormly.default);
 Vue.use(VueFormlyBootstrap.default);
 
@@ -28,12 +31,18 @@ const MySettings = Vue.component('my-settings', {
   render: settingsTpl.render,
   staticRenderFns: settingsTpl.staticRenderFns,
   components: {
-    RiseLoader: VueSpinner.RiseLoader,
-    FormlyForm: Vue.component('formly-form')
+    RiseLoader: VueSpinner.RiseLoader
+  },
+  methods: {
+    doSomething: function () {}
   },
   data: () => ({
     form: {},
-    model: getReminder(this.$route.params.id),
+    model: {
+      title: '',
+      todoId: '',
+      sendAt: ''
+    }, // getReminder(this.$route.params.id),
     fields: [
       {
         key: 'title',

@@ -14,7 +14,7 @@ const routes = [
     component: MyDashboard
   },
   {
-    path: '/settings/:id',
+    path: '/settings',
     component: MySettings
   }
 ];

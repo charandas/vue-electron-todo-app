@@ -5,13 +5,15 @@
 import path from 'path';
 import url from 'url';
 import { app, Menu } from 'electron';
+import contextMenu from 'electron-context-menu';
+
+import menubar from 'menubar';
 
 import { devMenuTemplate } from './menu/dev_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
 import { mainMenuTemplate } from './menu/main_menu_template';
 
-import createWindow from './helpers/window';
-import contextMenu from 'electron-context-menu';
+import _createWindow from './helpers/window';
 
 import config from './config-lib/index';
 import getLogger from './logger/index';
@@ -20,10 +22,19 @@ import notifications from './notifications';
 global.techeastConfig = config;
 global.notifications = notifications;
 
-const logger = getLogger({ appPath: app.getPath('userData') });
+const logger = getLogger({});
 
-const APP_PATH = config.get('app_path') || 'app/index.html';
+const APP_PATH = 'frontend/index.html';
+const MENUBAR_APP_DIR = 'frontend/menubar';
 const runningEnv = config.get('env');
+
+var LOAD_URL = path.join(__dirname, '..', '..', APP_PATH);
+var MENUBAR_LOAD_DIR = path.join(__dirname, '..', '..', MENUBAR_APP_DIR);
+if (runningEnv === 'development') {
+  LOAD_URL = path.join(__dirname, '..', APP_PATH);
+  MENUBAR_LOAD_DIR = path.join(__dirname, '..', MENUBAR_APP_DIR);
+}
+app.commandLine.appendSwitch('disable-pinch');
 
 logger.info(`Running as ${runningEnv} environment`);
 
@@ -35,41 +46,9 @@ function setApplicationMenu () {
   Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
 }
 
-let LOAD_URL = path.join(__dirname, '..', '..', APP_PATH);
-if (runningEnv === 'development') {
-  LOAD_URL = path.join(__dirname, '..', APP_PATH);
-
-  const userDataPath = app.getPath('userData');
-  if (runningEnv !== 'production') {
-    app.setPath('userData', `${userDataPath} ( ${runningEnv} )`);
-  } else {
-    app.setPath('userData', userDataPath);
-  }
-}
-app.commandLine.appendSwitch('disable-pinch');
-
-if (runningEnv === 'development') {
-  contextMenu({
-    // For prepend: browserWindow second param when needed
-    prepend: params => [{
-      label: 'Context Menu',
-      // only show it when right-clicking images
-      visible: params.mediaType === 'image'
-    }]
-  });
-}
-
-let mainWindow;
-
-if (runningEnv !== 'development') {
-  app.setLoginItemSettings({
-    openAtLogin: true
-  });
-}
-
-app.on('ready', () => {
+function createWindow () {
   setApplicationMenu();
-  mainWindow = createWindow('main', {
+  const mainWindow = _createWindow('main', {
     width: config.get('width'),
     height: config.get('height'),
     webPreferences: {
@@ -89,8 +68,62 @@ app.on('ready', () => {
   if (runningEnv === 'development') {
     mainWindow.openDevTools();
   }
+  return mainWindow;
+}
+
+if (runningEnv === 'development') {
+  contextMenu({
+    // For prepend: browserWindow second param when needed
+    prepend: params => [{
+      label: 'Context Menu',
+      // only show it when right-clicking images
+      visible: params.mediaType === 'image'
+    }]
+  });
+}
+
+if (runningEnv !== 'development') {
+  app.setLoginItemSettings({
+    openAtLogin: true
+  });
+}
+
+let menuCanQuit = false;
+const menu = menubar({
+  dir: MENUBAR_LOAD_DIR,
+  showDockIcon: true
+});
+
+function quitMenu () {
+  menuCanQuit = true;
+  menu.app.quit();
+}
+
+menu.on('ready', function ready () {
+  menu.app.on('will-quit', function tryQuit (e) {
+    if (menuCanQuit) {
+      return true;
+    }
+    menu.window = undefined;
+    e.preventDefault();
+  });
+});
+
+process.on('uncaughtException', err => {
+  logger.error('Uncaught exception:', err.message, err.stack || '');
+  quitMenu();
 });
 
 app.on('window-all-closed', () => {
+  quitMenu();
   app.quit();
+});
+
+app.on('ready', () => {
+  let mainWindow = createWindow();
+
+  mainWindow.on('closed', () => {
+    quitMenu();
+    mainWindow = undefined;
+  });
 });

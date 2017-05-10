@@ -61,6 +61,7 @@ const MyDashboard = Vue.component('my-dashboard', {
   },
   created: function () {
     ipcRenderer.on('checkOffTodo', (event, todoId) => {
+      console.log(todoId);
       if (todoId) {
         const found = find(this.todos, { id: todoId });
         if (found) {

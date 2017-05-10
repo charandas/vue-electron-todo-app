@@ -51,7 +51,9 @@
     "release-dev": "npm run build && build",
     "release": "semistandard && npm run frontend-build && npm run build && build",
     "frontend-build": "jspm build src/techeast frontend/dist/build.js",
-    "frontend-dev": "jspm build src/techeast frontend/dist/build.js -wd",
+    "frontend-dev": "jspm build src/techeast frontend/dist/build.js -wd --skip-rollup",
+    "menubar-build": "jspm build src/menubar/techeast_menubar frontend/menubar/dist/build.js",
+    "menubar-dev": "jspm build src/menubar/techeast_menubar frontend/menubar/dist/build.js -wd --skip-rollup",
     "jspm": "./node_modules/.bin/jspm"
   },
   "author": "Human Flow S.C.",
@@ -59,8 +61,10 @@
   "dependencies": {
     "continuation-local-storage": "^3.2.0",
     "electron-context-menu": "^0.8.0",
+    "electron-rpc": "^2.0.1",
     "fs-jetpack": "^0.10.5",
     "lodash": "^4.17.4",
+    "menubar": "^5.2.3",
     "moment": "^2.18.1",
     "nconf": "^0.8.4",
     "node-notifier": "^5.1.2",
@@ -102,7 +106,7 @@
       "lodash": "npm:lodash@^4.17.4",
       "mdi": "npm:mdi@^1.9.33",
       "text": "github:systemjs/plugin-text@^0.0.9",
-      "vue-formly-bootstrap": "npm:vue-formly-bootstrap@^2.2.2",
+      "vue-formly-bootstrap": "npm:vue-formly-bootstrap@^2.2.3",
       "vue-hot-reload-api": "npm:vue-hot-reload-api@^2.1.0",
       "vue-router": "npm:vue-router@^2.5.2",
       "vue-spinner": "npm:vue-spinner@^1.0.2",
@@ -128,15 +132,36 @@
       "url": "npm:jspm-nodelibs-url@^0.2.0",
       "util": "npm:jspm-nodelibs-util@^0.2.0",
       "vm": "npm:jspm-nodelibs-vm@^0.2.0",
-      "vue": "npm:vue@^2.2.6",
-      "vue-formly": "npm:vue-formly@^2.3.2",
+      "vue": "npm:vue@^2.0.0",
+      "vue-formly": "npm:vue-formly@^2.3.3",
       "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
     },
     "overrides": {
-      "npm:vue@2.2.6": {
-        "main": "dist/vue.js"
+      "npm:vue-formly@2.3.3": {
+        "format": "cjs"
       },
-      "npm:vue-router@2.5.2": {
+      "npm:debug@2.6.6": {
+        "main": "src/browser.js",
+        "jspmNodeConversion": false,
+        "format": "cjs",
+        "map": {
+          "./src/browser.js": {
+            "node": "./src/node.js"
+          },
+          "./node.js": {
+            "browser": "./src/browser.js"
+          },
+          "fs": "@node/fs",
+          "net": "@node/net",
+          "tty": "@node/tty",
+          "util": "@node/util"
+        }
+      },
+      "npm:ms@0.7.3": {
+        "jspmNodeConversion": false,
+        "format": "cjs"
+      },
+      "npm:vue-router@2.5.3": {
         "main": "dist/vue-router.js",
         "format": "cjs"
       },
@@ -167,23 +192,6 @@
           "_stream_transform": "readable-stream/transform"
         }
       },
-      "npm:debug@2.6.3": {
-        "main": "src/browser.js",
-        "jspmNodeConversion": false,
-        "format": "cjs",
-        "map": {
-          "./src/browser.js": {
-            "node": "./src/node.js"
-          },
-          "./node.js": {
-            "browser": "./src/browser.js"
-          },
-          "fs": "@node/fs",
-          "net": "@node/net",
-          "tty": "@node/tty",
-          "util": "@node/util"
-        }
-      },
       "npm:inherits@2.0.3": {
         "ignore": [
           "test.js"
@@ -195,9 +203,8 @@
           "process": "@empty"
         }
       },
-      "npm:ms@0.7.2": {
-        "jspmNodeConversion": false,
-        "format": "cjs"
+      "npm:vue@2.3.3": {
+        "main": "dist/vue.js"
       }
     }
   }

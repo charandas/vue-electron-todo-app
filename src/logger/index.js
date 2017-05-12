@@ -4,6 +4,7 @@ import fs from 'fs';
 import util from 'util';
 import { app } from 'electron';
 import path from 'path';
+import jetpack from 'fs-jetpack';
 
 import config from '../config-lib/index';
 import clsNamespace from './cls-namespace';
@@ -13,6 +14,8 @@ const runningEnv = config.get('env');
 if (runningEnv !== 'production') {
   app.setPath('userData', `${userDataPath} ( ${runningEnv} )`);
 }
+jetpack.dir(app.getPath('userData'));
+
 let loggerInitialized = new Map();
 const filename = path.resolve(app.getPath('userData'), 'log');
 const writeStream = fs.createWriteStream(filename, { flags: 'a' });

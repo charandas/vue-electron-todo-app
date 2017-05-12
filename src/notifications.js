@@ -127,13 +127,7 @@ function schedule (_mainWindow) {
   each(config.get('reminders'), scheduleReminder);
 }
 
-function confirmNewSession () {
-  _notify({ message: 'Start new checklist? Please confirm.', reply: true, channelName: 'confirmNewSession' });
-  return notifier;
-}
-
 export default {
-  confirmNewSession,
   scheduleReminder,
   schedule
 };

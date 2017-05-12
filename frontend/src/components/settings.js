@@ -8,6 +8,7 @@ import find from 'lodash/find';
 import settingsTpl from './settings.html!vtc';
 
 const { remote } = System._nodeRequire('electron');
+
 const config = remote.getGlobal('techeastConfig');
 
 Vue.use(VueFormly.default);

@@ -6,6 +6,7 @@ import path from 'path';
 import url from 'url';
 import { app, Menu } from 'electron';
 import contextMenu from 'electron-context-menu';
+import Server from 'electron-rpc/server';
 
 import menubar from 'menubar';
 
@@ -18,6 +19,7 @@ import _createWindow from './helpers/window';
 import config from './config-lib/index';
 import getLogger from './logger/index';
 import notifications from './notifications';
+import configureRoutes from './configure-routes';
 
 global.techeastConfig = config;
 global.notifications = notifications;
@@ -34,6 +36,8 @@ if (runningEnv === 'development') {
   LOAD_URL = path.join(__dirname, '..', APP_PATH);
   MENUBAR_LOAD_DIR = path.join(__dirname, '..', MENUBAR_APP_DIR);
 }
+
+const server = new Server();
 app.commandLine.appendSwitch('disable-pinch');
 
 logger.info(`Running as ${runningEnv} environment`);
@@ -55,6 +59,9 @@ function createWindow () {
       plugins: true
     }
   });
+
+  server.configure(mainWindow.webContents);
+  configureRoutes(server);
 
   notifications.schedule(mainWindow);
 

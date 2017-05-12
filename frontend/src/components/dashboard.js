@@ -5,12 +5,13 @@ import find from 'lodash/find';
 import { mapToTodos } from '../utils/todos';
 import dashboardTpl from './dashboard.html!vtc';
 
+import MyModal from './modal';
+
 import './styles.css!css';
 
 // TODO: restore routing pre-router
 
 const { remote, ipcRenderer } = System._nodeRequire('electron');
-const notifications = remote.getGlobal('notifications');
 const config = remote.getGlobal('techeastConfig');
 
 // window.localStorage persistence
@@ -54,10 +55,13 @@ const MyDashboard = Vue.component('my-dashboard', {
     todos: todoStorage.fetch(),
     newTodo: '',
     editedTodo: null,
-    visibility: 'all'
+    confirmModal: null,
+    visibility: 'all',
+    showModal: false
   }),
   components: {
-    RiseLoader: VueSpinner.RiseLoader
+    RiseLoader: VueSpinner.RiseLoader,
+    MyModal
   },
   created: function () {
     ipcRenderer.on('checkOffTodo', (event, todoId) => {
@@ -111,15 +115,19 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
-    startNewSession: function () {
-      notifications.confirmNewSession();
+    confirmNewSesssionOk: function () {
       this.loading = true;
-      ipcRenderer.once('confirmNewSession', (event, message) => {
-        if (message === 'Yes') {
-          this.todos = mapToTodos(config.get('checklist:todosTemplate'));
-        }
+      this.showModal = false;
+      setTimeout(() => {
+        this.todos = mapToTodos(config.get('checklist:todosTemplate'));
         this.loading = false;
-      });
+      }, 1000);
+    },
+    confirmNewSesssionCancel: function () {
+      this.showModal = false;
+    },
+    startNewSession: function () {
+      this.showModal = true;
     },
     addTodo: function () {
       var value = this.newTodo && this.newTodo.trim();

@@ -50,9 +50,9 @@
     "build-local": "npm run gulp build",
     "release-dev": "npm run build && build",
     "release": "semistandard && npm run frontend-build && npm run build && build",
-    "frontend-build": "jspm build src/techeast frontend/dist/build.js",
+    "frontend-build": "jspm build src/techeast frontend/dist/build.js --minify",
     "frontend-dev": "jspm build src/techeast frontend/dist/build.js -wd --skip-rollup",
-    "menubar-build": "jspm build src/menubar/techeast_menubar frontend/menubar/dist/build.js",
+    "menubar-build": "jspm build src/menubar/techeast_menubar frontend/menubar/dist/build.js --minify",
     "menubar-dev": "jspm build src/menubar/techeast_menubar frontend/menubar/dist/build.js -wd --skip-rollup",
     "jspm": "./node_modules/.bin/jspm"
   },

@@ -3,6 +3,8 @@ import VueRouter from 'vue-router';
 
 import 'mdi/css/materialdesignicons.css!css';
 
+import techeastTpl from './techeast.html!vtc';
+
 import MyDashboard from './components/dashboard';
 import MySettings from './components/settings';
 
@@ -24,8 +26,9 @@ const router = new VueRouter({
 });
 
 const app = new Vue({
-  el: '#app-container',
+  render: techeastTpl.render,
+  staticRenderFns: techeastTpl.staticRenderFns,
   router
 });
 
-app.__TECHEAST_READY = true;
+app.$mount('#app-container');

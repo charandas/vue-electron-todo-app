@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import VueSpinner from 'vue-spinner';
 import find from 'lodash/find';
 import Bluebird from 'bluebird';
 
@@ -7,6 +6,7 @@ import { mapToTodos } from '../utils/todos';
 import dashboardTpl from './dashboard.html!vtc';
 
 import MyModal from './modal';
+import VueSpinner from 'vue-spinner';
 
 import './styles.css!css';
 

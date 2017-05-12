@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import VueSpinner from 'vue-spinner';
 import VueFormly from 'vue-formly';
 import VueFormlyBootstrap from 'vue-formly-bootstrap';
 import map from 'lodash/map';
 import find from 'lodash/find';
+import VueSpinner from 'vue-spinner';
 
 import settingsTpl from './settings.html!vtc';
 

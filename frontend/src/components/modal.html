@@ -17,10 +17,10 @@
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="modal-cancel-button" @click="$emit('cancel')">
+              <button class="modal-cancel-button" @click="result('cancel')">
                 Cancel
               </button>
-              <button class="modal-default-button" @click="$emit('ok')">
+              <button class="modal-default-button" @click="result('ok')">
                 OK
               </button>
             </slot>

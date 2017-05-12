@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueSpinner from 'vue-spinner';
 import find from 'lodash/find';
+import Bluebird from 'bluebird';
 
 import { mapToTodos } from '../utils/todos';
 import dashboardTpl from './dashboard.html!vtc';
@@ -55,9 +56,8 @@ const MyDashboard = Vue.component('my-dashboard', {
     todos: todoStorage.fetch(),
     newTodo: '',
     editedTodo: null,
-    confirmModal: null,
-    visibility: 'all',
-    showModal: false
+    newSessionModalResult: null,
+    visibility: 'all'
   }),
   components: {
     RiseLoader: VueSpinner.RiseLoader,
@@ -115,19 +115,21 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
-    confirmNewSesssionOk: function () {
-      this.loading = true;
-      this.showModal = false;
-      setTimeout(() => {
-        this.todos = mapToTodos(config.get('checklist:todosTemplate'));
-        this.loading = false;
-      }, 1000);
-    },
-    confirmNewSesssionCancel: function () {
-      this.showModal = false;
-    },
     startNewSession: function () {
-      this.showModal = true;
+      const promise = new Bluebird((resolve) => {
+        this.newSessionModalResult = resolve;
+      });
+      promise
+        .then(result => {
+          this.newSessionModalResult = null;
+          if (result === 'ok') {
+            this.loading = true;
+            setTimeout(() => {
+              this.todos = mapToTodos(config.get('checklist:todosTemplate'));
+              this.loading = false;
+            }, 1000);
+          }
+        });
     },
     addTodo: function () {
       var value = this.newTodo && this.newTodo.trim();

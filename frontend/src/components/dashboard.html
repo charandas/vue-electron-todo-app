@@ -12,7 +12,7 @@
   <div class="loader" :class="{ loading: loading }">
     <rise-loader class="spinner" :loading="loading" :size="'24px'"></rise-loader>
   </div>
-  <modal v-if="showModal" @ok="confirmNewSesssionOk()" @cancel="confirmNewSesssionCancel">
+  <modal v-if="newSessionModalResult" :result="newSessionModalResult">
     <h3 slot="header">Reset Checklist Session</h3>
     <h4 slot="body">Please confirm your choice</h4>
   </modal>

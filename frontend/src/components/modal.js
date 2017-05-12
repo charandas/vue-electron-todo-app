@@ -4,6 +4,7 @@ import modalTpl from './modal.html!vtc';
 import './modal.css!css';
 
 const MyModal = Vue.component('modal', {
+  props: ['result'],
   render: modalTpl.render,
   staticRenderFns: modalTpl.staticRenderFns
 });

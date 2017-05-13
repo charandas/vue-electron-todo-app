@@ -4,3 +4,7 @@ const client = new Client();
 export function getConfig (cb) {
   client.request('get-config', cb);
 }
+
+export function addReminder (reminder, cb) {
+  client.request('add-reminder', { reminder }, cb);
+}

@@ -28,6 +28,16 @@ const routes = {
         .then(getConfig)
         .asCallback(next);
     });
+
+    server.on('add-reminder', (req, next) => {
+      getValue(db, 'reminders')
+        .then(reminders => {
+          reminders.push(req.body.reminder);
+          initializeValue(db, 'reminders', reminders);
+          return reminders;
+        })
+        .asCallback(next);
+    });
   }
 };
 

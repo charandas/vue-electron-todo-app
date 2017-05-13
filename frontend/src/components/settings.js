@@ -8,7 +8,7 @@ import VueSpinner from 'vue-spinner';
 
 import settingsTpl from './settings.html!vtc';
 
-import { getConfig } from '../utils/rpc-client';
+import { getConfig, addReminder } from '../utils/rpc-client';
 
 Vue.use(VueFormly.default);
 Vue.use(VueFormlyBootstrap.default);
@@ -31,7 +31,14 @@ const MySettings = Vue.component('my-settings', {
     RiseLoader: VueSpinner.RiseLoader
   },
   methods: {
-    doSomething: function () {},
+    addReminder: function () {
+      // TODO: Add loading around this
+      console.log(this.model);
+      addReminder(this.model, (err, reminders) => {
+        console.log(err);
+        console.log('Updated list', reminders);
+      });
+    },
     setConfig: function (err, config) {
       if (err) {
         this.error = err.toString();

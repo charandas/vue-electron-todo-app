@@ -2,7 +2,7 @@ import Bluebird from 'bluebird';
 
 import config from './config-lib/index';
 import { database as db } from './app_ready';
-import { initializeValue, getValue } from './db-helpers';
+import { setValue, getValue, initializeIfNotSet } from './db-helpers';
 
 // const logger = getLogger({ label: 'routes' });
 
@@ -15,7 +15,7 @@ function getConfig () {
 }
 
 const dbInitialized = Bluebird
-  .map(['checklist', 'reminders'], key => initializeValue(db, key, config.get(key)));
+  .map(['checklist', 'reminders'], key => initializeIfNotSet(db, key, config.get(key)));
 
 const routes = {
   configure (server) {
@@ -33,8 +33,7 @@ const routes = {
       getValue(db, 'reminders')
         .then(reminders => {
           reminders.push(req.body.reminder);
-          initializeValue(db, 'reminders', reminders);
-          return reminders;
+          return setValue(db, 'reminders', reminders).return(reminders);
         })
         .asCallback(next);
     });

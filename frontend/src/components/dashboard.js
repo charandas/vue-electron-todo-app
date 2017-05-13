@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import find from 'lodash/find';
+import get from 'lodash/get';
 import Bluebird from 'bluebird';
 
 import { getConfig } from '../utils/rpc-client';
@@ -127,7 +128,7 @@ const MyDashboard = Vue.component('my-dashboard', {
         this.error = err.toString();
       } else {
         this.config = config;
-        this.todos = todoStorage.fetch(this.config['checklist']['todosTemplate']);
+        this.todos = todoStorage.fetch(get(this.config, 'checklist.todosTemplate'));
       }
     },
     startNewSession: function () {
@@ -140,7 +141,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           if (result === 'ok') {
             this.loading = true;
             setTimeout(() => {
-              this.todos = mapToTodos(this.config['checklist']['todosTemplate']);
+              this.todos = mapToTodos(get(this.config, 'checklist.todosTemplate'));
               this.loading = false;
             }, 1000);
           }

@@ -2,7 +2,11 @@ import _notifier from 'node-notifier';
 import moment from 'moment';
 import each from 'lodash/each';
 import remove from 'lodash/remove';
+
+// TODO: replace node-uuid with uuid
 import uuid from 'node-uuid';
+
+import Bluebird from 'bluebird';
 
 // Set by the schedule function
 let mainWindow;

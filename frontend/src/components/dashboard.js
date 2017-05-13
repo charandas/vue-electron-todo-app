@@ -2,6 +2,7 @@ import Vue from 'vue';
 import find from 'lodash/find';
 import Bluebird from 'bluebird';
 
+import { getConfig } from '../utils/rpc-client';
 import { mapToTodos } from '../utils/todos';
 import dashboardTpl from './dashboard.html!vtc';
 
@@ -12,14 +13,12 @@ import './styles.css!css';
 
 // TODO: restore routing pre-router
 
-const { remote, ipcRenderer } = System._nodeRequire('electron');
-const config = remote.getGlobal('techeastConfig');
+const { ipcRenderer } = System._nodeRequire('electron');
 
 // window.localStorage persistence
 var STORAGE_KEY = 'todos-techeast';
 var todoStorage = {
-  fetch: function () {
-    const todosTemplate = config.get('checklist:todosTemplate');
+  fetch: function (todosTemplate) {
     const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     const todos = fromStorage || mapToTodos(todosTemplate);
     todoStorage.uid = todos.length;
@@ -50,18 +49,26 @@ var filters = {
 const MyDashboard = Vue.component('my-dashboard', {
   render: dashboardTpl.render,
   staticRenderFns: dashboardTpl.staticRenderFns,
-  data: () => ({
-    eventDate: new Date().toDateString(),
-    loading: false,
-    todos: todoStorage.fetch(),
-    newTodo: '',
-    editedTodo: null,
-    newSessionModalResult: null,
-    visibility: 'all'
-  }),
+  data () {
+    return {
+      todos: [],
+      error: null,
+      eventDate: new Date().toDateString(),
+      loading: false,
+      newTodo: '',
+      editedTodo: null,
+      newSessionModalResult: null,
+      visibility: 'all'
+    };
+  },
   components: {
     RiseLoader: VueSpinner.RiseLoader,
     MyModal
+  },
+  beforeRouteEnter (to, from, next) {
+    getConfig((err, config) => {
+      next(vm => vm.setConfig(err, config));
+    });
   },
   created: function () {
     ipcRenderer.on('checkOffTodo', (event, todoId) => {
@@ -115,6 +122,14 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
+    setConfig: function (err, config) {
+      if (err) {
+        this.error = err.toString();
+      } else {
+        this.config = config;
+        this.todos = todoStorage.fetch(this.config['checklist']['todosTemplate']);
+      }
+    },
     startNewSession: function () {
       const promise = new Bluebird((resolve) => {
         this.newSessionModalResult = resolve;
@@ -125,7 +140,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           if (result === 'ok') {
             this.loading = true;
             setTimeout(() => {
-              this.todos = mapToTodos(config.get('checklist:todosTemplate'));
+              this.todos = mapToTodos(this.config['checklist']['todosTemplate']);
               this.loading = false;
             }, 1000);
           }

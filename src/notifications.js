@@ -2,13 +2,12 @@ import _notifier from 'node-notifier';
 import moment from 'moment';
 import each from 'lodash/each';
 import remove from 'lodash/remove';
-// import map from 'lodash/map';
 import uuid from 'node-uuid';
 
 // Set by the schedule function
 let mainWindow;
 
-import getLogger from './logger/index';
+import { getLogger } from './app_ready';
 import config from './config-lib/index';
 
 const SNOOZE_5 = '5m';

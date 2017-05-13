@@ -2,28 +2,27 @@ import Vue from 'vue';
 import VueFormly from 'vue-formly';
 import VueFormlyBootstrap from 'vue-formly-bootstrap';
 import map from 'lodash/map';
-import find from 'lodash/find';
+// import find from 'lodash/find';
+import get from 'lodash/get';
 import VueSpinner from 'vue-spinner';
 
 import settingsTpl from './settings.html!vtc';
 
-const { remote } = System._nodeRequire('electron');
-
-const config = remote.getGlobal('techeastConfig');
+import { getConfig } from '../utils/rpc-client';
 
 Vue.use(VueFormly.default);
 Vue.use(VueFormlyBootstrap.default);
 
-function todoOptions () {
-  return map(config.get('checklist:todosTemplate'), todo => ({
+function todoOptions (config) {
+  return map(get(config, 'checklist.todosTemplate'), todo => ({
     label: todo.title,
     value: todo.id
   }));
 }
 
-function getReminder (id) {
+/* function getReminder (id) {
   return find(config.get('checklist:reminders'), { id });
-}
+} */
 
 const MySettings = Vue.component('my-settings', {
   render: settingsTpl.render,
@@ -32,9 +31,31 @@ const MySettings = Vue.component('my-settings', {
     RiseLoader: VueSpinner.RiseLoader
   },
   methods: {
-    doSomething: function () {}
+    doSomething: function () {},
+    setConfig: function (err, config) {
+      if (err) {
+        this.error = err.toString();
+      } else {
+        this.config = config;
+        this.fields.push({
+          key: 'todoId',
+          type: 'select',
+          options: todoOptions(this.config),
+          templateOptions: {
+            label: 'TODO to checkoff'
+          }
+        });
+      }
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    getConfig((err, config) => {
+      next(vm => vm.setConfig(err, config));
+    });
   },
   data: () => ({
+    config: null,
+    error: null,
     form: {},
     model: {
       title: '',
@@ -50,14 +71,6 @@ const MySettings = Vue.component('my-settings', {
           atts: {
             placeholder: 'Ex: Start/Stop recording'
           }
-        }
-      },
-      {
-        key: 'todoId',
-        type: 'select',
-        options: todoOptions(),
-        templateOptions: {
-          label: 'TODO to checkoff'
         }
       },
       {

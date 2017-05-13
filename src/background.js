@@ -17,14 +17,9 @@ import { mainMenuTemplate } from './menu/main_menu_template';
 import _createWindow from './helpers/window';
 
 import config from './config-lib/index';
-import getLogger from './logger/index';
 import notifications from './notifications';
-import configureRoutes from './configure-routes';
-
-global.techeastConfig = config;
-global.notifications = notifications;
-
-const logger = getLogger({});
+import routes from './routes';
+import { getLogger } from './app_ready';
 
 const APP_PATH = 'frontend/index.html';
 const MENUBAR_APP_DIR = 'frontend/menubar';
@@ -40,6 +35,7 @@ if (runningEnv === 'development') {
 const server = new Server();
 app.commandLine.appendSwitch('disable-pinch');
 
+const logger = getLogger();
 logger.info(`Running as ${runningEnv} environment`);
 
 function setApplicationMenu () {
@@ -61,7 +57,7 @@ function createWindow () {
   });
 
   server.configure(mainWindow.webContents);
-  configureRoutes(server);
+  routes.configure(server);
 
   notifications.schedule(mainWindow);
 

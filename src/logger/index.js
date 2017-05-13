@@ -2,23 +2,13 @@ import * as winston from 'winston';
 import ElectronConsole from 'winston-electron';
 import fs from 'fs';
 import util from 'util';
-import { app } from 'electron';
 import path from 'path';
-import jetpack from 'fs-jetpack';
 
 import config from '../config-lib/index';
 import clsNamespace from './cls-namespace';
 
-const userDataPath = app.getPath('userData');
-const runningEnv = config.get('env');
-if (runningEnv !== 'production') {
-  app.setPath('userData', `${userDataPath} ( ${runningEnv} )`);
-}
-jetpack.dir(app.getPath('userData'));
-
 let loggerInitialized = new Map();
-const filename = path.resolve(app.getPath('userData'), 'log');
-const writeStream = fs.createWriteStream(filename, { flags: 'a' });
+let writeStream;
 
 function translateMeta (meta) {
   const translated = util.inspect(meta, {
@@ -41,7 +31,7 @@ function timestampWithCorrelation () {
   return ts;
 }
 
-function getLogger ({ colorize = true, label = 'techeast' }) {
+function getLogger ({ colorize = true, label = 'techeast', appPath }) {
   let logger = loggerInitialized.get(label);
   if (logger) {
     return logger;
@@ -58,7 +48,11 @@ function getLogger ({ colorize = true, label = 'techeast' }) {
     new (ElectronConsole)(options)
   ];
 
-  // Shared writeStream between various loggers, even though they have separate objects per label
+  if (!writeStream) {
+    // Shared writeStream between various loggers, even though they have separate objects per label
+    const filename = path.resolve(appPath, 'log');
+    writeStream = fs.createWriteStream(filename, { flags: 'a' });
+  }
   Object.assign(options, {
     stream: writeStream,
     json: false,

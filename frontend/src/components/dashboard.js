@@ -48,6 +48,7 @@ var filters = {
 };
 
 const MyDashboard = Vue.component('my-dashboard', {
+  props: ['visibility'],
   render: dashboardTpl.render,
   staticRenderFns: dashboardTpl.staticRenderFns,
   data () {
@@ -58,8 +59,7 @@ const MyDashboard = Vue.component('my-dashboard', {
       loading: false,
       newTodo: '',
       editedTodo: null,
-      newSessionModalResult: null,
-      visibility: 'all'
+      newSessionModalResult: null
     };
   },
   components: {

@@ -13,7 +13,8 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    component: MyDashboard
+    component: MyDashboard,
+    props: (route) => ({ visibility: route.query.visibility || 'all' })
   },
   {
     path: '/settings',

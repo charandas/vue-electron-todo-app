@@ -3,8 +3,7 @@ import moment from 'moment';
 import each from 'lodash/each';
 import remove from 'lodash/remove';
 
-// TODO: replace node-uuid with uuid
-import uuid from 'node-uuid';
+import uuidV4 from 'uuid/v4';
 
 import Bluebird from 'bluebird';
 
@@ -45,7 +44,6 @@ const notifier = new _notifier.NotificationCenter({
 function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', dropdownLabel, channelName, retryFn, todoId, notificationId }) {
   // ['message', 'futureTime', 'todoId', 'notificationId']
   const options = arguments[0];
-  console.log(options);
   const settings = {
     'title': 'Tech Host Assistant',
     'message': message,
@@ -117,7 +115,7 @@ function scheduleReminder (reminder) {
         closeLabel: 'Done',
         channelName: 'checkOffTodo',
         todoId: reminder.todoId,
-        notificationId: uuid.v4()
+        notificationId: uuidV4()
       };
       const retryFn = _notify.bind(null, args);
       _notify(Object.assign(args, { retryFn }));

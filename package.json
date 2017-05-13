@@ -70,7 +70,7 @@
     "moment": "^2.18.1",
     "nconf": "^0.8.4",
     "node-notifier": "^5.1.2",
-    "node-uuid": "^1.4.8",
+    "uuid": "^3.0.1",
     "winston": "^2.3.1",
     "winston-electron": "0.0.3"
   },

@@ -52,8 +52,6 @@
     "release": "semistandard && npm run frontend-build && npm run build && build",
     "frontend-build": "jspm build src/techeast frontend/dist/build.js --minify",
     "frontend-dev": "jspm build src/techeast frontend/dist/build.js -wd --skip-rollup",
-    "menubar-build": "jspm build src/menubar/techeast_menubar frontend/menubar/dist/build.js --minify",
-    "menubar-dev": "jspm build src/menubar/techeast_menubar frontend/menubar/dist/build.js -wd --skip-rollup",
     "jspm": "./node_modules/.bin/jspm"
   },
   "author": "Human Flow S.C.",
@@ -71,8 +69,6 @@
     "moment": "^2.18.1",
     "nconf": "^0.8.4",
     "node-notifier": "^5.1.2",
-    "pull-level": "^2.0.3",
-    "pull-stream": "^3.6.0",
     "uuid": "^3.0.1",
     "winston": "^2.3.1",
     "winston-electron": "0.0.3"
@@ -91,6 +87,7 @@
     "jspm": "0.17.0-beta.41",
     "jspm-git": "^0.7.0-beta.1",
     "minimist": "^1.2.0",
+    "pug": "^2.0.0-rc.1",
     "rollup": "^0.36.3",
     "semistandard": "^9.2.1",
     "systemjs": "^0.20.9",
@@ -111,7 +108,9 @@
       "json": "github:systemjs/plugin-json@^0.3.0",
       "lodash": "npm:lodash@^4.17.4",
       "mdi": "npm:mdi@^1.9.33",
+      "systemjs-plugin-vue": "npm:systemjs-plugin-vue@^1.2.0",
       "text": "github:systemjs/plugin-text@^0.0.9",
+      "vue-clock-picker": "npm:vue-clock-picker@^0.4.2",
       "vue-formly-bootstrap": "npm:vue-formly-bootstrap@^2.2.3",
       "vue-hot-reload-api": "npm:vue-hot-reload-api@^2.1.0",
       "vue-router": "npm:vue-router@^2.5.2",
@@ -124,17 +123,23 @@
     "peerDependencies": {
       "assert": "npm:jspm-nodelibs-assert@^0.2.0",
       "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
+      "child_process": "npm:jspm-nodelibs-child_process@^0.2.0",
       "constants": "npm:jspm-nodelibs-constants@^0.2.0",
       "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
+      "domain": "npm:jspm-nodelibs-domain@^0.2.0",
       "events": "npm:jspm-nodelibs-events@^0.2.0",
       "fs": "npm:jspm-nodelibs-fs@^0.2.0",
       "http": "npm:jspm-nodelibs-http@^0.2.0",
       "https": "npm:jspm-nodelibs-https@^0.2.0",
+      "module": "npm:jspm-nodelibs-module@^0.2.0",
       "os": "npm:jspm-nodelibs-os@^0.2.0",
       "path": "npm:jspm-nodelibs-path@^0.2.0",
       "process": "npm:jspm-nodelibs-process@^0.2.0",
+      "punycode": "npm:jspm-nodelibs-punycode@^0.2.0",
       "stream": "npm:jspm-nodelibs-stream@^0.2.0",
       "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
+      "tty": "npm:jspm-nodelibs-tty@^0.2.0",
+      "uglify-to-browserify": "npm:uglify-to-browserify@1.0",
       "url": "npm:jspm-nodelibs-url@^0.2.0",
       "util": "npm:jspm-nodelibs-util@^0.2.0",
       "vm": "npm:jspm-nodelibs-vm@^0.2.0",
@@ -143,6 +148,68 @@
       "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
     },
     "overrides": {
+      "npm:vue-clock-picker@0.4.2": {
+        "defaultExtension": "vue"
+      },
+      "npm:esprima@2.7.3": {
+        "jspmNodeConversion": false
+      },
+      "npm:pbkdf2@3.0.12": {
+        "main": "browser.js"
+      },
+      "npm:safe-buffer@5.0.1": {
+        "browser": "index.js"
+      },
+      "npm:svgo@0.7.2": {
+        "meta": {
+          "lib/svgo/config.js": {
+            "deps": [
+              "../../plugins/removeDoctype",
+              "../../plugins/removeXMLProcInst",
+              "../../plugins/removeComments",
+              "../../plugins/removeMetadata",
+              "../../plugins/removeEditorsNSData",
+              "../../plugins/cleanupAttrs",
+              "../../plugins/minifyStyles",
+              "../../plugins/convertStyleToAttrs",
+              "../../plugins/cleanupIDs",
+              "../../plugins/removeRasterImages",
+              "../../plugins/removeUselessDefs",
+              "../../plugins/cleanupNumericValues",
+              "../../plugins/cleanupListOfValues",
+              "../../plugins/convertColors",
+              "../../plugins/removeUnknownsAndDefaults",
+              "../../plugins/removeNonInheritableGroupAttrs",
+              "../../plugins/removeUselessStrokeAndFill",
+              "../../plugins/removeViewBox",
+              "../../plugins/cleanupEnableBackground",
+              "../../plugins/removeHiddenElems",
+              "../../plugins/removeEmptyText",
+              "../../plugins/convertShapeToPath",
+              "../../plugins/moveElemsAttrsToGroup",
+              "../../plugins/moveGroupAttrsToElems",
+              "../../plugins/collapseGroups",
+              "../../plugins/convertPathData",
+              "../../plugins/convertTransform",
+              "../../plugins/removeEmptyAttrs",
+              "../../plugins/removeEmptyContainers",
+              "../../plugins/mergePaths",
+              "../../plugins/removeUnusedNS",
+              "../../plugins/transformsWithOnePath",
+              "../../plugins/sortAttrs",
+              "../../plugins/removeTitle",
+              "../../plugins/removeDesc",
+              "../../plugins/removeDimensions",
+              "../../plugins/removeAttrs",
+              "../../plugins/addClassesToSVGElement",
+              "../../plugins/removeStyleElement",
+              "../../plugins/removeXMLNS",
+              "../../plugins/removeElementsByAttr",
+              "../../plugins/addAttributesToSVGElement"
+            ]
+          }
+        }
+      },
       "npm:vue-formly@2.3.3": {
         "format": "cjs"
       },

@@ -23,9 +23,24 @@
         class="todo"
         :key="todo.id"
         :class="{ completed: todo.completed, editing: todo == editedTodo }">
+        <modal v-if="reminderPickModalResult" :result="reminderPickModalResult" :todo="todo">
+          <h3 slot="header">Please pick your desired reminder for {{ todo.title }}</h3>
+          <div slot="body">
+            <button class="modal-cancel-button" @click="reminderPickModalResult('cancel')">
+              Cancel
+            </button>
+            <button class="modal-default-button" @click="reminderPickModalResult('ok')">
+              OK
+            </button>
+          </div>
+          <div slot="footer">
+            <vue-clock-picker mode="24" :defaultHour="defaultHour" :defaultMinute="defaultMinute" :onTimeChange="timeChangeHandler"></vue-clock-picker>
+          </div>
+        </modal>
         <div class="view">
           <input class="toggle" type="checkbox" v-model="todo.completed">
           <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
+          <button class="new-session" @click="updateReminder(todo)"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
           <button class="destroy" @click="removeTodo(todo)"></button>
         </div>
         <input class="edit" type="text"

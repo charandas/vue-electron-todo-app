@@ -1,14 +1,19 @@
 import Vue from 'vue';
+import VueClockPicker from 'vue-clock-picker';
+import VueSpinner from 'vue-spinner';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import Bluebird from 'bluebird';
 
-import { getConfig, addTodo as addTodoRpc } from '../utils/rpc-client';
+import {
+  getConfig,
+  addTodo as addTodoRpc,
+  addReminder as addReminderRpc
+} from '../utils/rpc-client';
 import { mapToTodos } from '../utils/todos';
 import dashboardTpl from './dashboard.html!vtc';
 
 import MyModal from './modal';
-import VueSpinner from 'vue-spinner';
 
 import './styles.css!css';
 
@@ -52,18 +57,22 @@ const MyDashboard = Vue.component('my-dashboard', {
   staticRenderFns: dashboardTpl.staticRenderFns,
   data () {
     return {
+      defaultHour: new Date().getHours(),
+      defaultMinute: new Date().getMinutes(),
       todos: [],
       error: null,
       eventDate: new Date().toDateString(),
       loading: false,
       newTodo: '',
       editedTodo: null,
-      newSessionModalResult: null
+      newSessionModalResult: null,
+      reminderPickModalResult: null
     };
   },
   components: {
     RiseLoader: VueSpinner.RiseLoader,
-    MyModal
+    MyModal,
+    VueClockPicker: VueClockPicker.default
   },
   beforeRouteEnter (to, from, next) {
     getConfig((err, config) => {
@@ -122,12 +131,15 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
+    timeChangeHandler: function () {
+      console.log(arguments);
+    },
     setConfig: function (err, config) {
       if (err) {
         this.error = err.toString();
       } else {
         this.config = config;
-        this.todos = todoStorage.fetch(get(this.config, 'checklist'));
+        this.todos = todoStorage.fetch(get(this.config, 'todos'));
       }
     },
     startNewSession: function () {
@@ -140,9 +152,24 @@ const MyDashboard = Vue.component('my-dashboard', {
           if (result === 'ok') {
             this.loading = true;
             setTimeout(() => {
-              this.todos = mapToTodos(get(this.config, 'checklist'));
+              this.todos = mapToTodos(get(this.config, 'todos'));
               this.loading = false;
             }, 1000);
+          }
+        });
+    },
+    updateReminder: function (todo) {
+      const promise = new Bluebird((resolve) => {
+        this.reminderPickModalResult = resolve;
+      });
+      promise
+        .then(result => {
+          this.reminderPickModalResult = null;
+          if (result === 'ok') {
+            addReminderRpc({
+              todoId: todo.id,
+              sendAt: 1632
+            });
           }
         });
     },
@@ -151,7 +178,7 @@ const MyDashboard = Vue.component('my-dashboard', {
       if (!value) {
         return;
       }
-      addTodoRpc(value, (err, result) => {
+      addTodoRpc({ title: value }, (err, result) => {
         if (!err) {
           this.todos.push({
             id: result.id,

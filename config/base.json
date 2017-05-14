@@ -3,7 +3,7 @@
   "width": 800,
   "height": 600,
   "templates": {
-    "checklist": [
+    "todos": [
       {
         "id": "d63d9233-6cdf-40bb-aacd-61532158e849",
         "title": "Start recording"

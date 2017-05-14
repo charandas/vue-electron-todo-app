@@ -2,7 +2,6 @@ import _notifier from 'node-notifier';
 import moment from 'moment';
 import each from 'lodash/each';
 import remove from 'lodash/remove';
-import find from 'lodash/find';
 
 import uuidV4 from 'uuid/v4';
 
@@ -25,6 +24,8 @@ snoozeMap.set(SNOOZE_1, 60000);
 
 const logger = getLogger({ label: 'notifications' });
 const scheduled = [];
+
+const todosTable = db.sublevel('todos');
 
 function addToScheduled (notification) {
   remove(scheduled, { notificationId: notification.notificationId });
@@ -130,9 +131,8 @@ function scheduleNotification (reminder, message) {
 }
 
 export function scheduleReminder (reminder) {
-  getValue(db, 'checklist')
-    .then(checklist => {
-      const found = find(checklist.todosTemplate, { id: reminder.todoId });
+  getValue(todosTable, reminder.todoId)
+    .then(found => {
       if (found) {
         scheduleNotification(reminder, found.title);
       } else {

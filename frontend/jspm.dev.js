@@ -5,6 +5,9 @@ SystemJS.config({
   meta: {
     '*.js': {
       'babelOptions': {}
+    },
+    '*.vue': {
+      'loader': 'npm:systemjs-plugin-vue@1.2.0'
     }
   }
 });

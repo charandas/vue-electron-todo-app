@@ -1,6 +1,6 @@
 import Bluebird from 'bluebird';
 
-import errors from 'level-errors';
+// import errors from 'level-errors';
 import { getLogger } from './app_ready';
 
 const logger = getLogger({ label: 'db-helpers' });
@@ -19,6 +19,7 @@ function _getValue (db, key) {
 }
 
 function _setValue (db, key, value) {
+  console.log(key, value);
   return new Bluebird((resolve, reject) => {
     db.put(key, value, function (err) {
       if (err) {
@@ -31,11 +32,26 @@ function _setValue (db, key, value) {
   });
 }
 
-export function initializeIfNotSet (db, key, value) {
-  return _getValue(db, key)
-    .catch(errors.NotFoundError, () => {
-      logger.info(`Initializing ${key}`);
-      return _setValue(db, key, value);
+export function getValues (db) {
+  const values = [];
+  return new Bluebird((resolve, reject) => {
+    db.createValueStream()
+    .on('data', function (data) {
+      values.push(data);
+    })
+    .on('end', () => resolve(values))
+    .on('error', reject);
+  });
+}
+
+export function initializeIfNotSet (db, sub, valueArray) {
+  return Bluebird
+    .each(valueArray, value => {
+      return _getValue(db, value.id)
+        .catch(() => { // Bluebird filter facility isn't working for errors.NotFoundError
+          logger.info(`Initializing ${sub}::${value.id}`);
+          return _setValue(db, value.id, value);
+        });
     });
 }
 

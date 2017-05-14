@@ -2,27 +2,26 @@ import Bluebird from 'bluebird';
 import get from 'lodash/get';
 import uuidV4 from 'uuid/v4';
 
-import pl from 'pull-level';
-import pull from 'pull-stream';
-
 import { scheduleReminder, allScheduled } from './notifications';
 import config from './config-lib/index';
 import { database as db } from './app_ready';
-import { setValue, getValue, initializeIfNotSet } from './db-helpers';
+import { setValue, getValues, initializeIfNotSet } from './db-helpers';
 
 const todosTable = db.sublevel('todos');
-// const remindersTable = db.sublevel('reminders');
+const remindersTable = db.sublevel('reminders');
 
 function getConfig () {
   return Bluebird
     .props({
-      checklist: getValue(db, 'checklist'),
-      reminders: getValue(db, 'reminders')
+      todos: getValues(todosTable),
+      reminders: getValues(remindersTable)
     });
 }
 
 const dbInitialized = Bluebird
-  .map(['checklist', 'reminders'], key => initializeIfNotSet(db, key, config.get(`templates:${key}`)));
+  .map(['todos', 'reminders'], sub => {
+    initializeIfNotSet(db.sublevel(sub), sub, config.get(`templates:${sub}`));
+  });
 
 const routes = {
   configure (server) {
@@ -39,24 +38,19 @@ const routes = {
     server.on('add-todo', (req, next) => {
       const value = get(req, 'body.todo');
       const id = uuidV4();
-      pull(
-        pull.values([
-          { key: id, value, type: 'put' }
-          // { key: `~INDEX~${id}`, value: id, type: 'put' }
-        ]),
-        pl.write(todosTable)
-      );
+      value.id = id;
+      return setValue(todosTable, id, value)
+        .return(value)
+        .asCallback(next);
     });
 
-    // server.on('get-todos')
-
     server.on('add-reminder', (req, next) => {
-      getValue(db, 'reminders')
-        .then(reminders => {
-          scheduleReminder(req.body.reminder);
-          reminders.push(req.body.reminder);
-          return setValue(db, 'reminders', reminders).return(reminders);
-        })
+      const value = get(req, 'body.reminder');
+      const id = uuidV4();
+      value.id = id;
+      return setValue(remindersTable, id, value)
+        .return(value)
+        .tap(scheduleReminder)
         .asCallback(next);
     });
   }

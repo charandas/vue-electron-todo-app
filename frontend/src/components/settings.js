@@ -14,7 +14,7 @@ Vue.use(VueFormly.default);
 Vue.use(VueFormlyBootstrap.default);
 
 function todoOptions (config) {
-  return map(get(config, 'checklist.todosTemplate'), todo => ({
+  return map(get(config, 'todos'), todo => ({
     label: todo.title,
     value: todo.id
   }));

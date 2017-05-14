@@ -20,10 +20,6 @@ function todoOptions (config) {
   }));
 }
 
-/* function getReminder (id) {
-  return find(config.get('checklist:reminders'), { id });
-} */
-
 const MySettings = Vue.component('my-settings', {
   render: settingsTpl.render,
   staticRenderFns: settingsTpl.staticRenderFns,
@@ -65,21 +61,10 @@ const MySettings = Vue.component('my-settings', {
     error: null,
     form: {},
     model: {
-      title: '',
       todoId: '',
       sendAt: ''
     }, // getReminder(this.$route.params.id),
     fields: [
-      {
-        key: 'title',
-        type: 'input',
-        templateOptions: {
-          label: 'Remind about',
-          atts: {
-            placeholder: 'Ex: Start/Stop recording'
-          }
-        }
-      },
       {
         key: 'sendAt',
         type: 'input',

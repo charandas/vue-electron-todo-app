@@ -17,7 +17,7 @@ import { mainMenuTemplate } from './menu/main_menu_template';
 import _createWindow from './helpers/window';
 
 import config from './config-lib/index';
-import notifications from './notifications';
+import { scheduleAllReminders } from './notifications';
 import routes from './routes';
 import { getLogger } from './app_ready';
 
@@ -59,7 +59,7 @@ function createWindow () {
   server.configure(mainWindow.webContents);
   routes.configure(server);
 
-  notifications.schedule(mainWindow);
+  scheduleAllReminders(mainWindow);
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({

@@ -3,7 +3,7 @@ import find from 'lodash/find';
 import get from 'lodash/get';
 import Bluebird from 'bluebird';
 
-import { getConfig } from '../utils/rpc-client';
+import { getConfig, addTodo as addTodoRpc } from '../utils/rpc-client';
 import { mapToTodos } from '../utils/todos';
 import dashboardTpl from './dashboard.html!vtc';
 
@@ -22,7 +22,6 @@ var todoStorage = {
   fetch: function (todosTemplate) {
     const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     const todos = fromStorage || mapToTodos(todosTemplate);
-    todoStorage.uid = todos.length;
     return todos;
   },
   save: function (todos) {
@@ -128,7 +127,7 @@ const MyDashboard = Vue.component('my-dashboard', {
         this.error = err.toString();
       } else {
         this.config = config;
-        this.todos = todoStorage.fetch(get(this.config, 'checklist.todosTemplate'));
+        this.todos = todoStorage.fetch(get(this.config, 'checklist'));
       }
     },
     startNewSession: function () {
@@ -141,7 +140,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           if (result === 'ok') {
             this.loading = true;
             setTimeout(() => {
-              this.todos = mapToTodos(get(this.config, 'checklist.todosTemplate'));
+              this.todos = mapToTodos(get(this.config, 'checklist'));
               this.loading = false;
             }, 1000);
           }
@@ -152,10 +151,14 @@ const MyDashboard = Vue.component('my-dashboard', {
       if (!value) {
         return;
       }
-      this.todos.push({
-        id: todoStorage.uid++,
-        title: value,
-        completed: false
+      addTodoRpc(value, (err, result) => {
+        if (!err) {
+          this.todos.push({
+            id: result.id,
+            title: value,
+            completed: false
+          });
+        }
       });
       this.newTodo = '';
     },

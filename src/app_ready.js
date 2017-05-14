@@ -2,6 +2,7 @@ import { app } from 'electron';
 import jetpack from 'fs-jetpack';
 import levelup from 'levelup';
 import path from 'path';
+import sublevel from 'level-sublevel';
 
 import _getLogger from './logger/index';
 import config from './config-lib/index';
@@ -18,6 +19,8 @@ jetpack.dir(appPath);
 export function getLogger (options = {}) {
   return _getLogger(Object.assign({}, options, { appPath }));
 }
-export var database = levelup(path.resolve(appPath, 'techeast_db'), {
+
+const _database = levelup(path.resolve(appPath, 'techeast_db'), {
   valueEncoding: 'json'
 });
+export const database = sublevel(_database);

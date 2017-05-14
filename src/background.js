@@ -8,8 +8,6 @@ import { app, Menu } from 'electron';
 import contextMenu from 'electron-context-menu';
 import Server from 'electron-rpc/server';
 
-import menubar from 'menubar';
-
 import { devMenuTemplate } from './menu/dev_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
 import { mainMenuTemplate } from './menu/main_menu_template';
@@ -22,14 +20,11 @@ import routes from './routes';
 import { getLogger } from './app_ready';
 
 const APP_PATH = 'frontend/index.html';
-const MENUBAR_APP_DIR = 'frontend/menubar';
 const runningEnv = config.get('env');
 
 var LOAD_URL = path.join(__dirname, '..', '..', APP_PATH);
-var MENUBAR_LOAD_DIR = path.join(__dirname, '..', '..', MENUBAR_APP_DIR);
 if (runningEnv === 'development') {
   LOAD_URL = path.join(__dirname, '..', APP_PATH);
-  MENUBAR_LOAD_DIR = path.join(__dirname, '..', MENUBAR_APP_DIR);
 }
 
 const server = new Server();
@@ -91,34 +86,12 @@ if (runningEnv !== 'development') {
   });
 }
 
-let menuCanQuit = false;
-const menu = menubar({
-  dir: MENUBAR_LOAD_DIR,
-  showDockIcon: false
-});
-
-function quitMenu () {
-  menuCanQuit = true;
-  menu.app.quit();
-}
-
-menu.on('ready', function ready () {
-  menu.app.on('will-quit', function tryQuit (e) {
-    if (menuCanQuit) {
-      return true;
-    }
-    menu.window = undefined;
-    e.preventDefault();
-  });
-});
-
 process.on('uncaughtException', err => {
   logger.error('Uncaught exception:', err.message, err.stack || '');
-  quitMenu();
+  app.quit();
 });
 
 app.on('window-all-closed', () => {
-  quitMenu();
   app.quit();
 });
 
@@ -126,7 +99,6 @@ app.on('ready', () => {
   let mainWindow = createWindow();
 
   mainWindow.on('closed', () => {
-    quitMenu();
     mainWindow = undefined;
   });
 });

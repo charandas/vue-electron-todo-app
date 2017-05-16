@@ -19,7 +19,6 @@ function _getValue (db, key) {
 }
 
 function _setValue (db, key, value) {
-  console.log(key, value);
   return new Bluebird((resolve, reject) => {
     db.put(key, value, function (err) {
       if (err) {

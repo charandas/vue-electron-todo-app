@@ -24,7 +24,7 @@ SystemJS.config({
     }
   },
   map: {
-    'vtc': 'gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1'
+    'mrman/systemjs-plugin-vue-template-compiler': 'gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1'
   }
 });
 
@@ -44,7 +44,6 @@ SystemJS.config({
     'punycode': 'npm:jspm-nodelibs-punycode@0.2.1',
     'systemjs-plugin-vue': 'npm:systemjs-plugin-vue@1.2.0',
     'mdi': 'npm:mdi@1.9.33',
-    'mrman/systemjs-plugin-vue-template-compiler': 'gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1',
     'assert': 'npm:jspm-nodelibs-assert@0.2.1',
     'axios': 'npm:axios@0.15.3',
     'bluebird': 'npm:bluebird@3.5.0',
@@ -67,16 +66,22 @@ SystemJS.config({
     'url': 'npm:jspm-nodelibs-url@0.2.1',
     'util': 'npm:jspm-nodelibs-util@0.2.2',
     'vm': 'npm:jspm-nodelibs-vm@0.2.1',
+    'vtc': 'gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1',
     'vue': 'npm:vue@2.3.3',
-    'vue-clock-picker': 'npm:vue-clock-picker@0.4.2',
-    'vue-formly': 'npm:vue-formly@2.3.3',
-    'vue-formly-bootstrap': 'npm:vue-formly-bootstrap@2.2.3',
+    'vue-clock-picker': 'github:charandas/vue-clock-picker@0.4.3',
+    'vue-formly': 'npm:vue-formly@2.3.5',
+    'vue-formly-bootstrap': 'npm:vue-formly-bootstrap@2.2.4',
     'vue-hot-reload-api': 'npm:vue-hot-reload-api@2.1.0',
     'vue-router': 'npm:vue-router@2.5.3',
     'vue-spinner': 'npm:vue-spinner@1.0.2',
     'zlib': 'npm:jspm-nodelibs-zlib@0.2.3'
   },
   packages: {
+    'github:charandas/vue-clock-picker@0.4.3': {
+      'meta': {
+        'vue': 'npm:vue@2.3.3'
+      }
+    },
     'gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1': {
       'map': {
         'vue-template-compiler': 'npm:vue-template-compiler@2.3.3'
@@ -291,11 +296,6 @@ SystemJS.config({
         'buffer': 'npm:buffer@5.0.6'
       }
     },
-    'npm:vue-formly@2.3.3': {
-      'map': {
-        'babel-runtime': 'npm:babel-runtime@6.23.0'
-      }
-    },
     'npm:buffer@5.0.6': {
       'map': {
         'ieee754': 'npm:ieee754@1.1.8',
@@ -343,11 +343,6 @@ SystemJS.config({
         'hash.js': 'npm:hash.js@1.0.3',
         'minimalistic-assert': 'npm:minimalistic-assert@1.0.0',
         'minimalistic-crypto-utils': 'npm:minimalistic-crypto-utils@1.0.1'
-      }
-    },
-    'npm:vue-clock-picker@0.4.2': {
-      'map': {
-        'vue': 'npm:vue@2.3.3'
       }
     },
     'npm:systemjs-plugin-vue@1.2.0': {
@@ -602,7 +597,7 @@ SystemJS.config({
         'browserslist': 'npm:browserslist@1.7.7',
         'num2fraction': 'npm:num2fraction@1.2.2',
         'normalize-range': 'npm:normalize-range@0.1.2',
-        'caniuse-db': 'npm:caniuse-db@1.0.30000669'
+        'caniuse-db': 'npm:caniuse-db@1.0.30000670'
       }
     },
     'npm:has@1.0.1': {
@@ -622,7 +617,7 @@ SystemJS.config({
         'browserslist': 'npm:browserslist@1.7.7',
         'lodash.memoize': 'npm:lodash.memoize@4.1.2',
         'lodash.uniq': 'npm:lodash.uniq@4.5.0',
-        'caniuse-db': 'npm:caniuse-db@1.0.30000669'
+        'caniuse-db': 'npm:caniuse-db@1.0.30000670'
       }
     },
     'npm:normalize-url@1.9.1': {
@@ -663,7 +658,7 @@ SystemJS.config({
     'npm:browserslist@1.7.7': {
       'map': {
         'electron-to-chromium': 'npm:electron-to-chromium@1.3.10',
-        'caniuse-db': 'npm:caniuse-db@1.0.30000669'
+        'caniuse-db': 'npm:caniuse-db@1.0.30000670'
       }
     },
     'npm:query-string@4.3.4': {
@@ -793,6 +788,11 @@ SystemJS.config({
     'npm:jspm-nodelibs-domain@0.2.1': {
       'map': {
         'domain-browser': 'npm:domain-browser@1.1.7'
+      }
+    },
+    'npm:vue-formly@2.3.5': {
+      'map': {
+        'babel-runtime': 'npm:babel-runtime@6.23.0'
       }
     }
   }

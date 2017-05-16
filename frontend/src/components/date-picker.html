@@ -1,0 +1,14 @@
+<my-modal>
+  <h3 slot="header">Please pick your desired reminder for {{todo.title}}</h3>
+  <div slot="body">
+    <button class="modal-cancel-button" @click="result(settingReminderTime)">
+      Cancel
+    </button>
+    <button class="modal-default-button" @click="result(settingReminderTime)">
+      OK
+    </button>
+  </div>
+  <div slot="footer">
+    <vue-clock-picker mode="24" :defaultHour="defaultHour" :defaultMinute="defaultMinute" :defaultFocused="true" :onTimeChange="timeChangeHandler"></vue-clock-picker>
+  </div>
+</my-modal>

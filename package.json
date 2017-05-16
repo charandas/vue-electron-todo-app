@@ -110,12 +110,12 @@
       "mdi": "npm:mdi@^1.9.33",
       "systemjs-plugin-vue": "npm:systemjs-plugin-vue@^1.2.0",
       "text": "github:systemjs/plugin-text@^0.0.9",
-      "vue-clock-picker": "npm:vue-clock-picker@^0.4.2",
+      "vtc": "gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1",
+      "vue-clock-picker": "github:charandas/vue-clock-picker@^0.4.3",
       "vue-formly-bootstrap": "npm:vue-formly-bootstrap@^2.2.3",
       "vue-hot-reload-api": "npm:vue-hot-reload-api@^2.1.0",
       "vue-router": "npm:vue-router@^2.5.2",
-      "vue-spinner": "npm:vue-spinner@^1.0.2",
-      "mrman/systemjs-plugin-vue-template-compiler": "gitlab:mrman/systemjs-plugin-vue-template-compiler@^2.2.1"
+      "vue-spinner": "npm:vue-spinner@^1.0.2"
     },
     "devDependencies": {
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.21"
@@ -148,8 +148,15 @@
       "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
     },
     "overrides": {
-      "npm:vue-clock-picker@0.4.2": {
-        "defaultExtension": "vue"
+      "github:charandas/vue-clock-picker@0.4.3": {
+        "defaultExtension": "vue",
+        "meta": {
+          "*": {
+            "deps": [
+              "vue"
+            ]
+          }
+        }
       },
       "npm:esprima@2.7.3": {
         "jspmNodeConversion": false
@@ -210,9 +217,6 @@
           }
         }
       },
-      "npm:vue-formly@2.3.3": {
-        "format": "cjs"
-      },
       "npm:debug@2.6.6": {
         "main": "src/browser.js",
         "jspmNodeConversion": false,
@@ -232,6 +236,9 @@
       },
       "npm:ms@0.7.3": {
         "jspmNodeConversion": false,
+        "format": "cjs"
+      },
+      "npm:vue-formly@2.3.5": {
         "format": "cjs"
       },
       "npm:vue-router@2.5.3": {
@@ -281,4 +288,4 @@
       }
     }
   }
-}
+}

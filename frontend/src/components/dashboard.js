@@ -1,23 +1,22 @@
 import Vue from 'vue';
-import VueClockPicker from 'vue-clock-picker';
 import VueSpinner from 'vue-spinner';
 import find from 'lodash/find';
 import get from 'lodash/get';
+import map from 'lodash/map';
 import Bluebird from 'bluebird';
 
-import {
-  getConfig,
-  addTodo as addTodoRpc,
-  addReminder as addReminderRpc
-} from '../utils/rpc-client';
+import rpcClient from '../utils/rpc-client';
 import { mapToTodos } from '../utils/todos';
 import dashboardTpl from './dashboard.html!vtc';
 
+import MyDatePicker from './date-picker';
 import MyModal from './modal';
 
 import './styles.css!css';
 
 // TODO: restore routing pre-router
+
+Bluebird.promisifyAll(rpcClient);
 
 const { ipcRenderer } = System._nodeRequire('electron');
 
@@ -57,13 +56,13 @@ const MyDashboard = Vue.component('my-dashboard', {
   staticRenderFns: dashboardTpl.staticRenderFns,
   data () {
     return {
-      defaultHour: new Date().getHours(),
-      defaultMinute: new Date().getMinutes(),
       todos: [],
       error: null,
       eventDate: new Date().toDateString(),
       loading: false,
       newTodo: '',
+      settingReminderForTodo: null,
+      existingReminderForTodo: null,
       editedTodo: null,
       newSessionModalResult: null,
       reminderPickModalResult: null
@@ -72,10 +71,10 @@ const MyDashboard = Vue.component('my-dashboard', {
   components: {
     RiseLoader: VueSpinner.RiseLoader,
     MyModal,
-    VueClockPicker: VueClockPicker.default
+    MyDatePicker
   },
   beforeRouteEnter (to, from, next) {
-    getConfig((err, config) => {
+    rpcClient.getConfig((err, config) => {
       next(vm => vm.setConfig(err, config));
     });
   },
@@ -131,9 +130,6 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
-    timeChangeHandler: function () {
-      console.log(arguments);
-    },
     setConfig: function (err, config) {
       if (err) {
         this.error = err.toString();
@@ -159,18 +155,34 @@ const MyDashboard = Vue.component('my-dashboard', {
         });
     },
     updateReminder: function (todo) {
+      // TODO: fix the issue where on cancel the time is not showing from sendAt
+      this.settingReminderForTodo = todo;
+      this.existingReminderForTodo = find(this.config.reminders, { todoId: todo.id });
       const promise = new Bluebird((resolve) => {
         this.reminderPickModalResult = resolve;
       });
       promise
         .then(result => {
           this.reminderPickModalResult = null;
-          if (result === 'ok') {
-            addReminderRpc({
+          if (result !== 'cancel') {
+            this.loading = true;
+            return rpcClient.addReminderAsync({
               todoId: todo.id,
-              sendAt: 1632
+              sendAt: result
             });
           }
+        })
+        .then(savedReminder => {
+          this.config.reminders = map(this.config.reminders, reminder => {
+            if (reminder.todoId === todo.id) {
+              return savedReminder;
+            }
+            return reminder;
+          });
+        })
+        .finally(() => {
+          this.loading = false;
+          this.settingReminderForTodo = null;
         });
     },
     addTodo: function () {
@@ -178,7 +190,7 @@ const MyDashboard = Vue.component('my-dashboard', {
       if (!value) {
         return;
       }
-      addTodoRpc({ title: value }, (err, result) => {
+      rpcClient.addTodo({ title: value }, (err, result) => {
         if (!err) {
           this.todos.push({
             id: result.id,

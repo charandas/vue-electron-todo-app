@@ -12,10 +12,13 @@
   <div class="loader" :class="{ loading: loading }">
     <rise-loader class="spinner" :loading="loading" :size="'24px'"></rise-loader>
   </div>
-  <modal v-if="newSessionModalResult" :result="newSessionModalResult">
+  <my-modal v-if="newSessionModalResult" :result="newSessionModalResult">
     <h3 slot="header">Reset Checklist Session</h3>
     <h4 slot="body">Please confirm your choice</h4>
-  </modal>
+  </my-modal>
+  <my-date-picker v-if="reminderPickModalResult" :result="reminderPickModalResult" :todo="settingReminderForTodo" :reminder="existingReminderForTodo" >
+  </my-date-picker>
+
   <section class="main" v-show="todos.length">
     <input class="toggle-all" type="checkbox" v-model="allDone">
     <ul class="todo-list">
@@ -23,20 +26,6 @@
         class="todo"
         :key="todo.id"
         :class="{ completed: todo.completed, editing: todo == editedTodo }">
-        <modal v-if="reminderPickModalResult" :result="reminderPickModalResult" :todo="todo">
-          <h3 slot="header">Please pick your desired reminder for {{ todo.title }}</h3>
-          <div slot="body">
-            <button class="modal-cancel-button" @click="reminderPickModalResult('cancel')">
-              Cancel
-            </button>
-            <button class="modal-default-button" @click="reminderPickModalResult('ok')">
-              OK
-            </button>
-          </div>
-          <div slot="footer">
-            <vue-clock-picker mode="24" :defaultHour="defaultHour" :defaultMinute="defaultMinute" :onTimeChange="timeChangeHandler"></vue-clock-picker>
-          </div>
-        </modal>
         <div class="view">
           <input class="toggle" type="checkbox" v-model="todo.completed">
           <label @dblclick="editTodo(todo)">{{ todo.title }}</label>

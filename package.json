@@ -110,6 +110,7 @@
       "mdi": "npm:mdi@^1.9.33",
       "systemjs-plugin-vue": "npm:systemjs-plugin-vue@^1.2.0",
       "text": "github:systemjs/plugin-text@^0.0.9",
+      "v-tooltip": "npm:v-tooltip@^2.0.0-beta.4",
       "vtc": "gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1",
       "vue-clock-picker": "github:charandas/vue-clock-picker@^0.4.3",
       "vue-formly-bootstrap": "npm:vue-formly-bootstrap@^2.2.3",
@@ -148,7 +149,7 @@
       "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
     },
     "overrides": {
-      "github:charandas/vue-clock-picker@0.4.3": {
+      "github:charandas/vue-clock-picker@0.4.4": {
         "defaultExtension": "vue",
         "meta": {
           "*": {
@@ -288,4 +289,4 @@
       }
     }
   }
-}
+}

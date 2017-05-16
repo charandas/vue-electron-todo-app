@@ -2,10 +2,10 @@ import Bluebird from 'bluebird';
 import get from 'lodash/get';
 import uuidV4 from 'uuid/v4';
 
-import { scheduleReminder, allScheduled } from './notifications';
+import { scheduleReminder, unscheduleReminder, allScheduled } from './notifications';
 import config from './config-lib/index';
 import { database as db } from './app_ready';
-import { setValue, getValues, initializeIfNotSet } from './db-helpers';
+import { setValue, deleteValue, getValues, initializeIfNotSet } from './db-helpers';
 
 const todosTable = db.sublevel('todos');
 const remindersTable = db.sublevel('reminders');
@@ -44,10 +44,27 @@ const routes = {
         .asCallback(next);
     });
 
+    server.on('edit-todo', (req, next) => {
+      const value = get(req, 'body.todo');
+      return setValue(todosTable, value.id, value)
+        .return(value)
+        .asCallback(next);
+    });
+
+    server.on('remove-todo', (req, next) => {
+      const value = get(req, 'body.todo');
+      const id = value.id;
+      return Bluebird
+        .resolve(value)
+        .then(unscheduleReminder)
+        .then(() => {
+          return Bluebird.all([ deleteValue(todosTable, id), deleteValue(remindersTable, id) ]);
+        });
+    });
+
     server.on('add-reminder', (req, next) => {
       const value = get(req, 'body.reminder');
-      const id = uuidV4();
-      value.id = id;
+      const id = value.todoId;
       return setValue(remindersTable, id, value)
         .return(value)
         .tap(scheduleReminder)

@@ -2,14 +2,12 @@ import _notifier from 'node-notifier';
 import moment from 'moment';
 import each from 'lodash/each';
 import remove from 'lodash/remove';
-
-import uuidV4 from 'uuid/v4';
+import find from 'lodash/find';
 
 // Set by the schedule function
 let mainWindow;
 
 import { getLogger, database as db } from './app_ready';
-import config from './config-lib/index';
 import { getValue, getValues } from './db-helpers';
 
 const SNOOZE_5 = '5m';
@@ -28,22 +26,35 @@ const scheduled = [];
 const todosTable = db.sublevel('todos');
 const remindersTable = db.sublevel('reminders');
 
-function addToScheduled (notification) {
-  remove(scheduled, { notificationId: notification.notificationId });
-  // this updates the humanized future time in case of a resnooze
-  scheduled.push(notification);
+function unscheduleNotification (notification) {
+  const removed = remove(scheduled, { todoId: notification.todoId });
+  if (removed.length && removed[0].timeoutID) {
+    clearTimeout(removed[0].timeoutID);
+  }
 }
 
-function removeFromScheduled (notificationId) {
-  remove(scheduled, { notificationId });
+function addToScheduled (notification) {
+  unscheduleNotification(notification);
+
+  // this updates the humanized future time in case of a resnooze
+  scheduled.push({
+    futureTime: notification.futureTime,
+    todoId: notification.todoId,
+    message: notification.message,
+    timeoutID: notification.timeoutID
+  });
+}
+
+// assumes the caller calls this after the timeout occurs
+function removeFromScheduled (todoId) {
+  remove(scheduled, { todoId });
 }
 
 const notifier = new _notifier.NotificationCenter({
   withFallback: false
 });
 
-function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', dropdownLabel, channelName, retryFn, todoId, notificationId }) {
-  // ['message', 'futureTime', 'todoId', 'notificationId']
+function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', dropdownLabel, channelName, retryFn, todoId }) {
   const options = arguments[0];
   const settings = {
     'title': 'Tech Host Assistant',
@@ -74,24 +85,18 @@ function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', 
         mainWindow.webContents.send(channelName, metadata.activationValue);
       } else if (channelName === 'checkOffTodo') {
         if (metadata.activationValue === 'Done') {
-          if (notificationId) {
-            removeFromScheduled(notificationId);
-          }
+          removeFromScheduled(todoId);
           mainWindow.webContents.send(channelName, todoId);
         } else if (retryFn) {
           let snoozedMs;
           if ((snoozedMs = snoozeMap.get(metadata.activationValue))) {
             addToScheduled(Object.assign(options, {
-              futureTime: moment().add(snoozedMs, 'milliseconds').format()
+              futureTime: moment().add(snoozedMs, 'milliseconds').format(),
+              timeoutID: setTimeout(retryFn, snoozedMs)
             }));
-            setTimeout(retryFn, snoozedMs);
           } else if (metadata.activationType === 'timeout') {
-            snoozedMs = snoozeMap.get(SNOOZE_1);
-            // We timedout, remind in 1 minute
-            addToScheduled(Object.assign(options, {
-              futureTime: moment().add(snoozedMs, 'milliseconds').format()
-            }));
-            setTimeout(retryFn, snoozedMs);
+            // Push the notification again
+            retryFn();
           }
         }
       }
@@ -101,7 +106,6 @@ function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', 
 
 function scheduleNotification (reminder, message) {
   const millis = moment(reminder.sendAt, 'hmm').subtract(moment().valueOf(), 'ms');
-  const notificationId = uuidV4();
   const args = {
     message,
     reply: true,
@@ -109,30 +113,25 @@ function scheduleNotification (reminder, message) {
     actions: [SNOOZE_5, SNOOZE_2, SNOOZE_1],
     closeLabel: 'Done',
     channelName: 'checkOffTodo',
-    todoId: reminder.todoId,
-    notificationId
+    todoId: reminder.todoId
   };
   // const humanized = moment.duration(millis.valueOf(), 'milliseconds').humanize();
-  if (millis.valueOf() < 0) {
-    // TODO: We are late, lets just notify right away, without retry
-    // Its displaying only the first late notification
-    // _notify(args);
-  } else {
+  if (millis.valueOf() > 0) { // this is, its in the future
     logger.verbose(`Scheduled ${reminder.title}`);
     // _notify({ message: `Scheduled "${reminder.title}"  in ${humanized} from now` });
     addToScheduled(Object.assign(args, {
-      futureTime: moment(reminder.sendAt, 'hmm').format()
+      futureTime: moment(reminder.sendAt, 'hmm').format(),
+      timeoutID: setTimeout(() => {
+        const retryFn = _notify.bind(null, args);
+        _notify(Object.assign(args, { retryFn }));
+        removeFromScheduled(reminder.todoId);
+      }, millis)
     }));
-    setTimeout(() => {
-      const retryFn = _notify.bind(null, args);
-      _notify(Object.assign(args, { retryFn }));
-      removeFromScheduled(notificationId);
-    }, millis);
   }
 }
 
 export function scheduleReminder (reminder) {
-  getValue(todosTable, reminder.todoId)
+  return getValue(todosTable, reminder.todoId)
     .then(found => {
       if (found) {
         scheduleNotification(reminder, found.title);
@@ -140,6 +139,18 @@ export function scheduleReminder (reminder) {
         logger.info('Refusing to schedule reminder for unfound todo', reminder.todoId);
       }
     });
+}
+
+export function unscheduleReminder (todo) {
+  logger.info(`Removing reminder for todo: ${todo}`);
+  return getValue(todosTable, todo.id)
+    .then(found => {
+      if (found) {
+        const notification = find(scheduled, { todoId: todo.id });
+        unscheduleNotification(notification);
+      }
+    })
+    .return(true);
 }
 
 export function scheduleAllReminders (_mainWindow) {

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VTooltip from 'v-tooltip';
 
 import 'mdi/css/materialdesignicons.css!css';
 
@@ -9,6 +10,7 @@ import MyDashboard from './components/dashboard';
 import MySettings from './components/settings';
 
 Vue.use(VueRouter);
+Vue.use(VTooltip);
 
 const routes = [
   {

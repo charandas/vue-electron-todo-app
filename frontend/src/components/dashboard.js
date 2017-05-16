@@ -73,6 +73,7 @@ const MyDashboard = Vue.component('my-dashboard', {
   },
   beforeRouteEnter (to, from, next) {
     rpcClient.getConfig((err, config) => {
+      console.log(config);
       next(vm => vm.setConfig(err, config));
     });
   },
@@ -151,22 +152,25 @@ const MyDashboard = Vue.component('my-dashboard', {
           }
         });
     },
-    updateReminder: function (todo) {
-      // TODO: fix the issue where on cancel the time is not showing from sendAt
+    addOrUpdateReminderMessaging: function (todo) {
+      return find(this.config.reminders, { todoId: todo.id });
+    },
+    addOrUpdateReminder: function (todo) {
       this.settingReminderForTodo = todo;
-      this.existingReminderForTodo = find(this.config.reminders, { todoId: todo.id });
+      this.existingReminderForTodo = find(this.config.reminders, { todoId: todo.id }) || { sendAt: null };
       const promise = new Bluebird((resolve) => {
         this.reminderPickModalResult = resolve;
       });
       promise
         .then(result => {
           this.reminderPickModalResult = null;
-          if (result !== 'cancel') {
+          if (result && result !== 'cancel') {
             this.loading = true;
-            return rpcClient.addReminderAsync({
+            return rpcClient.addOrUpdateReminderAsync({
               todoId: todo.id,
               sendAt: result
-            });
+            })
+            .delay(1000);
           }
 
           return this.existingReminderForTodo;
@@ -193,20 +197,28 @@ const MyDashboard = Vue.component('my-dashboard', {
       if (!value) {
         return;
       }
-      rpcClient.addTodo({ title: value }, (err, result) => {
-        if (!err) {
+      this.loading = true;
+      rpcClient
+        .addTodoAsync({ title: value })
+        .delay(1000)
+        .then(result => {
           this.todos.push({
             id: result.id,
             title: value,
             completed: false
           });
-        }
-      });
-      this.newTodo = '';
+          this.loading = false;
+        })
+        .finally(() => {
+          this.newTodo = '';
+        });
     },
 
     removeTodo: function (todo) {
-      this.todos.splice(this.todos.indexOf(todo), 1);
+      const removed = this.todos.splice(this.todos.indexOf(todo), 1);
+      if (removed) {
+        rpcClient.removeTodoAsync(todo);
+      }
     },
 
     editTodo: function (todo) {
@@ -220,6 +232,10 @@ const MyDashboard = Vue.component('my-dashboard', {
       }
       this.editedTodo = null;
       todo.title = todo.title.trim();
+
+      // ADD loading around this
+      rpcClient.editTodoAsync({ title: todo.title, id: todo.id });
+
       if (!todo.title) {
         this.removeTodo(todo);
       }

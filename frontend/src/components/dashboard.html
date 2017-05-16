@@ -29,8 +29,9 @@
         <div class="view">
           <input class="toggle" type="checkbox" v-model="todo.completed">
           <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-          <button class="new-session" @click="updateReminder(todo)"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
-          <button class="destroy" @click="removeTodo(todo)"></button>
+          <button v-tooltip.left-start="addOrUpdateReminderMessaging(todo) ? 'Update reminder' : 'Add reminder'"
+           class="remind" @click="addOrUpdateReminder(todo)"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
+          <button v-if="!todo.system" class="destroy" @click="removeTodo(todo)"></button>
         </div>
         <input class="edit" type="text"
           v-model="todo.title"

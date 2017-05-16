@@ -11,6 +11,7 @@ const MyDatePicker = Vue.component('my-date-picker', {
   props: ['result', 'todo', 'reminder'],
   data () {
     return {
+      defaultFocused: true,
       settingReminderTime: null
     };
   },
@@ -33,6 +34,9 @@ const MyDatePicker = Vue.component('my-date-picker', {
     MyModal
   },
   methods: {
+    focusChangeHandler: function () {
+      console.log(arguments);
+    },
     timeChangeHandler: function (time) {
       const hours = padStart(time.hour, 2, '0');
       const minutes = padStart(time.minute, 2, '0');

@@ -5,7 +5,7 @@ function getConfig (cb) {
   client.request('get-config', cb);
 }
 
-function addReminder (reminder, cb) {
+function addOrUpdateReminder (reminder, cb) {
   client.request('add-reminder', { reminder }, cb);
 }
 
@@ -13,8 +13,18 @@ function addTodo (todo, cb) {
   client.request('add-todo', { todo }, cb);
 }
 
+function editTodo (todo, cb) {
+  client.request('add-todo', { todo }, cb);
+}
+
+function removeTodo (todo, cb) {
+  client.request('remove-todo', { todo }, cb);
+}
+
 export default {
   getConfig,
-  addReminder,
-  addTodo
+  addOrUpdateReminder,
+  addTodo,
+  removeTodo,
+  editTodo
 };

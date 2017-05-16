@@ -49,9 +49,15 @@ export function initializeIfNotSet (db, sub, valueArray) {
       return _getValue(db, value.id)
         .catch(() => { // Bluebird filter facility isn't working for errors.NotFoundError
           logger.info(`Initializing ${sub}::${value.id}`);
-          return _setValue(db, value.id, value);
+          return _setValue(db, value.id, Object.assign(value, { system: true }));
         });
     });
+}
+
+export function deleteValue (db, key) {
+  return Bluebird
+    .fromCallback(db.del.bind(db, key, { sync: true }))
+    .catch(() => {}); // suppress delete errors
 }
 
 export const setValue = _setValue;

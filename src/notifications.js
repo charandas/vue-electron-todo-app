@@ -10,7 +10,7 @@ let mainWindow;
 
 import { getLogger, database as db } from './app_ready';
 import config from './config-lib/index';
-import { getValue } from './db-helpers';
+import { getValue, getValues } from './db-helpers';
 
 const SNOOZE_5 = '5m';
 const SNOOZE_2 = '2m';
@@ -26,6 +26,7 @@ const logger = getLogger({ label: 'notifications' });
 const scheduled = [];
 
 const todosTable = db.sublevel('todos');
+const remindersTable = db.sublevel('reminders');
 
 function addToScheduled (notification) {
   remove(scheduled, { notificationId: notification.notificationId });
@@ -81,14 +82,14 @@ function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', 
           let snoozedMs;
           if ((snoozedMs = snoozeMap.get(metadata.activationValue))) {
             addToScheduled(Object.assign(options, {
-              futureTime: moment().add(snoozedMs, 'milliseconds')
+              futureTime: moment().add(snoozedMs, 'milliseconds').format()
             }));
             setTimeout(retryFn, snoozedMs);
           } else if (metadata.activationType === 'timeout') {
             snoozedMs = snoozeMap.get(SNOOZE_1);
             // We timedout, remind in 1 minute
             addToScheduled(Object.assign(options, {
-              futureTime: moment().add(snoozedMs, 'milliseconds')
+              futureTime: moment().add(snoozedMs, 'milliseconds').format()
             }));
             setTimeout(retryFn, snoozedMs);
           }
@@ -120,7 +121,7 @@ function scheduleNotification (reminder, message) {
     logger.verbose(`Scheduled ${reminder.title}`);
     // _notify({ message: `Scheduled "${reminder.title}"  in ${humanized} from now` });
     addToScheduled(Object.assign(args, {
-      futureTime: moment().add(millis.milliseconds(), 'milliseconds')
+      futureTime: moment(reminder.sendAt, 'hmm').format()
     }));
     setTimeout(() => {
       const retryFn = _notify.bind(null, args);
@@ -143,7 +144,10 @@ export function scheduleReminder (reminder) {
 
 export function scheduleAllReminders (_mainWindow) {
   mainWindow = _mainWindow;
-  each(config.get('reminders'), scheduleReminder);
+  getValues(remindersTable)
+    .then(reminders => {
+      each(reminders, scheduleReminder);
+    });
 }
 
 export const allScheduled = scheduled;

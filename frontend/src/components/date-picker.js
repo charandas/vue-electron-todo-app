@@ -17,15 +17,15 @@ const MyDatePicker = Vue.component('my-date-picker', {
   computed: {
     defaultHour: function () {
       if (isNull(get(this.reminder, 'sendAt'))) {
-        return '12';
+        return 12;
       }
-      return this.reminder.sendAt.toString().slice(0, 2);
+      return parseInt(this.reminder.sendAt.toString().slice(0, 2));
     },
     defaultMinute: function () {
       if (isNull(get(this.reminder, 'sendAt'))) {
-        return '0';
+        return 0;
       }
-      return this.reminder.sendAt.toString().slice(2, 4);
+      return parseInt(this.reminder.sendAt.toString().slice(2, 4));
     }
   },
   components: {
@@ -36,7 +36,6 @@ const MyDatePicker = Vue.component('my-date-picker', {
     timeChangeHandler: function (time) {
       const hours = padStart(time.hour, 2, '0');
       const minutes = padStart(time.minute, 2, '0');
-      // TODO: eradicate extra zeroes on the way back
       this.settingReminderTime = `${hours}${minutes}`;
     }
   },

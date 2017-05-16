@@ -6,7 +6,7 @@ function getConfig (cb) {
 }
 
 function addReminder (reminder, cb) {
-  return client.request('add-reminder', { reminder }, cb);
+  client.request('add-reminder', { reminder }, cb);
 }
 
 function addTodo (todo, cb) {

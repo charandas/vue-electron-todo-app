@@ -1,7 +1,7 @@
 <my-modal>
   <h3 slot="header">Please pick your desired reminder for {{todo.title}}</h3>
   <div slot="body">
-    <button class="modal-cancel-button" @click="result(settingReminderTime)">
+    <button class="modal-cancel-button" @click="result('cancel')">
       Cancel
     </button>
     <button class="modal-default-button" @click="result(settingReminderTime)">

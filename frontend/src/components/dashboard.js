@@ -14,8 +14,6 @@ import MyModal from './modal';
 
 import './styles.css!css';
 
-// TODO: restore routing pre-router
-
 Bluebird.promisifyAll(rpcClient);
 
 const { ipcRenderer } = System._nodeRequire('electron');
@@ -80,7 +78,6 @@ const MyDashboard = Vue.component('my-dashboard', {
   },
   created: function () {
     ipcRenderer.on('checkOffTodo', (event, todoId) => {
-      console.log(todoId);
       if (todoId) {
         const found = find(this.todos, { id: todoId });
         if (found) {
@@ -171,8 +168,14 @@ const MyDashboard = Vue.component('my-dashboard', {
               sendAt: result
             });
           }
+
+          return this.existingReminderForTodo;
         })
         .then(savedReminder => {
+          if (savedReminder === this.existingReminderForTodo) {
+            // no change happened
+            return;
+          }
           this.config.reminders = map(this.config.reminders, reminder => {
             if (reminder.todoId === todo.id) {
               return savedReminder;

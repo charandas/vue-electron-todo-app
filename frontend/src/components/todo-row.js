@@ -13,7 +13,7 @@ const MyTodoRow = Vue.component('my-todo-row', {
   data () {
     return {
       reminder: find(this.config.reminders, { todoId: this.todo.id }) || { sendAt: null },
-      editedTodo: null,
+      editing: false,
       reminderPickModalResult: null
     };
   },
@@ -23,7 +23,7 @@ const MyTodoRow = Vue.component('my-todo-row', {
   computed: {
     reminderMessaging: {
       get: function () {
-        return this.reminder ? 'Update reminder' : 'Add reminder';
+        return this.reminder.sendAt ? 'Update reminder' : 'Add reminder';
       },
       set: function (newReminder) {
         this.reminder = newReminder;
@@ -57,14 +57,14 @@ const MyTodoRow = Vue.component('my-todo-row', {
 
     editTodo: function () {
       this.beforeEditCache = this.todo.title;
-      this.editedTodo = this.todo;
+      this.editing = true;
     },
 
     doneEdit: function () {
-      if (!this.editedTodo) {
+      if (!this.editing) {
         return;
       }
-      this.editedTodo = null;
+      this.editing = false;
       this.todo.title = this.todo.title.trim();
 
       // ADD loading around this
@@ -76,7 +76,7 @@ const MyTodoRow = Vue.component('my-todo-row', {
     },
 
     cancelEdit: function () {
-      this.editedTodo = null;
+      this.editing = false;
       this.todo.title = this.beforeEditCache;
     }
   },

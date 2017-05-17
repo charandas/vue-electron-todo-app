@@ -1,5 +1,5 @@
 <div>
-  <div class="view">
+  <div class="view" :class=" {'hide-view': editing} ">
     <input class="toggle" type="checkbox" v-model="todo.completed">
     <label @dblclick="editTodo()">{{ todo.title }}</label>
     <button v-tooltip.left-start="reminderMessaging"
@@ -8,9 +8,9 @@
   </div>
   <my-date-picker v-if="reminderPickModalResult" :result="reminderPickModalResult" :todo="todo" :reminder="reminder" >
   </my-date-picker>
-  <input class="edit" type="text"
+  <input class="edit" :class=" {editing: editing} " type="text"
     v-model="todo.title"
-    v-todo-focus="todo == editedTodo"
+    v-todo-focus="editing"
     @blur="doneEdit()"
     @keyup.enter="doneEdit()"
     @keyup.esc="cancelEdit()">

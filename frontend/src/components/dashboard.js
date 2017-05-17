@@ -67,10 +67,11 @@ const MyDashboard = Vue.component('my-dashboard', {
     MyTodoRow
   },
   beforeRouteEnter (to, from, next) {
-    rpcClient.getConfig((err, config) => {
-      console.log(config);
-      next(vm => vm.setConfig(err, config));
-    });
+    rpcClient
+      .getConfigAsync()
+      .then(config => {
+        next(vm => vm.setConfig(config));
+      });
   },
   created: function () {
     ipcRenderer.on('checkOffTodo', (event, todoId) => {
@@ -151,13 +152,11 @@ const MyDashboard = Vue.component('my-dashboard', {
         rpcClient.removeTodoAsync(todo);
       }
     },
-    setConfig: function (err, config) {
-      if (err) {
-        this.error = err.toString();
-      } else {
-        this.config = config;
-        this.todos = todoStorage.fetch(get(this.config, 'todos'));
-      }
+    setConfig: function (config) {
+      this.config = config;
+      this.todos = todoStorage.fetch(get(this.config, 'todos'));
+      console.log(this.todos);
+      console.log(this.config.reminders.length);
     },
     startNewSession: function () {
       const promise = new Bluebird((resolve) => {
@@ -168,10 +167,11 @@ const MyDashboard = Vue.component('my-dashboard', {
           this.newSessionModalResult = null;
           if (result === 'ok') {
             this.loading = true;
-            setTimeout(() => {
-              this.todos = mapToTodos(get(this.config, 'todos'));
-              this.loading = false;
-            }, 1000);
+            rpcClient
+              .getConfigAsync()
+              .then(this.setConfig)
+              .delay(1000)
+              .tap(() => (this.loading = false));
           }
         });
     },

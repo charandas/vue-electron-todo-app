@@ -23,7 +23,7 @@
       <li v-for="todo in filteredTodos"
         class="todo"
         :key="todo.id"
-        :class="{ completed: todo.completed }"> <!--  , editing: todo == editedTodo -->
+        :class="{ completed: todo.completed }">
         <my-todo-row :todo="todo" :config="config" :removeTodo="removeTodo"></my-todo-row>
       </li>
     </ul>
@@ -37,8 +37,8 @@
       <li><router-link :to="{ path: '/', query: { visibility: 'active' } }" :class="{ selected: visibility == 'active' }">Active</router-link></li>
       <li><router-link :to="{ path: '/', query: { visibility: 'completed' } }" :class="{ selected: visibility == 'completed' }">Completed</router-link></li>
     </ul>
-    <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+    <!-- <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
       Clear completed
-    </button>
+    </button> -->
   </footer>
 </section>

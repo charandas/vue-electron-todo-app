@@ -142,15 +142,10 @@ export function scheduleReminder (reminder) {
 }
 
 export function unscheduleReminder (todo) {
-  logger.info(`Removing reminder for todo: ${todo}`);
-  return getValue(todosTable, todo.id)
-    .then(found => {
-      if (found) {
-        const notification = find(scheduled, { todoId: todo.id });
-        unscheduleNotification(notification);
-      }
-    })
-    .return(true);
+  const notification = find(scheduled, { todoId: todo.id });
+  if (notification) {
+    unscheduleNotification(notification);
+  }
 }
 
 export function scheduleAllReminders (_mainWindow) {

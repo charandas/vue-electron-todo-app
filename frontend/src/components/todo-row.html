@@ -1,7 +1,7 @@
 <div>
   <div class="view" :class=" {'hide-view': editing} ">
     <input class="toggle" type="checkbox" v-model="todo.completed">
-    <label @dblclick="editTodo()">{{ todo.title }}</label>
+    <label @dblclick="!todo.system && editTodo()">{{ todo.title }}</label>
     <button v-tooltip.left-start="reminderMessaging"
      class="remind" @click="addOrUpdateReminder()"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
     <button v-if="!todo.system" class="destroy" @click="removeTodo(todo)"></button>

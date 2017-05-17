@@ -24,7 +24,7 @@
         class="todo"
         :key="todo.id"
         :class="{ completed: todo.completed }">
-        <my-todo-row :todo="todo" :config="config" :removeTodo="removeTodo"></my-todo-row>
+        <my-todo-row v-on:edited="showLoader" :todo="todo" :config="config" :removeTodo="removeTodo"></my-todo-row>
       </li>
     </ul>
   </section>

@@ -124,6 +124,12 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
+    showLoader: function (promise) {
+      this.loading = true;
+      promise
+        .delay(1000)
+        .tap(() => (this.loading = false));
+    },
     addTodo: function () {
       var value = this.newTodo && this.newTodo.trim();
       if (!value) {
@@ -155,8 +161,6 @@ const MyDashboard = Vue.component('my-dashboard', {
     setConfig: function (config) {
       this.config = config;
       this.todos = todoStorage.fetch(get(this.config, 'todos'));
-      console.log(this.todos);
-      console.log(this.config.reminders.length);
     },
     startNewSession: function () {
       const promise = new Bluebird((resolve) => {

@@ -68,7 +68,9 @@ const MyTodoRow = Vue.component('my-todo-row', {
       this.todo.title = this.todo.title.trim();
 
       // ADD loading around this
-      rpcClient.editTodoAsync({ title: this.todo.title, id: this.todo.id });
+      if (this.beforeEditCache !== this.todo.title) {
+        this.$emit('edited', rpcClient.editTodoAsync({ title: this.todo.title, id: this.todo.id }));
+      }
 
       if (!this.todo.title) {
         this.removeTodo(this.todo);

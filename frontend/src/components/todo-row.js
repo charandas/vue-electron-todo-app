@@ -1,5 +1,4 @@
 import Vue from 'vue';
-// import map from 'lodash/map';
 import find from 'lodash/find';
 import Bluebird from 'bluebird';
 
@@ -8,11 +7,15 @@ import todoRowTpl from './todo-row.html!vtc';
 import MyDatePicker from './date-picker';
 import rpcClient from '../utils/rpc-client';
 
+function resetReminderInVM () {
+  return { sendAt: null };
+}
+
 const MyTodoRow = Vue.component('my-todo-row', {
   props: ['todo', 'config', 'removeTodo'],
   data () {
     return {
-      reminder: find(this.config.reminders, { todoId: this.todo.id }) || { sendAt: null },
+      reminder: find(this.config.reminders, { todoId: this.todo.id }) || resetReminderInVM(),
       editing: false,
       reminderPickModalResult: null
     };
@@ -31,27 +34,30 @@ const MyTodoRow = Vue.component('my-todo-row', {
     }
   },
   methods: {
-    addOrUpdateReminder: function () {
+    // Adds, removes, updates, or leaves untouched depending on modal result promise
+    updateReminder: function () {
       const promise = new Bluebird((resolve) => {
         this.reminderPickModalResult = resolve;
       });
       promise
         .then(result => {
           this.reminderPickModalResult = null;
-          if (result && result !== 'cancel') {
-            this.loading = true;
+          if (result === 'cancel') {
+            // do nothing
+          } else if (result === 'remove') {
+            return rpcClient
+              .removeReminderAsync({
+                todoId: this.todo.id
+              })
+              .tap(savedReminder => (this.reminderMessaging = resetReminderInVM()));
+          } else if (result) {
             return rpcClient
             .addOrUpdateReminderAsync({
               todoId: this.todo.id,
               sendAt: result
             })
-            .delay(1000)
-            .then(savedReminder => (this.reminderMessaging = savedReminder));
+            .tap(savedReminder => (this.reminderMessaging = savedReminder));
           }
-        })
-        .finally(() => {
-          this.loading = false;
-          this.settingReminderForTodo = null;
         });
     },
 

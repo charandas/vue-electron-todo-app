@@ -70,6 +70,15 @@ const routes = {
         .tap(scheduleReminder)
         .asCallback(next);
     });
+
+    server.on('remove-reminder', (req, next) => {
+      const value = get(req, 'body.reminder');
+      const id = value.todoId;
+      return deleteValue(remindersTable, id)
+        .return(value)
+        .tap(unscheduleReminder)
+        .asCallback(next);
+    });
   }
 };
 

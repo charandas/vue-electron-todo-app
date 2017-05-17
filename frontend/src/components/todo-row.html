@@ -3,7 +3,7 @@
     <input class="toggle" type="checkbox" v-model="todo.completed">
     <label @dblclick="!todo.system && editTodo()">{{ todo.title }}</label>
     <button v-tooltip.left-start="reminderMessaging"
-     class="remind" @click="addOrUpdateReminder()"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
+     class="remind" @click="updateReminder()"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
     <button v-if="!todo.system" class="destroy" @click="removeTodo(todo)"></button>
   </div>
   <my-date-picker v-if="reminderPickModalResult" :result="reminderPickModalResult" :todo="todo" :reminder="reminder" >

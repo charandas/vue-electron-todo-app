@@ -76,6 +76,7 @@ SystemJS.config({
     'vue-formly': 'npm:vue-formly@2.3.5',
     'vue-formly-bootstrap': 'npm:vue-formly-bootstrap@2.2.5',
     'vue-hot-reload-api': 'npm:vue-hot-reload-api@2.1.0',
+    'vue-longpress': 'npm:vue-longpress@1.0.1',
     'vue-router': 'npm:vue-router@2.5.3',
     'vue-spinner': 'npm:vue-spinner@1.0.2',
     'zlib': 'npm:jspm-nodelibs-zlib@0.2.3'
@@ -802,6 +803,11 @@ SystemJS.config({
     'npm:tooltip.js@1.1.3': {
       'map': {
         'popper.js': 'npm:popper.js@1.9.4'
+      }
+    },
+    'npm:vue-longpress@1.0.1': {
+      'map': {
+        'vue': 'npm:vue@2.3.3'
       }
     }
   }

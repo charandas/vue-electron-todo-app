@@ -1,7 +1,8 @@
 <my-modal>
   <h3 slot="header">Please pick your desired reminder for {{todo.title}}</h3>
   <div slot="body">
-    <v-button markup="warning" @click="result('cancel')">Cancel</v-button>
+    <v-button markup="error" :disabled="!removeEnabled" @click="result('remove')">Remove</v-button>
+    <v-button markup="warning" @click="result('cancel')">Quit</v-button>
     <v-button markup="success" :disabled="!changeEnabled" @click="result(settingReminderTime)">OK</v-button>
   </div>
   <div slot="footer">

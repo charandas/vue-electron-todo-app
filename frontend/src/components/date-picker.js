@@ -17,6 +17,9 @@ const MyDatePicker = Vue.component('my-date-picker', {
     };
   },
   computed: {
+    removeEnabled: function () {
+      return get(this.reminder, 'sendAt');
+    },
     changeEnabled: function () {
       return this.settingReminderTime && get(this.reminder, 'sendAt') !== this.settingReminderTime;
     },

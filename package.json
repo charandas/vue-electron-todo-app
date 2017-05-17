@@ -117,6 +117,7 @@
       "vue-clock-picker": "github:charandas/vue-clock-picker@^0.4.3",
       "vue-formly-bootstrap": "npm:vue-formly-bootstrap@^2.2.3",
       "vue-hot-reload-api": "npm:vue-hot-reload-api@^2.1.0",
+      "vue-longpress": "npm:vue-longpress@^1.0.1",
       "vue-router": "npm:vue-router@^2.5.2",
       "vue-spinner": "npm:vue-spinner@^1.0.2"
     },
@@ -302,4 +303,4 @@
       }
     }
   }
-}
+}

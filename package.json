@@ -87,6 +87,7 @@
     "jspm": "0.17.0-beta.41",
     "jspm-git": "^0.7.0-beta.1",
     "minimist": "^1.2.0",
+    "node-sass": "^4.5.3",
     "pug": "^2.0.0-rc.1",
     "rollup": "^0.36.3",
     "semistandard": "^9.2.1",
@@ -112,6 +113,7 @@
       "text": "github:systemjs/plugin-text@^0.0.9",
       "v-tooltip": "npm:v-tooltip@^2.0.0-beta.4",
       "vtc": "gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1",
+      "vue-button": "github:charandas/vue-button@^1.0.0",
       "vue-clock-picker": "github:charandas/vue-clock-picker@^0.4.3",
       "vue-formly-bootstrap": "npm:vue-formly-bootstrap@^2.2.3",
       "vue-hot-reload-api": "npm:vue-hot-reload-api@^2.1.0",
@@ -151,6 +153,17 @@
     "overrides": {
       "github:charandas/vue-clock-picker@0.4.4": {
         "defaultExtension": "vue",
+        "meta": {
+          "*": {
+            "deps": [
+              "vue"
+            ]
+          }
+        }
+      },
+      "github:charandas/vue-button@1.0.0": {
+        "defaultExtension": "vue",
+        "main": "src/main.js",
         "meta": {
           "*": {
             "deps": [

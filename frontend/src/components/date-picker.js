@@ -6,6 +6,7 @@ import isNull from 'lodash/isNull';
 
 import MyModal from './modal';
 import datePickerTpl from './date-picker.html!vtc';
+import './date-picker.css!css';
 
 const MyDatePicker = Vue.component('my-date-picker', {
   props: ['result', 'todo', 'reminder'],
@@ -16,6 +17,9 @@ const MyDatePicker = Vue.component('my-date-picker', {
     };
   },
   computed: {
+    changeEnabled: function () {
+      return this.settingReminderTime && get(this.reminder, 'sendAt') !== this.settingReminderTime;
+    },
     defaultHour: function () {
       if (isNull(get(this.reminder, 'sendAt'))) {
         return 12;
@@ -34,9 +38,6 @@ const MyDatePicker = Vue.component('my-date-picker', {
     MyModal
   },
   methods: {
-    focusChangeHandler: function () {
-      console.log(arguments);
-    },
     timeChangeHandler: function (time) {
       const hours = padStart(time.hour, 2, '0');
       const minutes = padStart(time.minute, 2, '0');

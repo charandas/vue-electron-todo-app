@@ -2,7 +2,7 @@
   <header class="header">
     <h1>Checklist</h1>
     <h2>{{eventDate}}</h2>
-    <button class="new-session" @click="startNewSession()"><i class="mdi mdi-18px mdi-reload"></i> New Session</button>
+    <v-button markup="warning" @click="startNewSession()"><i class="mdi mdi-18px mdi-reload"></i> New Session</v-button>
     <input class="new-todo"
       autofocus autocomplete="off"
       placeholder="What needs to be done?"

@@ -71,6 +71,7 @@ SystemJS.config({
     'vm': 'npm:jspm-nodelibs-vm@0.2.1',
     'vtc': 'gitlab:mrman/systemjs-plugin-vue-template-compiler@2.2.1',
     'vue': 'npm:vue@2.3.3',
+    'vue-button': 'github:charandas/vue-button@1.0.0',
     'vue-clock-picker': 'github:charandas/vue-clock-picker@0.4.4',
     'vue-formly': 'npm:vue-formly@2.3.5',
     'vue-formly-bootstrap': 'npm:vue-formly-bootstrap@2.2.5',

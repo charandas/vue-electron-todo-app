@@ -17,12 +17,8 @@
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="modal-cancel-button" @click="result('cancel')">
-                Cancel
-              </button>
-              <button class="modal-default-button" @click="result('ok')">
-                OK
-              </button>
+              <v-button markup="warning" @click="result('cancel')">Cancel</v-button>
+              <v-button markup="success" @click="result('ok')">OK</v-button>
             </slot>
           </div>
         </div>

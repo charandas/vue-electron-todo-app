@@ -16,8 +16,6 @@
     <h3 slot="header">Reset Checklist Session</h3>
     <h4 slot="body">Please confirm your choice</h4>
   </my-modal>
-  <my-date-picker v-if="reminderPickModalResult" :result="reminderPickModalResult" :todo="settingReminderForTodo" :reminder="existingReminderForTodo" >
-  </my-date-picker>
 
   <section class="main" v-show="todos.length">
     <input class="toggle-all" type="checkbox" v-model="allDone">
@@ -25,20 +23,8 @@
       <li v-for="todo in filteredTodos"
         class="todo"
         :key="todo.id"
-        :class="{ completed: todo.completed, editing: todo == editedTodo }">
-        <div class="view">
-          <input class="toggle" type="checkbox" v-model="todo.completed">
-          <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-          <button v-tooltip.left-start="addOrUpdateReminderMessaging(todo) ? 'Update reminder' : 'Add reminder'"
-           class="remind" @click="addOrUpdateReminder(todo)"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
-          <button v-if="!todo.system" class="destroy" @click="removeTodo(todo)"></button>
-        </div>
-        <input class="edit" type="text"
-          v-model="todo.title"
-          v-todo-focus="todo == editedTodo"
-          @blur="doneEdit(todo)"
-          @keyup.enter="doneEdit(todo)"
-          @keyup.esc="cancelEdit(todo)">
+        :class="{ completed: todo.completed }"> <!--  , editing: todo == editedTodo -->
+        <my-todo-row :todo="todo" :config="config" :removeTodo="removeTodo"></my-todo-row>
       </li>
     </ul>
   </section>

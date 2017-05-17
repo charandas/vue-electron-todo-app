@@ -123,6 +123,7 @@ function scheduleNotification (reminder, message) {
       futureTime: moment(reminder.sendAt, 'hmm').format(),
       timeoutID: setTimeout(() => {
         const retryFn = _notify.bind(null, args);
+        logger.info(args.message);
         _notify(Object.assign(args, { retryFn }));
         removeFromScheduled(reminder.todoId);
       }, millis)

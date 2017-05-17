@@ -46,8 +46,8 @@ const MyTodoRow = Vue.component('my-todo-row', {
             // do nothing
           } else if (result === 'remove') {
             return rpcClient
-              .removeReminderAsync({
-                todoId: this.todo.id
+              .removeReminderAsync({ // works on a todo
+                id: this.todo.id
               })
               .tap(savedReminder => (this.reminderMessaging = resetReminderInVM()));
           } else if (result) {

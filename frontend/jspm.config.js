@@ -40,6 +40,8 @@ SystemJS.config({
   map: {
     'domain': 'npm:jspm-nodelibs-domain@0.2.1',
     'module': 'npm:jspm-nodelibs-module@0.2.1',
+    'popper.js': 'npm:popper.js@1.9.4',
+    'tooltip.js': 'npm:tooltip.js@1.1.3',
     'tty': 'npm:jspm-nodelibs-tty@0.2.1',
     'uglify-to-browserify': 'npm:uglify-to-browserify@1.0.2',
     'child_process': 'npm:jspm-nodelibs-child_process@0.2.1',

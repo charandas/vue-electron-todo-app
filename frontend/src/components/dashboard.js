@@ -27,6 +27,9 @@ var todoStorage = {
   },
   save: function (todos) {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+  },
+  remove: function () {
+    window.localStorage.removeItem(STORAGE_KEY);
   }
 };
 
@@ -163,6 +166,7 @@ const MyDashboard = Vue.component('my-dashboard', {
       this.todos = todoStorage.fetch(get(this.config, 'todos'));
     },
     startNewSession: function () {
+      todoStorage.remove();
       const promise = new Bluebird((resolve) => {
         this.newSessionModalResult = resolve;
       });

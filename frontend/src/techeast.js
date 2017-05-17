@@ -7,6 +7,7 @@ import 'mdi/css/materialdesignicons.css!css';
 
 import techeastTpl from './techeast.html!vtc';
 
+import './components/tooltip.css!css';
 import MyDashboard from './components/dashboard';
 import MySettings from './components/settings';
 

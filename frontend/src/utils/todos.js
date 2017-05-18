@@ -1,6 +1,6 @@
 import map from 'lodash/map';
 
-export function mapToTodos (tasks, updateOrder = false) {
+export function mapToTodos (tasks, { updateOrder = false }) {
   return map(tasks, (task, index) => ({
     id: task.id,
     title: task.title,

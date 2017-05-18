@@ -54,7 +54,6 @@ var filters = {
 
 function nextOrder (todos) {
   const nextOrderNumber = maxBy(todos, 'order').order + 1;
-  console.log(nextOrderNumber);
   return nextOrderNumber;
 }
 
@@ -110,7 +109,6 @@ const MyDashboard = Vue.component('my-dashboard', {
   // http://vuejs.org/guide/computed.html
   computed: {
     filteredTodos: function () {
-      console.log(filters[this.visibility](this.todos));
       return filters[this.visibility](this.todos);
     },
     remaining: function () {
@@ -138,8 +136,13 @@ const MyDashboard = Vue.component('my-dashboard', {
   // note there's no DOM manipulation here at all.
   methods: {
     persistNewOrder: function () {
-      this.todos = mapToTodos(this.todos, true);
-      Bluebird.each(this.todos, todo => {
+      const oldTodos = this.todos;
+      this.todos = mapToTodos(this.todos, { updateOrder: true });
+      Bluebird.each(this.todos, (todo, index) => {
+        if (todo.order === oldTodos[index].order) {
+          // Order unchanged for this todo, process next
+          return;
+        }
         delete todo.completed;
         return rpcClient.addOrUpdateTodoAsync(todo);
       });

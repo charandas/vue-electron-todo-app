@@ -24,13 +24,8 @@ const MyTodoRow = Vue.component('my-todo-row', {
     MyDatePicker
   },
   computed: {
-    reminderMessaging: {
-      get: function () {
-        return this.reminder.sendAt ? 'Update reminder' : 'Add reminder';
-      },
-      set: function (newReminder) {
-        this.reminder = newReminder;
-      }
+    reminderMessaging: function () {
+      return this.reminder.sendAt ? 'Update reminder' : 'Add reminder';
     }
   },
   methods: {
@@ -46,17 +41,17 @@ const MyTodoRow = Vue.component('my-todo-row', {
             // do nothing
           } else if (result === 'remove') {
             return rpcClient
-              .removeReminderAsync({ // works on a todo
-                id: this.todo.id
+              .removeReminderAsync({
+                todoId: this.todo.id
               })
-              .tap(savedReminder => (this.reminderMessaging = resetReminderInVM()));
+              .tap(savedReminder => (this.reminder = resetReminderInVM()));
           } else if (result) {
             return rpcClient
             .addOrUpdateReminderAsync({
               todoId: this.todo.id,
               sendAt: result
             })
-            .tap(savedReminder => (this.reminderMessaging = savedReminder));
+            .tap(savedReminder => (this.reminder = savedReminder));
           }
         });
     },

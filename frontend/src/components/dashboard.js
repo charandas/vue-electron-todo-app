@@ -143,12 +143,12 @@ const MyDashboard = Vue.component('my-dashboard', {
       Bluebird
         .each(this.todos, (todo, index) => {
           if (todo.order === oldTodos[index].order) {
-            console.log(todo.title);
             // Order unchanged for this todo, process next
             return;
           }
-          delete todo.completed;
-          return rpcClient.addOrUpdateTodoAsync(todo);
+          /* eslint no-unused-vars: 0 */
+          const { completed, ...serverTodoModel } = todo;
+          return rpcClient.addOrUpdateTodoAsync(serverTodoModel);
         })
         .tap(() => (this.loading = false));
     },

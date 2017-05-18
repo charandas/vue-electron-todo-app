@@ -145,7 +145,7 @@ label[for='toggle-all'] {
   /* auto, since non-WebKit browsers doesn't support input styling */
   height: auto;
   position: absolute;
-  top: 0;
+  top: 10px;
   bottom: 0;
   margin: auto 0;
   border: none; /* Mobile Safari */

@@ -19,7 +19,7 @@
 
   <section class="main" v-show="todos.length">
     <input class="toggle-all" type="checkbox" v-model="allDone">
-    <draggable :list="todos" element="ul" class="todo-list drag-area" :options="{filter: '.modal-mask'}" @update="persistNewOrder">
+    <draggable :list="todos" element="ul" class="todo-list drag-area" :options="{filter: '.modal-mask', handle: '.drag-handle'}" @update="persistNewOrder">
       <transition-group>
         <li v-for="todo in todos"
           class="todo"

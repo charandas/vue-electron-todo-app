@@ -136,6 +136,27 @@ label[for='toggle-all'] {
   min-height: 10px;
 }
 
+.drag-handle {
+  display: none;
+  text-align: center;
+  transition: fill .2s ease-in-out;
+  width: 40px;
+  fill: #cc9a9a;
+  /* auto, since non-WebKit browsers doesn't support input styling */
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  border: none; /* Mobile Safari */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.todo-list li .drag-handle:hover {
+  fill: #af5b5e;
+}
+
 .todo-list {
   margin: 0;
   padding: 0;
@@ -174,6 +195,7 @@ label[for='toggle-all'] {
   /* auto, since non-WebKit browsers doesn't support input styling */
   height: auto;
   position: absolute;
+  left: 45px;
   top: 0;
   bottom: 0;
   margin: auto 0;
@@ -193,7 +215,7 @@ label[for='toggle-all'] {
 .todo-list li label {
   word-break: break-all;
   padding: 15px 60px 15px 15px;
-  margin-left: 45px;
+  margin-left: 90px;
   display: block;
   line-height: 1.2;
   transition: color 0.4s;
@@ -243,6 +265,11 @@ label[for='toggle-all'] {
 .todo-list li:hover .destroy {
   display: block;
 }
+
+.todo-list li:hover .drag-handle {
+  display: block;
+}
+
 
 .todo-list li .edit {
   display: none;

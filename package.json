@@ -121,7 +121,8 @@
       "vue-hot-reload-api": "npm:vue-hot-reload-api@^2.1.0",
       "vue-longpress": "npm:vue-longpress@^1.0.1",
       "vue-router": "npm:vue-router@^2.5.2",
-      "vue-spinner": "npm:vue-spinner@^1.0.2"
+      "vue-spinner": "npm:vue-spinner@^1.0.2",
+      "vuedraggable": "npm:vuedraggable@^2.11.0"
     },
     "devDependencies": {
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.21"

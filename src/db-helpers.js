@@ -45,11 +45,11 @@ export function getValues (db) {
 
 export function initializeIfNotSet (db, sub, valueArray) {
   return Bluebird
-    .each(valueArray, value => {
+    .each(valueArray, (value, index) => {
       return _getValue(db, value.id)
         .catch(() => { // Bluebird filter facility isn't working for errors.NotFoundError
           logger.info(`Initializing ${sub}::${value.id}`);
-          return _setValue(db, value.id, Object.assign(value, { system: true }));
+          return _setValue(db, value.id, Object.assign(value, { system: true, order: index }));
         });
     });
 }

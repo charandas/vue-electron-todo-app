@@ -19,25 +19,27 @@
 
   <section class="main" v-show="todos.length">
     <input class="toggle-all" type="checkbox" v-model="allDone">
-    <ul class="todo-list">
-      <li v-for="todo in filteredTodos"
-        class="todo"
-        :key="todo.id"
-        :class="{ completed: todo.completed }">
-        <my-todo-row v-on:edited="showLoader" :todo="todo" :config="config" :removeTodo="removeTodo"></my-todo-row>
-      </li>
-    </ul>
+    <draggable :list="todos" element="ul" class="todo-list drag-area" @update="persistNewOrder">
+      <transition-group>
+        <li v-for="(todo, index) in todos"
+          class="todo"
+          :key="todo.order"
+          :class="{ completed: todo.completed }">
+          <my-todo-row v-on:edited="showLoader" :todo="todo" :config="config" :removeTodo="removeTodo"></my-todo-row>
+        </li>
+      </transition-group>
+    </draggable>
   </section>
   <footer class="footer" v-show="todos.length" v-cloak>
     <span class="todo-count">
       <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
     </span>
-    <ul class="filters">
+    <!-- <ul class="filters">
       <li><router-link :to="{ path: '/', query: { visibility: 'all' } }" :class="{ selected: visibility == 'all' }">All</router-link></li>
       <li><router-link :to="{ path: '/', query: { visibility: 'active' } }" :class="{ selected: visibility == 'active' }">Active</router-link></li>
       <li><router-link :to="{ path: '/', query: { visibility: 'completed' } }" :class="{ selected: visibility == 'completed' }">Completed</router-link></li>
     </ul>
-    <!-- <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
+    <button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
       Clear completed
     </button> -->
   </footer>

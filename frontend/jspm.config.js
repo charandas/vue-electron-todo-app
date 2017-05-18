@@ -81,6 +81,7 @@ SystemJS.config({
     'vue-longpress': 'npm:vue-longpress@1.0.1',
     'vue-router': 'npm:vue-router@2.5.3',
     'vue-spinner': 'npm:vue-spinner@1.0.2',
+    'vuedraggable': 'npm:vuedraggable@2.11.0',
     'zlib': 'npm:jspm-nodelibs-zlib@0.2.3'
   },
   packages: {
@@ -810,6 +811,11 @@ SystemJS.config({
     'npm:vue-longpress@1.0.1': {
       'map': {
         'vue': 'npm:vue@2.3.3'
+      }
+    },
+    'npm:vuedraggable@2.11.0': {
+      'map': {
+        'sortablejs': 'npm:sortablejs@1.5.1'
       }
     }
   }

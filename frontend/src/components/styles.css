@@ -132,6 +132,10 @@ label[for='toggle-all'] {
   color: #737373;
 }
 
+.drag-area {
+  min-height: 10px;
+}
+
 .todo-list {
   margin: 0;
   padding: 0;

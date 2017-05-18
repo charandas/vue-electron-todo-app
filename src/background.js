@@ -4,7 +4,7 @@
 
 import path from 'path';
 import url from 'url';
-import { app, Menu } from 'electron';
+import { app, Menu, BrowserWindow } from 'electron';
 import contextMenu from 'electron-context-menu';
 import Server from 'electron-rpc/server';
 
@@ -65,6 +65,7 @@ function createWindow () {
 
   if (runningEnv === 'development') {
     mainWindow.openDevTools();
+    BrowserWindow.addDevToolsExtension(path.resolve('./vue_devtools_3.1.2_0'));
   }
   return mainWindow;
 }

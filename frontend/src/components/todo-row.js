@@ -75,7 +75,7 @@ const MyTodoRow = Vue.component('my-todo-row', {
 
       // ADD loading around this
       if (this.beforeEditCache !== this.todo.title) {
-        this.$emit('edited', rpcClient.editTodoAsync({ title: this.todo.title, id: this.todo.id }));
+        this.$emit('edited', rpcClient.addOrUpdateTodoAsync({ title: this.todo.title, id: this.todo.id }));
       }
 
       if (!this.todo.title) {

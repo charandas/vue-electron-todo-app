@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueSpinner from 'vue-spinner';
+import Draggable from 'vuedraggable';
 import find from 'lodash/find';
 import get from 'lodash/get';
+import maxBy from 'lodash/maxBy';
 import Bluebird from 'bluebird';
 
 import rpcClient from '../utils/rpc-client';
@@ -50,6 +52,12 @@ var filters = {
   }
 };
 
+function nextOrder (todos) {
+  const nextOrderNumber = maxBy(todos, 'order').order + 1;
+  console.log(nextOrderNumber);
+  return nextOrderNumber;
+}
+
 const MyDashboard = Vue.component('my-dashboard', {
   props: ['visibility'],
   render: dashboardTpl.render,
@@ -67,7 +75,8 @@ const MyDashboard = Vue.component('my-dashboard', {
   components: {
     RiseLoader: VueSpinner.RiseLoader,
     MyModal,
-    MyTodoRow
+    MyTodoRow,
+    Draggable
   },
   beforeRouteEnter (to, from, next) {
     rpcClient
@@ -101,6 +110,7 @@ const MyDashboard = Vue.component('my-dashboard', {
   // http://vuejs.org/guide/computed.html
   computed: {
     filteredTodos: function () {
+      console.log(filters[this.visibility](this.todos));
       return filters[this.visibility](this.todos);
     },
     remaining: function () {
@@ -127,6 +137,13 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
+    persistNewOrder: function () {
+      this.todos = mapToTodos(this.todos, true);
+      Bluebird.each(this.todos, todo => {
+        delete todo.completed;
+        return rpcClient.addOrUpdateTodoAsync(todo);
+      });
+    },
     showLoader: function (promise) {
       this.loading = true;
       promise
@@ -139,15 +156,13 @@ const MyDashboard = Vue.component('my-dashboard', {
         return;
       }
       this.loading = true;
+      const todoToSave = { title: value, order: nextOrder(this.todos) };
+
       rpcClient
-        .addTodoAsync({ title: value })
+        .addOrUpdateTodoAsync(todoToSave)
         .delay(1000)
         .then(result => {
-          this.todos.push({
-            id: result.id,
-            title: value,
-            completed: false
-          });
+          this.todos.push(result);
           this.loading = false;
         })
         .finally(() => {

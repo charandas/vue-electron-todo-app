@@ -37,16 +37,9 @@ const routes = {
 
     server.on('add-todo', (req, next) => {
       const value = get(req, 'body.todo');
-      const id = uuidV4();
+      const id = value.id || uuidV4();
       value.id = id;
       return setValue(todosTable, id, value)
-        .return(value)
-        .asCallback(next);
-    });
-
-    server.on('edit-todo', (req, next) => {
-      const value = get(req, 'body.todo');
-      return setValue(todosTable, value.id, value)
         .return(value)
         .asCallback(next);
     });

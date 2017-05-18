@@ -13,11 +13,7 @@ function removeReminder (reminder, cb) {
   client.request('remove-reminder', { reminder }, cb);
 }
 
-function addTodo (todo, cb) {
-  client.request('add-todo', { todo }, cb);
-}
-
-function editTodo (todo, cb) {
+function addOrUpdateTodo (todo, cb) {
   client.request('add-todo', { todo }, cb);
 }
 
@@ -29,7 +25,6 @@ export default {
   getConfig,
   addOrUpdateReminder,
   removeReminder,
-  addTodo,
-  removeTodo,
-  editTodo
+  addOrUpdateTodo,
+  removeTodo
 };

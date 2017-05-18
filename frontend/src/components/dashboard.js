@@ -4,6 +4,7 @@ import Draggable from 'vuedraggable';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import maxBy from 'lodash/maxBy';
+import sortBy from 'lodash/sortBy';
 import Bluebird from 'bluebird';
 
 import rpcClient from '../utils/rpc-client';
@@ -138,14 +139,18 @@ const MyDashboard = Vue.component('my-dashboard', {
     persistNewOrder: function () {
       const oldTodos = this.todos;
       this.todos = mapToTodos(this.todos, { updateOrder: true });
-      Bluebird.each(this.todos, (todo, index) => {
-        if (todo.order === oldTodos[index].order) {
-          // Order unchanged for this todo, process next
-          return;
-        }
-        delete todo.completed;
-        return rpcClient.addOrUpdateTodoAsync(todo);
-      });
+      this.loading = true;
+      Bluebird
+        .each(this.todos, (todo, index) => {
+          if (todo.order === oldTodos[index].order) {
+            console.log(todo.title);
+            // Order unchanged for this todo, process next
+            return;
+          }
+          delete todo.completed;
+          return rpcClient.addOrUpdateTodoAsync(todo);
+        })
+        .tap(() => (this.loading = false));
     },
     showLoader: function (promise) {
       this.loading = true;
@@ -181,7 +186,7 @@ const MyDashboard = Vue.component('my-dashboard', {
     },
     setConfig: function (config) {
       this.config = config;
-      this.todos = todoStorage.fetch(get(this.config, 'todos'));
+      this.todos = sortBy(todoStorage.fetch(get(this.config, 'todos')), 'order');
     },
     startNewSession: function () {
       todoStorage.remove();

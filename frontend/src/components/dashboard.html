@@ -21,7 +21,7 @@
     <input class="toggle-all" type="checkbox" v-model="allDone">
     <draggable :list="todos" element="ul" class="todo-list drag-area" :options="{filter: '.modal-mask'}" @update="persistNewOrder">
       <transition-group>
-        <li v-for="(todo, index) in todos"
+        <li v-for="todo in todos"
           class="todo"
           :key="todo.order"
           :class="{ completed: todo.completed }">

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueSpinner from 'vue-spinner';
 import Draggable from 'vuedraggable';
+import first from 'lodash/first';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import maxBy from 'lodash/maxBy';
@@ -64,6 +65,9 @@ const MyDashboard = Vue.component('my-dashboard', {
   staticRenderFns: dashboardTpl.staticRenderFns,
   data () {
     return {
+      config: null,
+      templateId: null,
+      templateIds: [],
       todos: [],
       error: null,
       eventDate: new Date().toDateString(),
@@ -80,7 +84,7 @@ const MyDashboard = Vue.component('my-dashboard', {
   },
   beforeRouteEnter (to, from, next) {
     rpcClient
-      .getConfigAsync()
+      .getConfigAsync({ templateId: 'sunday_satsang' })
       .then(config => {
         next(vm => vm.setConfig(config));
       });
@@ -186,6 +190,8 @@ const MyDashboard = Vue.component('my-dashboard', {
     },
     setConfig: function (config) {
       this.config = config;
+      this.templateIds = config.templateIds;
+      this.templateId = first(get(this.config, 'todos')).templateId;
       this.todos = sortBy(todoStorage.fetch(get(this.config, 'todos')), 'order');
     },
     startNewSession: function () {
@@ -199,7 +205,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           if (result === 'ok') {
             this.loading = true;
             rpcClient
-              .getConfigAsync()
+              .getConfigAsync({ templateId: 'sunday_satsang' })
               .then(this.setConfig)
               .delay(1000)
               .tap(() => (this.loading = false));

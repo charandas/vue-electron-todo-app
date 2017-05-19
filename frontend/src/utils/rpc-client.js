@@ -1,8 +1,8 @@
 const Client = System._nodeRequire('electron-rpc/client');
 const client = new Client();
 
-function getConfig (cb) {
-  client.request('get-config', cb);
+function getConfig (options, cb) {
+  client.request('get-config', { options }, cb);
 }
 
 function addOrUpdateReminder (reminder, cb) {

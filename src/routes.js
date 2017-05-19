@@ -9,19 +9,21 @@ import { setValue, deleteValue, getValues, initializeIfNotSet } from './db-helpe
 
 const todosTable = db.sublevel('todos');
 const remindersTable = db.sublevel('reminders');
+const todosIndexTable = db.sublevel('todosIndex');
 
-function getConfig () {
+function getConfig (todosTemplateId) {
   return Bluebird
     .props({
-      todos: getValues(todosTable),
+      templateIds: config.get('workflows:templateIds'),
+      todos: getValues(todosTable, { indexPropValue: todosTemplateId, indexSub: todosIndexTable }),
       reminders: getValues(remindersTable)
     });
 }
 
-const dbInitialized = Bluebird
-  .map(['todos', 'reminders'], sub => {
-    initializeIfNotSet(db.sublevel(sub), sub, config.get(`templates:${sub}`));
-  });
+const dbInitialized = Bluebird.all([
+  initializeIfNotSet(todosTable, 'todos', config.get(`templates:todos`), { indexProp: 'templateId', indexSub: todosIndexTable }),
+  initializeIfNotSet(remindersTable, 'reminders', config.get(`templates:reminders`))
+]);
 
 const routes = {
   configure (server) {
@@ -30,7 +32,9 @@ const routes = {
     });
 
     server.on('get-config', (req, next) => {
+      const value = get(req, 'body.options', {});
       return dbInitialized
+        .return(value.templateId)
         .then(getConfig)
         .asCallback(next);
     });
@@ -39,7 +43,10 @@ const routes = {
       const value = get(req, 'body.todo');
       const id = value.id || uuidV4();
       value.id = id;
-      return setValue(todosTable, id, value)
+      return setValue(todosTable, id, value, {
+        indexProp: 'templateId',
+        indexSub: todosIndexTable
+      })
         .return(value)
         .asCallback(next);
     });

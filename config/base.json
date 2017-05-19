@@ -2,15 +2,40 @@
   "env": "development",
   "width": 800,
   "height": 600,
+  "workflows": {
+    "templateIds": [
+      { "label": "Sunday Satsang", "value": "sunday_satsang" },
+      { "label": "Special Teaching", "value": "special_teaching" },
+      { "label": "Zoom Teaching", "value": "zoom_teaching" },
+      { "label": "Friday Teaching", "value": "friday_teaching" }         
+    ]
+  },
   "templates": {
     "todos": [
       {
         "id": "d63d9233-6cdf-40bb-aacd-61532158e849",
+        "templateId": "sunday_satsang",
         "title": "Start recording"
       },
       {
         "id": "a46076db-fd01-4a8f-91e1-8c9a5dfed986",
+        "templateId": "sunday_satsang",
         "title": "Stop recording"
+      },
+      {
+        "id": "06bfd447-f9e0-41d0-8a5f-608b8b627e2d",
+        "templateId": "special_teaching",
+        "title": "Make private slack channel"
+      },
+      {
+        "id": "587ed09f-1be3-497a-a701-030755dbd0c6",
+        "templateId": "friday_teaching",
+        "title": "Make private friday event"
+      },
+      {
+        "id": "08867bab-016f-48bf-bf9f-513b7b16e362",
+        "templateId": "zoom_teaching",
+        "title": "Make private zoom event"
       }
     ],
     "reminders": [

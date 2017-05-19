@@ -6,6 +6,7 @@ import './todo-row.css!css';
 import todoRowTpl from './todo-row.html!vtc';
 import MyDatePicker from './date-picker';
 import rpcClient from '../utils/rpc-client';
+import { isSeparatorLabel } from '../utils/todos';
 
 function resetReminderInVM () {
   return { sendAt: null };
@@ -26,6 +27,9 @@ const MyTodoRow = Vue.component('my-todo-row', {
   computed: {
     reminderMessaging: function () {
       return this.reminder.sendAt ? 'Update reminder' : 'Add reminder';
+    },
+    separatorLabel: function () {
+      return isSeparatorLabel(this.todo);
     }
   },
   methods: {

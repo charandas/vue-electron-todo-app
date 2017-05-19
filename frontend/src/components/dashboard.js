@@ -8,7 +8,7 @@ import sortBy from 'lodash/sortBy';
 import Bluebird from 'bluebird';
 
 import rpcClient from '../utils/rpc-client';
-import { mapToTodos } from '../utils/todos';
+import { mapToTodos, isSeparatorLabel } from '../utils/todos';
 import dashboardTpl from './dashboard.html!vtc';
 
 import MyModal from './modal';
@@ -43,7 +43,7 @@ var filters = {
   },
   active: function (todos) {
     return todos.filter(function (todo) {
-      return !todo.completed;
+      return !isSeparatorLabel(todo) && !todo.completed;
     });
   },
   completed: function (todos) {

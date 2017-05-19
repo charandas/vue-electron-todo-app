@@ -1,3 +1,133 @@
+.view .editing {
+  border-bottom: none;
+  padding: 0;
+}
+
+.view .editing.edit {
+  display: block;
+  width: 506px;
+  padding: 12px 16px;
+  margin: 0 0 0 43px;
+}
+
+.view .hide-view {
+  display: none;
+}
+
+.view .toggle {
+  text-align: center;
+  width: 40px;
+  /* auto, since non-WebKit browsers doesn't support input styling */
+  height: auto;
+  position: absolute;
+  left: 45px;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  border: none; /* Mobile Safari */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.view .toggle:after {
+  content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -18 100 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#ededed" stroke-width="3"/></svg>');
+}
+
+.view .toggle:checked:after {
+  content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -18 100 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#bddad5" stroke-width="3"/><path fill="#5dc2af" d="M72 25L42 71 27 56l-4 4 20 20 34-52z"/></svg>');
+}
+
+.view label {
+  word-break: break-all;
+  padding: 15px 60px 15px 15px;
+  margin-left: 90px;
+  display: block;
+  line-height: 1.2;
+  transition: color 0.4s;
+}
+
+.view.completed label {
+  color: #d9d9d9;
+  text-decoration: line-through;
+}
+
+.view .remind {
+  position: absolute;
+  top: 0;
+  right: 50px;
+  bottom: 0;
+  margin: auto 0;
+  padding-left: 10px;
+  font-size: 30px;
+  color: #cc9a9a;
+  margin-bottom: 11px;
+  transition: color 0.2s ease-out;
+}
+
+.view .destroy {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  bottom: 0;
+  width: 40px;
+  height: 40px;
+  margin: auto 0;
+  font-size: 30px;
+  color: #cc9a9a;
+  margin-bottom: 11px;
+  transition: color 0.2s ease-out;
+}
+
+.view .destroy:hover {
+  color: #af5b5e;
+}
+
+.view .destroy:after {
+  content: "\00d7";
+}
+
+.view:hover .destroy {
+  display: block;
+}
+
+.view:hover .drag-handle {
+  display: block;
+}
+
+.view .drag-handle:hover {
+  fill: #af5b5e;
+}
+
+.view .edit {
+  display: none;
+}
+
+.view .editing:last-child {
+  margin-bottom: -1px;
+}
+
+.todo-separator label {
+  text-transform: uppercase;
+  margin-left: 45px;
+}
+
+.todo-separator .drag-handle {
+  display: none;
+}
+
+.todo-separator .toggle {
+  display: none;
+}
+
+.todo-separator .remind {
+  display: none;
+}
+
+.todo-separator .drag-handle:hover {
+  display: none;
+}
+
 .new-todo,
 .edit {
   position: relative;

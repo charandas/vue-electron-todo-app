@@ -84,7 +84,7 @@ const MyDashboard = Vue.component('my-dashboard', {
   },
   beforeRouteEnter (to, from, next) {
     rpcClient
-      .getConfigAsync({ templateId: 'sunday_satsang' })
+      .getConfigAsync({ templateId: 'special_teaching' })
       .then(config => {
         next(vm => vm.setConfig(config));
       });
@@ -205,7 +205,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           if (result === 'ok') {
             this.loading = true;
             rpcClient
-              .getConfigAsync({ templateId: 'sunday_satsang' })
+              .getConfigAsync({ templateId: 'special_teaching' })
               .then(this.setConfig)
               .delay(1000)
               .tap(() => (this.loading = false));

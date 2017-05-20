@@ -48,7 +48,6 @@ export function getValues (db, options = {}) {
     });
   }
   const values = [];
-  console.log(getOptions);
   const promise = new Bluebird((resolve, reject) => {
     (options.indexSub || db).createValueStream(getOptions)
     .on('data', function (data) {

@@ -17,6 +17,9 @@ function getConfig (todosTemplateId) {
       templateIds: config.get('workflows:templateIds'),
       todos: getValues(todosTable, { indexPropValue: todosTemplateId, indexSub: todosIndexTable }),
       reminders: getValues(remindersTable)
+    })
+    .tap(result => {
+      console.log(result.todos);
     });
 }
 

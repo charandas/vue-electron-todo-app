@@ -84,7 +84,7 @@ const MyDashboard = Vue.component('my-dashboard', {
   },
   beforeRouteEnter (to, from, next) {
     rpcClient
-      .getConfigAsync({ templateId: 'special_teaching' })
+      .getConfigAsync({ templateId: 'sunday_satsang' })
       .then(config => {
         next(vm => vm.setConfig(config));
       });
@@ -189,10 +189,10 @@ const MyDashboard = Vue.component('my-dashboard', {
       }
     },
     setConfig: function (config) {
-      this.config = config;
+      this.config = config; // TODO: undocumented data
       this.templateIds = config.templateIds;
-      this.templateId = first(get(this.config, 'todos')).templateId;
-      this.todos = sortBy(todoStorage.fetch(get(this.config, 'todos')), 'order');
+      this.templateId = find(this.templateIds, { value: first(get(config, 'todos')).templateId });
+      this.todos = sortBy(todoStorage.fetch(get(config, 'todos')), 'order');
     },
     startNewSession: function () {
       todoStorage.remove();
@@ -205,7 +205,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           if (result === 'ok') {
             this.loading = true;
             rpcClient
-              .getConfigAsync({ templateId: 'special_teaching' })
+              .getConfigAsync({ templateId: this.templateId.value })
               .then(this.setConfig)
               .delay(1000)
               .tap(() => (this.loading = false));

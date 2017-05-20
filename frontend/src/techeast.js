@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VTooltip from 'v-tooltip';
 import VueButton from 'vue-button';
-import VueSelect from 'vue-select'
+import { VueSelect } from 'vue-select';
 
 import 'mdi/css/materialdesignicons.css!css';
 

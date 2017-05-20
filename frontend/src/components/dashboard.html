@@ -1,8 +1,8 @@
-<section class="todoapp" v-cloak>
+<section class="todoapp">
   <header class="header">
     <h1>Checklist</h1>
     <h2>{{eventDate}}</h2>
-    <!-- <v-select v-model="templateId" :options="templateIds"></v-select> -->
+    <v-select v-model="templateId" :options="templateIds"></v-select>
     <v-button markup="warning" @click="startNewSession()"><i class="mdi mdi-18px mdi-reload"></i> New Session</v-button>
     <input class="new-todo"
       autofocus autocomplete="off"
@@ -30,7 +30,7 @@
       </transition-group>
     </draggable>
   </section>
-  <footer class="footer" v-show="todos.length" v-cloak>
+  <footer class="footer" v-show="todos.length">
     <span class="todo-count">
       <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
     </span>

@@ -34,10 +34,10 @@ const logger = getLogger();
 logger.info(`Running as ${runningEnv} environment`);
 
 function setApplicationMenu () {
-  let menus = [ mainMenuTemplate ];
-  if (runningEnv === 'development') {
-    menus = menus.concat([editMenuTemplate, devMenuTemplate]);
-  }
+  let menus = [ mainMenuTemplate, editMenuTemplate, devMenuTemplate ];
+  /* if (runningEnv === 'development') {
+    menus = menus.concat([]);
+  } */
   Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
 }
 

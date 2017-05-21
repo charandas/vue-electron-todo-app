@@ -38,12 +38,12 @@
 }
 
 .view label {
-  word-break: break-all;
   padding: 15px 60px 15px 15px;
   margin-left: 90px;
   display: block;
   line-height: 1.2;
   transition: color 0.4s;
+  font-size: 16px;
 }
 
 .view.completed label {
@@ -108,7 +108,7 @@
 }
 
 .todo-separator label {
-  text-transform: uppercase;
+  font-variant: small-caps;
   margin-left: 45px;
 }
 

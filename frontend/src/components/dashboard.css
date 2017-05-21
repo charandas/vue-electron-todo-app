@@ -101,6 +101,28 @@ body {
   text-align: center;
 }
 
+.template-select {
+  padding-top: 1em;
+}
+
+.template-select input[type=search]::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: white;
+}
+
+.template-select input[type=search]:placeholder-shown {
+  background-color: cadetblue;
+}
+
+.v-select .selected-tag {
+  border: none !important;
+  background-color: cadetblue !important;
+  color: white !important;
+}
+
+.dropdown-toggle {
+  background-color: cadetblue !important;
+}
+
 .main {
   position: relative;
   z-index: 2;

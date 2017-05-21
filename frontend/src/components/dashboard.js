@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueSpinner from 'vue-spinner';
 import Draggable from 'vuedraggable';
-import first from 'lodash/first';
 import find from 'lodash/find';
 import get from 'lodash/get';
 import maxBy from 'lodash/maxBy';
@@ -15,7 +14,7 @@ import dashboardTpl from './dashboard.html!vtc';
 import MyModal from './modal';
 import MyTodoRow from './todo-row';
 
-import './styles.css!css';
+import './dashboard.css!css';
 
 Bluebird.promisifyAll(rpcClient);
 
@@ -79,11 +78,6 @@ var filters = {
     });
   }
 };
-
-function nextOrder (todos) {
-  const nextOrderNumber = maxBy(todos, 'order').order + 1;
-  return nextOrderNumber;
-}
 
 const MyDashboard = Vue.component('my-dashboard', {
   props: ['visibility'],
@@ -182,6 +176,10 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
+    nextOrder: function () {
+      const nextOrderNumber = maxBy(this.todos, 'order').order + 1;
+      return nextOrderNumber;
+    },
     persistNewOrder: function () {
       const oldTodos = this.todos;
       this.todos = mapToTodos(this.todos, { updateOrder: true });
@@ -213,7 +211,7 @@ const MyDashboard = Vue.component('my-dashboard', {
       const todoToSave = {
         title: value,
         templateId: this.templateId.value,
-        order: nextOrder(this.todos)
+        order: nextOrder()
       };
 
       rpcClient
@@ -235,11 +233,12 @@ const MyDashboard = Vue.component('my-dashboard', {
       }
     },
     setConfig: function (config) {
+      console.log(config);
       this.config = config; // TODO: undocumented data
       this.templateIds = config.templateIds;
       this.todos = sortBy(todoStorage.fetch(get(config, 'todos')), 'order');
 
-      const newTemplateId = first(get(config, 'todos')).templateId;
+      const newTemplateId = templateIdStorage.get();
       // Triggering change on the same value would lead to infinite loop
       // with the watcher for templateId
       if (get(this.templateId, 'value') !== newTemplateId) {

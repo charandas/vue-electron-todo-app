@@ -5,37 +5,106 @@
   "workflows": {
     "templateIds": [
       { "label": "Sunday Satsang", "value": "sunday_satsang" },
-      { "label": "Special Teaching", "value": "special_teaching" },
-      { "label": "Zoom Teaching", "value": "zoom_teaching" },
-      { "label": "Friday Teaching", "value": "friday_teaching" }         
+      { "label": "Special Teaching", "value": "special_teaching" }
     ]
   },
   "templates": {
     "todos": [
       {
+        "id": "35981f94-9a0a-4602-8dc1-6df7b01bbbb1",
+        "order": 0,
+        "title": "Zoom Recording:",
+        "templateId": "sunday_satsang"
+      }, {
         "id": "d63d9233-6cdf-40bb-aacd-61532158e849",
-        "templateId": "sunday_satsang",
-        "title": "Start recording"
-      },
-      {
+        "order": 1,
+        "title": "Start recording after the chants (select save to local)",
+        "templateId": "sunday_satsang"
+      }, {
         "id": "a46076db-fd01-4a8f-91e1-8c9a5dfed986",
-        "templateId": "sunday_satsang",
-        "title": "Stop recording"
-      },
-      {
-        "id": "06bfd447-f9e0-41d0-8a5f-608b8b627e2d",
-        "templateId": "special_teaching",
-        "title": "Make private slack channel"
-      },
-      {
-        "id": "587ed09f-1be3-497a-a701-030755dbd0c6",
-        "templateId": "friday_teaching",
-        "title": "Make private friday event"
-      },
-      {
-        "id": "08867bab-016f-48bf-bf9f-513b7b16e362",
-        "templateId": "zoom_teaching",
-        "title": "Make private zoom event"
+        "order": 2,
+        "title": "Stop recording before open satsang begins",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "b0dd8693-1227-4ae1-8abc-148a5111997f",
+        "order": 3,
+        "title": "Process the recording, when shutting down Zoom towards the end",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "566cb3e3-1854-4894-bc59-c212c406bc53",
+        "order": 4,
+        "title": "Save \"audio_only.m4a\" file to dropbox \"AUDIO DROP\" folder",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "5be9f0af-0e5f-4595-b156-5b2333f5008b",
+        "order": 5,
+        "title": "Rename file to Satsang-some-topic-mm-dd-yy.m4a",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "ccb9b2af-144b-4cd8-b755-2d5953db4487",
+        "order": 6,
+        "title": "Wait for dropbox to go green as sync finishes",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "8f958132-13ff-431d-af3c-124b02c22325",
+        "order": 7,
+        "title": "Zoom Meeting:",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "609ca38c-f2f1-4c40-9ffa-85ceac8d44d4",
+        "order": 8,
+        "title": "Share URL on slack (#mgo and #tech-hosts)",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "3e8f7948-83d1-4259-96ae-b69d6391b8c8",
+        "order": 9,
+        "title": "2nd person joins: hover over our photo, click menu and pin video",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
+        "order": 10,
+        "title": "3rd person joins, hover over our photo, click menu and spotlight video",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "cf40f752-8ffc-4dff-9f5d-8ba26191ae92",
+        "order": 11,
+        "title": "Yeti Mic:",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "58ce1426-1b53-4d54-8dff-b6ff79f0d346",
+        "order": 12,
+        "title": "In the beginning, set gain to 75%, dial to 💗",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "a2ba9d2d-d466-4b0f-a515-78077903b595",
+        "order": 13,
+        "title": "For open Satsang, set dial to ⃝",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "608cb21d-d7db-4b04-bb76-181a077bc855",
+        "order": 14,
+        "title": "For Kirtan, lower the gain to 50%",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "e13ad19a-91c7-4537-8f28-ba2ff615a997",
+        "order": 15,
+        "title": "Camera Setup:",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "f8d7f3d8-066f-4c63-a977-b832b0a33984",
+        "order": 16,
+        "title": "Use BL button on remote to increase brightness",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "6391201b-d837-460a-bacd-675a53e87478",
+        "order": 17,
+        "title": "When Shambhavi arrives, adjust the camera to include her like in the example photo on mac desktop",
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "6c380b67-3894-4930-ac03-b94def443c4d",
+        "order": 18,
+        "title": "For Kirtan, adjust the view to include the band",
+        "templateId": "sunday_satsang"
       }
     ],
     "reminders": [

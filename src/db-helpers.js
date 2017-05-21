@@ -76,7 +76,7 @@ export function initializeIfNotSet (db, prefix, valueArray, indexOpts) {
       return _getValue(db, value.id)
         .catch(() => { // Bluebird filter facility isn't working for errors.NotFoundError
           logger.info(`Initializing ${prefix}::${value.id}`);
-          return _setValue(db, value.id, Object.assign(value, { system: true, order: index }), indexOpts);
+          return _setValue(db, value.id, Object.assign(value, { system: true }), indexOpts);
         });
     });
 }

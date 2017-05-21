@@ -13,7 +13,7 @@ function resetReminderInVM () {
 }
 
 const MyTodoRow = Vue.component('my-todo-row', {
-  props: ['todo', 'config', 'removeTodo'],
+  props: ['todo', 'config', 'removeTodo', 'nextOrder'],
   data () {
     return {
       reminder: find(this.config.reminders, { todoId: this.todo.id }) || resetReminderInVM(),
@@ -74,7 +74,11 @@ const MyTodoRow = Vue.component('my-todo-row', {
 
       // ADD loading around this
       if (this.beforeEditCache !== this.todo.title) {
-        this.$emit('edited', rpcClient.addOrUpdateTodoAsync({ title: this.todo.title, id: this.todo.id }));
+        this.$emit('edited', rpcClient.addOrUpdateTodoAsync({
+          title: this.todo.title,
+          id: this.todo.id,
+          order: this.nextOrder()
+        }));
       }
 
       if (!this.todo.title) {

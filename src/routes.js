@@ -1,5 +1,6 @@
 import Bluebird from 'bluebird';
 import get from 'lodash/get';
+import sortBy from 'lodash/sortBy';
 import uuidV4 from 'uuid/v4';
 
 import { scheduleReminder, unscheduleReminder, allScheduled } from './notifications';
@@ -21,7 +22,7 @@ function getConfig (todosTemplateId) {
       reminders: getValues(remindersTable)
     })
     .tap(result => {
-      logger.silly(result.todos);
+      console.log(JSON.stringify(sortBy(result.todos, 'order')));
     });
 }
 

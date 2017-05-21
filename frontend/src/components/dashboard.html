@@ -2,8 +2,8 @@
   <header class="header">
     <h1>Checklist</h1>
     <h2>{{eventDate}}</h2>
-    <v-select v-model="templateId" :options="templateIds"></v-select>
     <v-button markup="warning" @click="startNewSession()"><i class="mdi mdi-18px mdi-reload"></i> New Session</v-button>
+    <v-select class="template-select" v-model="templateId" :options="templateIds" :placeholder="'Select a template'"></v-select>
     <input class="new-todo"
       autofocus autocomplete="off"
       placeholder="What needs to be done?"
@@ -25,7 +25,7 @@
         <li v-for="todo in todos"
           class="todo"
           :key="todo.order">
-          <my-todo-row v-on:edited="showLoader" :todo="todo" :config="config" :removeTodo="removeTodo"></my-todo-row>
+          <my-todo-row v-on:edited="showLoader" :todo="todo" :config="config" :removeTodo="removeTodo" :nextOrder="nextOrder"></my-todo-row>
         </li>
       </transition-group>
     </draggable>

@@ -4,12 +4,14 @@ import uuidV4 from 'uuid/v4';
 
 import { scheduleReminder, unscheduleReminder, allScheduled } from './notifications';
 import config from './config-lib/index';
-import { database as db } from './app_ready';
+import { getLogger, database as db } from './app_ready';
 import { setValue, deleteValue, getValues, initializeIfNotSet } from './db-helpers';
 
 const todosTable = db.sublevel('todos');
 const remindersTable = db.sublevel('reminders');
 const todosIndexTable = db.sublevel('todosIndex');
+
+const logger = getLogger({ label: 'routes' });
 
 function getConfig (todosTemplateId) {
   return Bluebird
@@ -19,7 +21,7 @@ function getConfig (todosTemplateId) {
       reminders: getValues(remindersTable)
     })
     .tap(result => {
-      console.log(result.todos);
+      logger.silly(result.todos);
     });
 }
 
@@ -46,6 +48,7 @@ const routes = {
       const value = get(req, 'body.todo');
       const id = value.id || uuidV4();
       value.id = id;
+      logger.silly('add-todo payload', value);
       return setValue(todosTable, id, value, {
         indexProp: 'templateId',
         indexSub: todosIndexTable

@@ -21,19 +21,45 @@ Bluebird.promisifyAll(rpcClient);
 
 const { ipcRenderer } = System._nodeRequire('electron');
 
-// window.localStorage persistence
-var STORAGE_KEY = 'todos-techeast';
-var todoStorage = {
+const TEMPLATE_ID_STORAGE_KEY = 'templateId-techeast';
+const templateIdStorage = {
+  get: function () {
+    return window.localStorage.getItem(TEMPLATE_ID_STORAGE_KEY) || 'sunday_satsang';
+  },
+  // templateId: ex: sunday_satsang
+  set: function (templateId) {
+    window.localStorage.setItem(TEMPLATE_ID_STORAGE_KEY, templateId);
+  },
+  remove: function () {
+    window.localStorage.removeItem(TEMPLATE_ID_STORAGE_KEY);
+  }
+};
+
+const STORAGE_KEY = 'todos-techeast';
+// Of the form:
+// { 'sunday_satsang': [...allTheSundayTodos], 'special_teaching': [...allTheSpecialTodos] }
+const todoStorage = {
+  templateExists: function () {
+    const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
+    return !!get(fromStorage, templateIdStorage.get());
+  },
   fetch: function (todosTemplate) {
     const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
-    const todos = fromStorage || mapToTodos(todosTemplate);
+    const todos = get(fromStorage, templateIdStorage.get()) || mapToTodos(todosTemplate);
     return todos;
   },
   save: function (todos) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+    // First parse current storage, we augment on previous states from different template ids
+    const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || {};
+    const toSave = Object.assign(fromStorage, { [templateIdStorage.get()]: todos });
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   },
   remove: function () {
-    window.localStorage.removeItem(STORAGE_KEY);
+    // First parse current storage, we augment on previous states from different template ids
+    // delete only the active key
+    const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || {};
+    const toSave = Object.assign(fromStorage, { [templateIdStorage.get()]: null });
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
   }
 };
 
@@ -84,7 +110,7 @@ const MyDashboard = Vue.component('my-dashboard', {
   },
   beforeRouteEnter (to, from, next) {
     rpcClient
-      .getConfigAsync({ templateId: 'sunday_satsang' })
+      .getConfigAsync({ templateId: templateIdStorage.get() })
       .then(config => {
         next(vm => vm.setConfig(config));
       });
@@ -107,6 +133,22 @@ const MyDashboard = Vue.component('my-dashboard', {
         todoStorage.save(todos);
       },
       deep: true
+    },
+    templateId: {
+      handler: function (templateId, oldTemplateId) {
+        if (!oldTemplateId && templateId) { // this is on page load, just save id
+          templateIdStorage.set(templateId.value);
+        } else if (templateId) {
+          if (get(templateId, 'value') === get(oldTemplateId, 'value')) {
+            return;
+          }
+          templateIdStorage.set(templateId.value);
+          this.startNewSession({
+            showModal: false,
+            loadFromLocalStorage: true
+          });
+        }
+      }
     }
   },
 
@@ -168,7 +210,11 @@ const MyDashboard = Vue.component('my-dashboard', {
         return;
       }
       this.loading = true;
-      const todoToSave = { title: value, order: nextOrder(this.todos) };
+      const todoToSave = {
+        title: value,
+        templateId: this.templateId.value,
+        order: nextOrder(this.todos)
+      };
 
       rpcClient
         .addOrUpdateTodoAsync(todoToSave)
@@ -191,13 +237,28 @@ const MyDashboard = Vue.component('my-dashboard', {
     setConfig: function (config) {
       this.config = config; // TODO: undocumented data
       this.templateIds = config.templateIds;
-      this.templateId = find(this.templateIds, { value: first(get(config, 'todos')).templateId });
       this.todos = sortBy(todoStorage.fetch(get(config, 'todos')), 'order');
+
+      const newTemplateId = first(get(config, 'todos')).templateId;
+      // Triggering change on the same value would lead to infinite loop
+      // with the watcher for templateId
+      if (get(this.templateId, 'value') !== newTemplateId) {
+        this.templateId = find(this.templateIds, { value: newTemplateId });
+      }
     },
-    startNewSession: function () {
-      todoStorage.remove();
+    // options: { showModal: true, loadFromLocalStorage: false }
+    startNewSession: function (options = { showModal: true }) {
+      if (todoStorage.templateExists() && !options.showModal && options.loadFromLocalStorage) {
+        this.todos = sortBy(todoStorage.fetch(), 'order');
+        return;
+      }
+
       const promise = new Bluebird((resolve) => {
-        this.newSessionModalResult = resolve;
+        if (options.showModal) {
+          this.newSessionModalResult = resolve;
+        } else {
+          resolve('ok');
+        }
       });
       promise
         .then(result => {
@@ -206,7 +267,14 @@ const MyDashboard = Vue.component('my-dashboard', {
             this.loading = true;
             rpcClient
               .getConfigAsync({ templateId: this.templateId.value })
-              .then(this.setConfig)
+              .then(config => {
+                if (options.loadFromLocalStorage) {
+                  this.todos = sortBy(todoStorage.fetch(get(config, 'todos')), 'order');
+                } else {
+                  todoStorage.remove(this.templateId);
+                  this.setConfig(config);
+                }
+              })
               .delay(1000)
               .tap(() => (this.loading = false));
           }

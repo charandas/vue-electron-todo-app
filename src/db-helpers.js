@@ -5,6 +5,9 @@ import { getLogger } from './app_ready';
 
 const logger = getLogger({ label: 'db-helpers' });
 
+// Getting single value is never useful when using an index,
+// as you might as well lookup using a foreign key
+// Hence, we choose to not implement any indexing related logic on this function
 function _getValue (db, key) {
   return new Bluebird((resolve, reject) => {
     db.get(key, function (err, value) {
@@ -19,12 +22,24 @@ function _getValue (db, key) {
 }
 
 // Options: { indexProp: null, indexSub: null }
+// typeof options.indexProp === 'function' must satisfy
+export function setValueAfterLookupIndex (db, value, options = {}) {
+  const indexKey = `~INDEX~${options.indexProp(value)}`;
+  return _getValue(options.indexSub, indexKey)
+    .then(index => _setValue(db, index, value));
+}
+
+// Options: { indexProp: null, indexSub: null }
 function _setValue (db, key, value, options = {}) {
   const values = [
     { key, value }
   ];
   if (options.indexProp && options.indexSub) {
-    values.push({ key: `~INDEX~${value[options.indexProp]}-${key}`, value: key, prefix: options.indexSub });
+    if (typeof options.indexProp === 'function') {
+      values.push({ key: `~INDEX~${options.indexProp(value)}`, value: key, prefix: options.indexSub });
+    } else {
+      values.push({ key: `~INDEX~${value[options.indexProp]}-${key}`, value: key, prefix: options.indexSub });
+    }
   }
   return new Bluebird((resolve, reject) => {
     db.batch(values, function (err) {
@@ -81,9 +96,31 @@ export function initializeIfNotSet (db, prefix, valueArray, indexOpts) {
     });
 }
 
-export function deleteValue (db, key) {
+function _findAndDeleteIndex (db, key, { indexProp, indexSub }) {
+  return _getValue(db, key)
+    .then(value => {
+      const indexKey = typeof indexProp === 'function'
+       ? `${indexProp(value)}`
+       : `${value[indexProp]}-${key}`;
+      return Bluebird.fromCallback(indexSub.del.bind(indexSub, indexKey, { sync: true }));
+    })
+    .tap(() => logger.info('Index delete succeeded', key, indexProp, indexSub))
+    .catch(() => {}); // suppress delete errors
+}
+
+// options: { indexProp: null, indexSub: null }
+export function deleteValue (db, key, options = {}) {
   return Bluebird
-    .fromCallback(db.del.bind(db, key, { sync: true }))
+    .try(() => {
+      if (options.indexProp && options.indexSub) {
+        return _findAndDeleteIndex(db, key, {
+          indexProp: options.indexProp,
+          indexSub: options.indexSub
+        });
+      }
+    })
+    .then(() => Bluebird.fromCallback(db.del.bind(db, key, { sync: true })))
+    .tap(() => logger.info(' delete succeeded', key, options))
     .catch(() => {}); // suppress delete errors
 }
 

@@ -191,7 +191,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           }
           /* eslint no-unused-vars: 0 */
           const { completed, ...serverTodoModel } = todo;
-          return rpcClient.addOrUpdateTodoAsync(serverTodoModel);
+          return rpcClient.reorderTodoAsync(serverTodoModel);
         })
         .tap(() => (this.loading = false));
     },

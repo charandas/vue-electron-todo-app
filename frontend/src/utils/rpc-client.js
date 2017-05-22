@@ -18,6 +18,10 @@ function addOrUpdateTodo (todo, cb) {
   client.request('add-todo', { todo }, cb);
 }
 
+function reorderTodo (todo, cb) {
+  client.request('reorder-todo', { todo }, cb);
+}
+
 function removeTodo (todo, cb) {
   client.request('remove-todo', { todo }, cb);
 }
@@ -27,5 +31,6 @@ export default {
   addOrUpdateReminder,
   removeReminder,
   addOrUpdateTodo,
-  removeTodo
+  removeTodo,
+  reorderTodo
 };

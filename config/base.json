@@ -9,100 +9,179 @@
     ]
   },
   "templates": {
+    "orders": [
+      {
+        "id": "bf2340d8-5ea5-43fe-9fc1-ea927f8e13ab",
+        "todoId": "35981f94-9a0a-4602-8dc1-6df7b01bbbb1",
+        "order": 0,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "a36c42a2-3496-405b-82f8-60224ce53549",
+        "todoId": "d63d9233-6cdf-40bb-aacd-61532158e849",
+        "order": 1,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "774c35c0-5e1d-4dad-8afe-4da30c7de478",
+        "todoId": "a46076db-fd01-4a8f-91e1-8c9a5dfed986",
+        "order": 2,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "cf2df54e-8ad8-430a-a9d1-2ca7cfacc004",
+        "todoId": "b0dd8693-1227-4ae1-8abc-148a5111997f",
+        "order": 3,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "ca437c89-f551-499c-a982-755728667ab1",
+        "todoId": "566cb3e3-1854-4894-bc59-c212c406bc53",
+        "order": 4,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "247e7e21-80a3-4c81-a89c-91b390b85fad",
+        "todoId": "5be9f0af-0e5f-4595-b156-5b2333f5008b",
+        "order": 5,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "e9e79e86-c829-4000-8291-6273c4510e8d",
+        "todoId": "ccb9b2af-144b-4cd8-b755-2d5953db4487",
+        "order": 6,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "c7428ff4-769c-49d5-bf4d-6a57fa72cf93",
+        "todoId": "8f958132-13ff-431d-af3c-124b02c22325",
+        "order": 7,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "b776e2a1-4bd8-448a-a721-60c09f9a1d20",
+        "todoId": "609ca38c-f2f1-4c40-9ffa-85ceac8d44d4",
+        "order": 8,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "09956646-bb2b-4b16-88ab-de57a6515865",
+        "todoId": "3e8f7948-83d1-4259-96ae-b69d6391b8c8",
+        "order": 9,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "bc4c9b39-4e35-4b9b-9504-a878ce21b1eb",
+        "todoId": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
+        "order": 10,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "74c7acb0-5020-4c6a-93cc-5d681dac60c2",
+        "todoId": "cf40f752-8ffc-4dff-9f5d-8ba26191ae92",
+        "order": 11,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "282920d1-6108-403c-9554-a1690d5ba11c",
+        "todoId": "58ce1426-1b53-4d54-8dff-b6ff79f0d346",
+        "order": 12,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "17b7a5cc-615c-45c8-b20b-267d781c91c0",
+        "todoId": "a2ba9d2d-d466-4b0f-a515-78077903b595",
+        "order": 13,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "3a418252-452f-41db-bb67-23fb21b62395",
+        "todoId": "608cb21d-d7db-4b04-bb76-181a077bc855",
+        "order": 14,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "4c7cc4b0-af4e-4c1c-ac41-5e7409de3a13",
+        "todoId": "e13ad19a-91c7-4537-8f28-ba2ff615a997",
+        "order": 15,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "0842c785-94ee-49f9-95e1-061a1e4627af",
+        "todoId": "f8d7f3d8-066f-4c63-a977-b832b0a33984",
+        "order": 16,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "126fff1e-2e0d-4e72-b02e-fd86e9d20cbf",
+        "todoId": "6391201b-d837-460a-bacd-675a53e87478",
+        "order": 17,
+        "templateId": "sunday_satsang"
+      }, {
+        "id": "3ebb0431-38ec-4162-ab88-f6d70aabc62a",
+        "todoId": "6c380b67-3894-4930-ac03-b94def443c4d",
+        "order": 18,
+        "templateId": "sunday_satsang"
+      }
+    ],
     "todos": [
       {
         "id": "35981f94-9a0a-4602-8dc1-6df7b01bbbb1",
-        "order": 0,
         "title": "Zoom Recording:",
         "templateId": "sunday_satsang"
       }, {
         "id": "d63d9233-6cdf-40bb-aacd-61532158e849",
-        "order": 1,
         "title": "Start recording after the chants (select save to local)",
         "templateId": "sunday_satsang"
       }, {
         "id": "a46076db-fd01-4a8f-91e1-8c9a5dfed986",
-        "order": 2,
         "title": "Stop recording before open satsang begins",
         "templateId": "sunday_satsang"
       }, {
         "id": "b0dd8693-1227-4ae1-8abc-148a5111997f",
-        "order": 3,
         "title": "Process the recording, when shutting down Zoom towards the end",
         "templateId": "sunday_satsang"
       }, {
         "id": "566cb3e3-1854-4894-bc59-c212c406bc53",
-        "order": 4,
         "title": "Save \"audio_only.m4a\" file to dropbox \"AUDIO DROP\" folder",
         "templateId": "sunday_satsang"
       }, {
         "id": "5be9f0af-0e5f-4595-b156-5b2333f5008b",
-        "order": 5,
         "title": "Rename file to Satsang-some-topic-mm-dd-yy.m4a",
         "templateId": "sunday_satsang"
       }, {
         "id": "ccb9b2af-144b-4cd8-b755-2d5953db4487",
-        "order": 6,
         "title": "Wait for dropbox to go green as sync finishes",
         "templateId": "sunday_satsang"
       }, {
         "id": "8f958132-13ff-431d-af3c-124b02c22325",
-        "order": 7,
         "title": "Zoom Meeting:",
         "templateId": "sunday_satsang"
       }, {
         "id": "609ca38c-f2f1-4c40-9ffa-85ceac8d44d4",
-        "order": 8,
         "title": "Share URL on slack (#mgo and #tech-hosts)",
         "templateId": "sunday_satsang"
       }, {
         "id": "3e8f7948-83d1-4259-96ae-b69d6391b8c8",
-        "order": 9,
         "title": "2nd person joins: hover over our photo, click menu and pin video",
         "templateId": "sunday_satsang"
       }, {
         "id": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
-        "order": 10,
         "title": "3rd person joins, hover over our photo, click menu and spotlight video",
         "templateId": "sunday_satsang"
       }, {
         "id": "cf40f752-8ffc-4dff-9f5d-8ba26191ae92",
-        "order": 11,
         "title": "Yeti Mic:",
         "templateId": "sunday_satsang"
       }, {
         "id": "58ce1426-1b53-4d54-8dff-b6ff79f0d346",
-        "order": 12,
         "title": "In the beginning, set gain to 75%, dial to 💗",
         "templateId": "sunday_satsang"
       }, {
         "id": "a2ba9d2d-d466-4b0f-a515-78077903b595",
-        "order": 13,
         "title": "For open Satsang, set dial to ⃝",
         "templateId": "sunday_satsang"
       }, {
         "id": "608cb21d-d7db-4b04-bb76-181a077bc855",
-        "order": 14,
         "title": "For Kirtan, lower the gain to 50%",
         "templateId": "sunday_satsang"
       }, {
         "id": "e13ad19a-91c7-4537-8f28-ba2ff615a997",
-        "order": 15,
         "title": "Camera Setup:",
         "templateId": "sunday_satsang"
       }, {
         "id": "f8d7f3d8-066f-4c63-a977-b832b0a33984",
-        "order": 16,
         "title": "Use BL button on remote to increase brightness",
         "templateId": "sunday_satsang"
       }, {
         "id": "6391201b-d837-460a-bacd-675a53e87478",
-        "order": 17,
         "title": "When Shambhavi arrives, adjust the camera to include her like in the example photo on mac desktop",
         "templateId": "sunday_satsang"
       }, {
         "id": "6c380b67-3894-4930-ac03-b94def443c4d",
-        "order": 18,
         "title": "For Kirtan, adjust the view to include the band",
         "templateId": "sunday_satsang"
       }

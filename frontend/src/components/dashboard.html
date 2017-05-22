@@ -25,7 +25,12 @@
         <li v-for="todo in todos"
           class="todo"
           :key="todo.order">
-          <my-todo-row v-on:edited="showLoader" :todo="todo" :config="config" :removeTodo="removeTodo" :nextOrder="nextOrder"></my-todo-row>
+          <my-todo-row v-on:edited="showLoader"
+            :todo="todo"
+            :config="config"
+            :removeTodo="removeTodo"
+            :orderTemplateId="templateId.value"
+            :nextOrder="nextOrder"></my-todo-row>
         </li>
       </transition-group>
     </draggable>

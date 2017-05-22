@@ -13,7 +13,7 @@ function resetReminderInVM () {
 }
 
 const MyTodoRow = Vue.component('my-todo-row', {
-  props: ['todo', 'config', 'removeTodo', 'nextOrder'],
+  props: ['todo', 'config', 'removeTodo', 'nextOrder', 'orderTemplateId'],
   data () {
     return {
       reminder: find(this.config.reminders, { todoId: this.todo.id }) || resetReminderInVM(),
@@ -77,7 +77,9 @@ const MyTodoRow = Vue.component('my-todo-row', {
         this.$emit('edited', rpcClient.addOrUpdateTodoAsync({
           title: this.todo.title,
           id: this.todo.id,
-          order: this.nextOrder()
+          templateId: this.todo.templateId,
+          order: this.todo.order || this.nextOrder(),
+          orderTemplateId: this.orderTemplateId
         }));
       }
 

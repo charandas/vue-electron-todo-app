@@ -41,9 +41,11 @@ const todoStorage = {
     const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     return !!get(fromStorage, templateIdStorage.get());
   },
-  fetch: function (todosTemplate) {
+  fetch: function (todosTemplate, { hardRefresh = false }) {
     const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
-    const todos = get(fromStorage, templateIdStorage.get()) || mapToTodos(todosTemplate);
+    const todos = !hardRefresh
+      ? get(fromStorage, templateIdStorage.get(), mapToTodos(todosTemplate))
+      : mapToTodos(todosTemplate);
     return todos;
   },
   save: function (todos) {
@@ -137,8 +139,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           }
           templateIdStorage.set(templateId.value);
           this.startNewSession({
-            showModal: false,
-            loadFromLocalStorage: true
+            showModal: false
           });
         }
       }
@@ -191,7 +192,10 @@ const MyDashboard = Vue.component('my-dashboard', {
           }
           /* eslint no-unused-vars: 0 */
           const { completed, ...serverTodoModel } = todo;
-          return rpcClient.reorderTodoAsync(serverTodoModel);
+          return rpcClient.reorderTodoAsync(Object.assign(serverTodoModel, {
+            // override, in case, we are modifying order for a base todo
+            orderTemplateId: this.templateId.value
+          }));
         })
         .tap(() => (this.loading = false));
     },
@@ -231,11 +235,12 @@ const MyDashboard = Vue.component('my-dashboard', {
         rpcClient.removeTodoAsync(todo);
       }
     },
-    setConfig: function (config) {
+    // options: { hardRefresh = false }
+    setConfig: function (config, options = {}) {
       console.log(config);
       this.config = config; // TODO: undocumented data
       this.templateIds = config.templateIds;
-      this.todos = sortBy(todoStorage.fetch(get(config, 'todos')), 'order');
+      this.todos = sortBy(todoStorage.fetch(get(config, 'todos'), { hardRefresh: options.hardRefresh }), 'order');
 
       const newTemplateId = templateIdStorage.get();
       // Triggering change on the same value would lead to infinite loop
@@ -244,13 +249,8 @@ const MyDashboard = Vue.component('my-dashboard', {
         this.templateId = find(this.templateIds, { value: newTemplateId });
       }
     },
-    // options: { showModal: true, loadFromLocalStorage: false }
+    // options: { showModal: true }
     startNewSession: function (options = { showModal: true }) {
-      if (todoStorage.templateExists() && !options.showModal && options.loadFromLocalStorage) {
-        this.todos = sortBy(todoStorage.fetch(), 'order');
-        return;
-      }
-
       const promise = new Bluebird((resolve) => {
         if (options.showModal) {
           this.newSessionModalResult = resolve;
@@ -266,12 +266,8 @@ const MyDashboard = Vue.component('my-dashboard', {
             rpcClient
               .getConfigAsync({ templateId: this.templateId.value })
               .then(config => {
-                if (options.loadFromLocalStorage) {
-                  this.todos = sortBy(todoStorage.fetch(get(config, 'todos')), 'order');
-                } else {
-                  todoStorage.remove(this.templateId);
-                  this.setConfig(config);
-                }
+                todoStorage.remove(this.templateId);
+                this.setConfig(config, { hardRefresh: true });
               })
               .delay(1000)
               .tap(() => (this.loading = false));

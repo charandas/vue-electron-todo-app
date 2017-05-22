@@ -74,7 +74,9 @@ const routes = {
       value.id = id;
 
       const order = value.order;
+      const orderTemplateId = value.orderTemplateId;
       delete value.order;
+      delete value.orderTemplateId;
 
       const orderId = uuidV4();
 
@@ -87,7 +89,7 @@ const routes = {
         }),
         savedOrder: setValue(ordersTable, orderId, {
           order,
-          templateId: value.templateId,
+          templateId: orderTemplateId,
           todoId: id
         }, {
           indexProp: ORDER_INDEX_PROP,
@@ -104,11 +106,13 @@ const routes = {
       value.id = id;
 
       const order = value.order;
+      const orderTemplateId = value.orderTemplateId;
+      delete value.orderTemplateId;
 
-      logger.silly('reorder-todo payload', value);
+      logger.info('reorder-todo payload', value);
       return setValueAfterLookupIndex(ordersTable, {
         order,
-        templateId: value.templateId,
+        templateId: orderTemplateId,
         todoId: id
       }, {
         indexProp: ORDER_INDEX_PROP,

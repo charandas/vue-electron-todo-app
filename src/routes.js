@@ -25,10 +25,11 @@ function getTodos (todosTemplateId) {
   return Bluebird
     .props({
       todos: getValues(todosTable, { indexPropValue: todosTemplateId, indexSub: todosIndexTable }),
+      baseTodos: getValues(todosTable, { indexPropValue: 'base', indexSub: todosIndexTable }),
       orders: getValues(ordersTable, { indexPropValue: todosTemplateId, indexSub: ordersIndexTable })
     })
-    .then(({ todos, orders }) => {
-      return map(todos, todo => {
+    .then(({ todos, baseTodos, orders }) => {
+      return map([...todos, ...baseTodos], todo => {
         const order = find(orders, { todoId: todo.id });
         return Object.assign(todo, { order: order.order });
       });

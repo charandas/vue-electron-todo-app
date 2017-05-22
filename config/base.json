@@ -4,8 +4,16 @@
   "height": 600,
   "workflows": {
     "templateIds": [
-      { "label": "Sunday Satsang", "value": "sunday_satsang" },
-      { "label": "Special Teaching", "value": "special_teaching" }
+      {
+        "label": "Sunday Satsang",
+        "value": "sunday_satsang",
+        "inherits": "base"
+      },
+      {
+        "label": "Special Teaching",
+        "value": "special_teaching",
+        "inherits": "base"
+      }
     ]
   },
   "templates": {
@@ -56,55 +64,105 @@
         "order": 8,
         "templateId": "sunday_satsang"
       }, {
-        "id": "09956646-bb2b-4b16-88ab-de57a6515865",
-        "todoId": "3e8f7948-83d1-4259-96ae-b69d6391b8c8",
-        "order": 9,
-        "templateId": "sunday_satsang"
-      }, {
         "id": "bc4c9b39-4e35-4b9b-9504-a878ce21b1eb",
         "todoId": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
-        "order": 10,
+        "order": 9,
         "templateId": "sunday_satsang"
       }, {
         "id": "74c7acb0-5020-4c6a-93cc-5d681dac60c2",
         "todoId": "cf40f752-8ffc-4dff-9f5d-8ba26191ae92",
-        "order": 11,
+        "order": 10,
         "templateId": "sunday_satsang"
       }, {
         "id": "282920d1-6108-403c-9554-a1690d5ba11c",
         "todoId": "58ce1426-1b53-4d54-8dff-b6ff79f0d346",
-        "order": 12,
+        "order": 11,
         "templateId": "sunday_satsang"
       }, {
         "id": "17b7a5cc-615c-45c8-b20b-267d781c91c0",
         "todoId": "a2ba9d2d-d466-4b0f-a515-78077903b595",
-        "order": 13,
+        "order": 12,
         "templateId": "sunday_satsang"
       }, {
         "id": "3a418252-452f-41db-bb67-23fb21b62395",
         "todoId": "608cb21d-d7db-4b04-bb76-181a077bc855",
-        "order": 14,
+        "order": 13,
         "templateId": "sunday_satsang"
       }, {
         "id": "4c7cc4b0-af4e-4c1c-ac41-5e7409de3a13",
         "todoId": "e13ad19a-91c7-4537-8f28-ba2ff615a997",
-        "order": 15,
+        "order": 14,
         "templateId": "sunday_satsang"
       }, {
         "id": "0842c785-94ee-49f9-95e1-061a1e4627af",
         "todoId": "f8d7f3d8-066f-4c63-a977-b832b0a33984",
-        "order": 16,
+        "order": 15,
         "templateId": "sunday_satsang"
       }, {
         "id": "126fff1e-2e0d-4e72-b02e-fd86e9d20cbf",
         "todoId": "6391201b-d837-460a-bacd-675a53e87478",
-        "order": 17,
+        "order": 16,
         "templateId": "sunday_satsang"
       }, {
         "id": "3ebb0431-38ec-4162-ab88-f6d70aabc62a",
         "todoId": "6c380b67-3894-4930-ac03-b94def443c4d",
-        "order": 18,
+        "order": 17,
         "templateId": "sunday_satsang"
+      }, {
+        "id":"dddadc08-fd52-4366-a556-f2e68489f449",
+        "todoId": "8f958132-13ff-431d-af3c-124b02c22325",
+        "order": 0,
+        "templateId": "special_teaching"
+      }, {
+        "id": "ab5794bf-f3ea-47a0-a2e3-6ca905e053cb",
+        "todoId": "278bcd9e-47c1-409c-b2c8-9aa083fb5ff0",
+        "order": 1,
+        "templateId": "special_teaching"
+      }, {
+        "id": "f3c96d97-02d2-438b-871b-c35faed43f48",
+        "todoId": "6e3de05f-478e-4125-9356-7231ac965f53",
+        "order": 2,
+        "templateId": "special_teaching"
+      }, {
+        "id": "2a871ddb-37b7-445d-985f-1588b3aa6924",
+        "todoId": "a80c01a0-e76c-4cea-8e9c-f05f56a0ae1f",
+        "order": 3,
+        "templateId": "special_teaching"
+      }, {
+        "id":"e9569d60-a7ab-4539-a218-0dcc0ee560c5",
+        "todoId": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
+        "order": 4,
+        "templateId": "special_teaching"
+      }, {
+        "id":"9eb931cd-634d-48ea-9f0f-bf2d7a9c1de9",
+        "todoId": "cf40f752-8ffc-4dff-9f5d-8ba26191ae92",
+        "order": 5,
+        "templateId": "special_teaching"
+      }, {
+        "id":"3703d086-4701-4693-83b8-3f4068343a39",
+        "todoId": "58ce1426-1b53-4d54-8dff-b6ff79f0d346",
+        "order": 6,
+        "templateId": "special_teaching"
+      }, {
+        "id": "96299f51-bdc8-4f1a-8f98-9f41b1023f9b",
+        "todoId": "9ffdceff-9a8c-4169-a6de-a698661904e0",
+        "order": 7,
+        "templateId": "special_teaching"
+      }, {
+        "id":"309a1bb3-738b-4807-b355-9f0b9c060031",
+        "todoId": "e13ad19a-91c7-4537-8f28-ba2ff615a997",
+        "order": 8,
+        "templateId": "special_teaching"
+      }, {
+        "id":"682d3422-3059-489a-8b50-95e750f8bcb4",
+        "todoId": "f8d7f3d8-066f-4c63-a977-b832b0a33984",
+        "order": 9,
+        "templateId": "special_teaching"
+      }, {
+        "id":"2f61367f-6bb3-45b3-b9e9-46a441fc8cfb",
+        "todoId": "6391201b-d837-460a-bacd-675a53e87478",
+        "order": 10,
+        "templateId": "special_teaching"
       }
     ],
     "todos": [
@@ -139,27 +197,39 @@
       }, {
         "id": "8f958132-13ff-431d-af3c-124b02c22325",
         "title": "Zoom Meeting:",
-        "templateId": "sunday_satsang"
+        "templateId": "base"
+      }, {
+        "id": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
+        "title": "When 3rd person joins, hover over our photo, click ⋯ and spotlight video",
+        "templateId": "base"
+      }, {
+        "id": "278bcd9e-47c1-409c-b2c8-9aa083fb5ff0",
+        "title": "Download CSV from bookings on jayakula.org",
+        "templateId": "special_teaching"
+      }, {
+        "id": "6e3de05f-478e-4125-9356-7231ac965f53",
+        "title": "Create slack channel from downloaded list of remote attendees",
+        "templateId": "special_teaching"
+      }, {
+        "id": "a80c01a0-e76c-4cea-8e9c-f05f56a0ae1f",
+        "title": "Share URL on slack channel that you created",
+        "templateId": "special_teaching"
       }, {
         "id": "609ca38c-f2f1-4c40-9ffa-85ceac8d44d4",
         "title": "Share URL on slack (#mgo and #tech-hosts)",
         "templateId": "sunday_satsang"
       }, {
-        "id": "3e8f7948-83d1-4259-96ae-b69d6391b8c8",
-        "title": "2nd person joins: hover over our photo, click menu and pin video",
-        "templateId": "sunday_satsang"
-      }, {
-        "id": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
-        "title": "3rd person joins, hover over our photo, click menu and spotlight video",
-        "templateId": "sunday_satsang"
-      }, {
         "id": "cf40f752-8ffc-4dff-9f5d-8ba26191ae92",
         "title": "Yeti Mic:",
-        "templateId": "sunday_satsang"
+        "templateId": "base"
       }, {
         "id": "58ce1426-1b53-4d54-8dff-b6ff79f0d346",
         "title": "In the beginning, set gain to 75%, dial to 💗",
-        "templateId": "sunday_satsang"
+        "templateId": "base"
+      }, {
+        "id": "9ffdceff-9a8c-4169-a6de-a698661904e0",
+        "title": "During questions, if people are sitting farther back, set dial to ⃝ ",
+        "templateId": "special_teaching"
       }, {
         "id": "a2ba9d2d-d466-4b0f-a515-78077903b595",
         "title": "For open Satsang, set dial to ⃝",
@@ -171,15 +241,15 @@
       }, {
         "id": "e13ad19a-91c7-4537-8f28-ba2ff615a997",
         "title": "Camera Setup:",
-        "templateId": "sunday_satsang"
+        "templateId": "base"
       }, {
         "id": "f8d7f3d8-066f-4c63-a977-b832b0a33984",
         "title": "Use BL button on remote to increase brightness",
-        "templateId": "sunday_satsang"
+        "templateId": "base"
       }, {
         "id": "6391201b-d837-460a-bacd-675a53e87478",
         "title": "When Shambhavi arrives, adjust the camera to include her like in the example photo on mac desktop",
-        "templateId": "sunday_satsang"
+        "templateId": "base"
       }, {
         "id": "6c380b67-3894-4930-ac03-b94def443c4d",
         "title": "For Kirtan, adjust the view to include the band",

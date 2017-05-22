@@ -17,9 +17,6 @@
   "build": {
     "appId": "com.humanflow.techeast",
     "productName": "Tech Host Assistant",
-    "asar": {
-      "unpackDir": "node_modules"
-    },
     "files": [
       "background.*",
       "src/**/*",

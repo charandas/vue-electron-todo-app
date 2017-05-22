@@ -12,7 +12,7 @@ const nodeBuiltInModules = ['assert', 'buffer', 'child_process', 'cluster',
 
 const electronBuiltInModules = ['electron'];
 
-function generateExternalModulesList() {
+function generateExternalModulesList () {
   const appManifest = jetpack.read('./package.json', 'json');
   return [].concat(
       nodeBuiltInModules,
@@ -24,7 +24,7 @@ function generateExternalModulesList() {
 
 const cached = {};
 
-function bundler(src, dest, _opts) {
+function bundler (src, dest, _opts) {
   const opts = _opts || {};
   opts.rollupPlugins = opts.rollupPlugins || [];
   return rollup({
@@ -47,7 +47,7 @@ function bundler(src, dest, _opts) {
     const isolatedCode = '(function () {' + result.code + '\n}());';
     return Promise.all([
       jetpack.writeAsync(dest, isolatedCode + '\n//# sourceMappingURL=' + jsFile + '.map'),
-      jetpack.writeAsync(dest + '.map', result.map.toString()),
+      jetpack.writeAsync(dest + '.map', result.map.toString())
     ]);
   });
 }

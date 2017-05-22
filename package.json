@@ -17,8 +17,12 @@
   "build": {
     "appId": "com.humanflow.techeast",
     "productName": "Tech Host Assistant",
+    "asar": {
+      "unpackDir": "node_modules"
+    },
     "files": [
-      "app/*",
+      "background.*",
+      "src/**/*",
       "frontend/**/*",
       "node_modules/**/*",
       "package.json"
@@ -30,6 +34,7 @@
         "to": "frontend",
         "filter": [
           "index.html",
+          "preload.css",
           "jspm_packages/system.js",
           "jspm_packages/npm/mdi@1.9.33/**",
           "dist/**",
@@ -50,13 +55,14 @@
     "build-local": "npm run gulp build",
     "release-dev": "npm run build && build",
     "release": "semistandard && npm run frontend-build && npm run build && build",
-    "frontend-build": "jspm build src/techeast frontend/dist/build.js --minify",
+    "frontend-build": "jspm build src/techeast frontend/dist/build.js --skip-rollup",
     "frontend-dev": "jspm build src/techeast frontend/dist/build.js -wd --skip-rollup",
     "jspm": "./node_modules/.bin/jspm"
   },
   "author": "Human Flow S.C.",
   "private": true,
   "dependencies": {
+    "bluebird": "^3.4.7",
     "continuation-local-storage": "^3.2.0",
     "electron-context-menu": "^0.8.0",
     "electron-rpc": "^2.0.1",
@@ -74,7 +80,6 @@
     "winston-electron": "0.0.3"
   },
   "devDependencies": {
-    "bluebird": "^3.4.7",
     "devtron": "^1.4.0",
     "electron": "1.4.15",
     "electron-builder": "^8.6.0",

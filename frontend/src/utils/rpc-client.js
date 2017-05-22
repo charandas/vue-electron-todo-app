@@ -1,4 +1,5 @@
-const Client = System._nodeRequire('electron-rpc/client');
+import Client from '@node/electron-rpc/client';
+
 const client = new Client();
 
 function getConfig (options, cb) {

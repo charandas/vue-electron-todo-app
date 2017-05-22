@@ -6,6 +6,7 @@ import get from 'lodash/get';
 import maxBy from 'lodash/maxBy';
 import sortBy from 'lodash/sortBy';
 import Bluebird from 'bluebird';
+import electron from '@node/electron';
 
 import rpcClient from '../utils/rpc-client';
 import { mapToTodos, isSeparatorLabel } from '../utils/todos';
@@ -17,8 +18,6 @@ import MyTodoRow from './todo-row';
 import './dashboard.css!css';
 
 Bluebird.promisifyAll(rpcClient);
-
-const { ipcRenderer } = System._nodeRequire('electron');
 
 const TEMPLATE_ID_STORAGE_KEY = 'templateId-techeast';
 const templateIdStorage = {
@@ -110,7 +109,7 @@ const MyDashboard = Vue.component('my-dashboard', {
       });
   },
   created: function () {
-    ipcRenderer.on('checkOffTodo', (event, todoId) => {
+    electron.ipcRenderer.on('checkOffTodo', (event, todoId) => {
       if (todoId) {
         const found = find(this.todos, { id: todoId });
         if (found) {
@@ -211,7 +210,7 @@ const MyDashboard = Vue.component('my-dashboard', {
       const todoToSave = {
         title: value,
         templateId: this.templateId.value,
-        order: nextOrder()
+        order: this.nextOrder()
       };
 
       rpcClient

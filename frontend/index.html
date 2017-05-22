@@ -6,11 +6,13 @@
     <title>Jaya Kula Tech Host Assistant</title>
     <link href="preload.css" rel="stylesheet" title="Preload Style">
     <script>
-    if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
       var electron = require('electron');
       // Disable zooming
       electron.webFrame.setVisualZoomLevelLimits(1, 1);
-    }
+
+      var path = require('path');
+      module.paths.push(path.resolve(__dirname, '..', 'app.asar.unpacked', 'node_modules'));
+      path = undefined;
     </script>
 </head>
 <body>

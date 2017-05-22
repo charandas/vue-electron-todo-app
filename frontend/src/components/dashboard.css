@@ -101,6 +101,14 @@ body {
   text-align: center;
 }
 
+input.new-todo::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: white;
+}
+
+input.new-todo:placeholder-shown {
+  background-color: cadetblue;
+}
+
 .template-select {
   padding-top: 1em;
 }

@@ -22,7 +22,7 @@ import { getLogger } from './app_ready';
 const APP_PATH = 'frontend/index.html';
 const runningEnv = config.get('env');
 
-var LOAD_URL = path.join(__dirname, '..', '..', APP_PATH);
+var LOAD_URL = path.join(__dirname, '..', APP_PATH);
 if (runningEnv === 'development') {
   LOAD_URL = path.join(__dirname, '..', APP_PATH);
 }
@@ -56,7 +56,6 @@ function createWindow () {
 
   scheduleAllReminders(mainWindow);
 
-  // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: LOAD_URL,
     protocol: 'file:',

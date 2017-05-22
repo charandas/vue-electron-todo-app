@@ -7,13 +7,19 @@ const MyModal = Vue.component('my-modal', {
   props: ['result', 'onOutsideClick'],
   data () {
     return {
-      overModal: true,
+      overModal: false,
       focused: false
     };
   },
   methods: {
     focusOn: function () {
       this.focused = true;
+    },
+    onEscKeyHandler: function (e) {
+      if (e.keyCode === 27) {
+        this.overModal = false;
+        this.onOutsideClickHandler();
+      }
     },
     onOutsideClickHandler: function (e) {
       if (!this.overModal && this.focused) {
@@ -25,18 +31,12 @@ const MyModal = Vue.component('my-modal', {
       }
     }
   },
-  created () {
-    window.addEventListener('keyup', e => {
-      if (e.keyCode === 27) {
-        this.overModal = false;
-        this.onOutsideClickHandler();
-      }
-    });
-  },
   mounted () {
+    document.addEventListener('keyup', this.onEscKeyHandler);
     document.addEventListener('click', this.onOutsideClickHandler);
   },
   beforeDestroy () {
+    document.removeEventListener('keyup', this.onEscKeyHandler);
     document.removeEventListener('click', this.onOutsideClickHandler);
   },
   render: modalTpl.render,

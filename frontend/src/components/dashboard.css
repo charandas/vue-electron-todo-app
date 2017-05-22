@@ -54,6 +54,10 @@ html .new-session:active {
   position: relative;
 }
 
+html {
+  background-color: orange;
+}
+
 body {
   font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   line-height: 1.4em;

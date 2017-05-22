@@ -139,7 +139,7 @@ const MyDashboard = Vue.component('my-dashboard', {
           }
           templateIdStorage.set(templateId.value);
           this.startNewSession({
-            showModal: false
+            showModal: true // since it resets the todos when switching templates
           });
         }
       }

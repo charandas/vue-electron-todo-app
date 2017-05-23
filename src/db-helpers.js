@@ -88,7 +88,6 @@ export function getValues (db, options = {}) {
   // Otherwise, we just got indices
   return promise
     .then(indices => {
-      console.log(indices);
       return Bluebird
         .map(indices, index => _getValue(db, index));
     });
@@ -110,9 +109,9 @@ function _findAndDeleteIndex (db, key, { indexProp, indexSub }) {
   return _getValue(db, key)
     .then(value => {
       const indexKey = typeof indexProp === 'function'
-       ? `${indexProp(value)}`
-       : `${value[indexProp]}-${key}`;
-      console.log('Index key to delete', indexKey);
+       ? `~INDEX~${indexProp(value)}`
+       : `~INDEX~${value[indexProp]}-${key}`;
+
       return Bluebird
         .fromCallback(indexSub.del.bind(indexSub, indexKey, { sync: true }))
         .tap(() => logger.info('Index delete succeeded', indexKey));

@@ -125,7 +125,7 @@ const routes = {
     server.on('remove-todo', (req, next) => {
       const value = get(req, 'body.todo');
       const id = value.id;
-      console.log(value);
+
       return Bluebird
         .resolve(value)
         .tap(unscheduleReminder)

@@ -19,7 +19,7 @@
   </my-modal>
   <my-modal v-if="deleteSystemTodoResult" :result="deleteSystemTodoResult">
     <h3 slot="header">Are you a Green Agent?</h3>
-    <h4 slot="body">Only Green Agents can remove system todos.</h4>
+    <h4 slot="body">Only Green Agents may remove default items.</h4>
   </my-modal>
 
   <section class="main" v-show="todos.length">

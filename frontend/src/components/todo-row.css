@@ -38,6 +38,7 @@
 }
 
 .view label {
+  max-width: 20em;
   padding: 15px 60px 15px 15px;
   margin-left: 90px;
   display: block;
@@ -60,7 +61,6 @@
   padding-left: 10px;
   font-size: 30px;
   color: #cc9a9a;
-  margin-bottom: 11px;
   transition: color 0.2s ease-out;
 }
 
@@ -75,7 +75,6 @@
   margin: auto 0;
   font-size: 30px;
   color: #cc9a9a;
-  margin-bottom: 11px;
   transition: color 0.2s ease-out;
 }
 

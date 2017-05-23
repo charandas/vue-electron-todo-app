@@ -7,6 +7,7 @@ export function mapToTodos (tasks, options = {}) {
     title: task.title,
     completed: options.updateOrder ? task.completed : false,
     system: task.system,
+    base: task.templateId === 'base',
     order: options.updateOrder ? index : task.order,
     templateId: task.templateId
   }));

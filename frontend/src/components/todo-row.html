@@ -1,11 +1,11 @@
 <div class="view" :class="{ 'todo-separator': separatorLabel, completed: todo.completed }">
   <div :class=" {'hide-view': editing} ">
-    <span class="drag-handle"><svg title="DragIcon" viewBox="0 0 32 32"><path d="M 14 5.5 a 3 3 0 1 1 -3 -3 A 3 3 0 0 1 14 5.5 Z m 7 3 a 3 3 0 1 0 -3 -3 A 3 3 0 0 0 21 8.5 Z m -10 4 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 12.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 12.5 Z m -10 10 a 3 3 0 1 0 3 3 A 3 3 0 0 0 11 22.5 Z m 10 0 a 3 3 0 1 0 3 3 A 3 3 0 0 0 21 22.5 Z"></path></svg></span>
+    <span class="drag-handle"></span>
     <input class="toggle" type="checkbox" v-model="todo.completed">
-    <label @dblclick="editTodo()">{{ todo.title }}</label>
+    <label @dblclick="!todo.base || (orderTemplateId == 'base') && editTodo()">{{ todo.title }}</label>
     <button v-tooltip.left="reminderMessaging"
      class="remind" @click="updateReminder()"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
-    <button class="destroy" @click="removeTodo(todo)"></button>
+    <button v-if="!todo.base || (orderTemplateId == 'base')" class="destroy" @click="removeTodo(todo)"></button>
   </div>
   <my-date-picker v-if="reminderPickModalResult" :result="reminderPickModalResult" :todo="todo" :reminder="reminder" >
   </my-date-picker>

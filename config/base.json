@@ -5,6 +5,10 @@
   "workflows": {
     "templateIds": [
       {
+        "label": "Base Template",
+        "value": "base"
+      },
+      {
         "label": "Sunday Satsang",
         "value": "sunday_satsang",
         "inherits": "base"
@@ -163,6 +167,41 @@
         "todoId": "6391201b-d837-460a-bacd-675a53e87478",
         "order": 10,
         "templateId": "special_teaching"
+      }, {
+        "todoId": "8f958132-13ff-431d-af3c-124b02c22325",
+        "id": "8da9921b-798e-495a-b150-fe2f2a354c6e",
+        "templateId": "base",
+        "order": 0
+      }, {
+        "todoId": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
+        "id": "5143dfd1-e8b8-4b37-b4bf-7cf9f307ba84",
+        "templateId": "base",
+        "order": 1
+      }, {
+        "todoId": "cf40f752-8ffc-4dff-9f5d-8ba26191ae92",
+        "id": "8256aeda-cbd2-43b6-bc56-3eda4917f2f7",
+        "templateId": "base",
+        "order": 2
+      }, {
+        "todoId": "58ce1426-1b53-4d54-8dff-b6ff79f0d346",
+        "id": "8aedd955-a203-4bb0-bf71-9edca539724c",
+        "templateId": "base",
+        "order": 3
+      }, {
+        "todoId": "e13ad19a-91c7-4537-8f28-ba2ff615a997",
+        "id": "2f0f912c-73a1-494f-8979-68ab7b91e663",
+        "templateId": "base",
+        "order": 4
+      }, {
+        "todoId": "f8d7f3d8-066f-4c63-a977-b832b0a33984",
+        "id": "51fcf438-6e62-4601-92f7-e33cd8426b1f",
+        "templateId": "base",
+        "order": 5
+      }, {
+        "todoId": "6391201b-d837-460a-bacd-675a53e87478",
+        "id": "206d4658-b4fe-4370-abae-2e86a4d7901c",
+        "templateId": "base",
+        "order": 6
       }
     ],
     "todos": [

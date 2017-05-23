@@ -20,14 +20,25 @@ const ORDER_INDEX_PROP = value => `${value.templateId}-${value.todoId}`;
 const logger = getLogger({ label: 'routes' });
 
 function getTodos (todosTemplateId) {
+  const promises = {
+    baseTodos: getValues(todosTable, { indexPropValue: 'base' }),
+    orders: getValues(ordersTable, { indexPropValue: todosTemplateId })
+  };
+
+  if (todosTemplateId !== 'base') {
+    Object.assign(promises, {
+      todos: getValues(todosTable, { indexPropValue: todosTemplateId })
+    });
+  }
+
   return Bluebird
-    .props({
-      todos: getValues(todosTable, { indexPropValue: todosTemplateId }),
-      baseTodos: getValues(todosTable, { indexPropValue: 'base' }),
-      orders: getValues(ordersTable, { indexPropValue: todosTemplateId })
-    })
+    .props(promises)
     .then(({ todos, baseTodos, orders }) => {
-      return map([...todos, ...baseTodos], todo => {
+      let allTodos = [ ...baseTodos ];
+      if (todos) {
+        allTodos = [ ...allTodos, ...todos ];
+      }
+      return map(allTodos, todo => {
         const order = find(orders, { todoId: todo.id });
         return Object.assign(todo, { order: order.order });
       });

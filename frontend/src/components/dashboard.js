@@ -74,6 +74,7 @@ const MyDashboard = Vue.component('my-dashboard', {
   data () {
     return {
       config: null,
+      templateIdUnwatch: null,
       templateId: null,
       templateIds: [],
       todos: [],
@@ -107,6 +108,8 @@ const MyDashboard = Vue.component('my-dashboard', {
         }
       }
     });
+
+    this.templateIdUnwatch = this.$watch('templateId', this.templateIdChangeHandler);
   },
 
   // watch todos change for window.localStorage persistence
@@ -116,21 +119,6 @@ const MyDashboard = Vue.component('my-dashboard', {
         todoStorage.save(todos);
       },
       deep: true
-    },
-    templateId: {
-      handler: function (templateId, oldTemplateId) {
-        if (!oldTemplateId && templateId) { // this is on page load, just save id
-          templateIdStorage.set(templateId.value);
-        } else if (templateId) {
-          if (get(templateId, 'value') === get(oldTemplateId, 'value')) {
-            return;
-          }
-          templateIdStorage.set(templateId.value);
-          this.startNewSession({
-            showModal: true // since it resets the todos when switching templates
-          });
-        }
-      }
     }
   },
 
@@ -164,6 +152,28 @@ const MyDashboard = Vue.component('my-dashboard', {
   // methods that implement data logic.
   // note there's no DOM manipulation here at all.
   methods: {
+    templateIdChangeHandler: function (templateId, oldTemplateId) {
+      if (!oldTemplateId && templateId) { // this is on page load, just save id
+        templateIdStorage.set(templateId.value);
+      } else if (templateId) {
+        if (get(templateId, 'value') === get(oldTemplateId, 'value')) {
+          return;
+        }
+        this
+          .startNewSession({
+            showModal: true // since it resets the todos when switching templates
+          })
+          .then(result => {
+            if (result !== 'ok') {
+              this.templateIdUnwatch();
+              this.templateId = oldTemplateId;
+              this.templateIdUnwatch = this.$watch('templateId', this.templateIdChangeHandler);
+            } else {
+              templateIdStorage.set(templateId.value);
+            }
+          });
+      }
+    },
     nextOrder: function () {
       const nextOrderNumber = maxBy(this.todos, 'order').order + 1;
       return nextOrderNumber;
@@ -254,6 +264,7 @@ const MyDashboard = Vue.component('my-dashboard', {
       }
     },
     // options: { showModal: true }
+    // Returns promise that can be used to run post-cancellation logic
     startNewSession: function (options = { showModal: true }) {
       const promise = new Bluebird((resolve) => {
         if (options.showModal) {
@@ -262,8 +273,8 @@ const MyDashboard = Vue.component('my-dashboard', {
           resolve('ok');
         }
       });
-      promise
-        .then(result => {
+      return promise
+        .tap(result => {
           this.newSessionModalResult = null;
           if (result === 'ok') {
             this.loading = true;

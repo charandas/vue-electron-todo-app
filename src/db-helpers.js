@@ -12,6 +12,7 @@ function _getValue (db, key) {
   return new Bluebird((resolve, reject) => {
     db.get(key, function (err, value) {
       if (err) {
+        logger.info(`Tried key ${key}`);
         logger.error(err);
         reject(err);
       }
@@ -27,6 +28,14 @@ export function setValueAfterLookupIndex (db, value, options = {}) {
   const indexKey = `~INDEX~${options.indexProp(value)}`;
   return _getValue(options.indexSub, indexKey)
     .then(index => _setValue(db, index, value));
+}
+
+// Options: { indexProp: null, indexSub: null }
+// typeof options.indexProp === 'function' must satisfy
+export function getValueAfterLookupIndex (db, value, options = {}) {
+  logger.info('to delete', value);
+  const indexKey = `~INDEX~${options.indexProp(value)}`;
+  return _getValue(options.indexSub, indexKey);
 }
 
 // Options: { indexProp: null, indexSub: null }
@@ -79,6 +88,7 @@ export function getValues (db, options = {}) {
   // Otherwise, we just got indices
   return promise
     .then(indices => {
+      console.log(indices);
       return Bluebird
         .map(indices, index => _getValue(db, index));
     });
@@ -102,9 +112,11 @@ function _findAndDeleteIndex (db, key, { indexProp, indexSub }) {
       const indexKey = typeof indexProp === 'function'
        ? `${indexProp(value)}`
        : `${value[indexProp]}-${key}`;
-      return Bluebird.fromCallback(indexSub.del.bind(indexSub, indexKey, { sync: true }));
+      console.log('Index key to delete', indexKey);
+      return Bluebird
+        .fromCallback(indexSub.del.bind(indexSub, indexKey, { sync: true }))
+        .tap(() => logger.info('Index delete succeeded', indexKey));
     })
-    .tap(() => logger.info('Index delete succeeded', key, indexProp, indexSub))
     .catch(() => {}); // suppress delete errors
 }
 
@@ -120,7 +132,7 @@ export function deleteValue (db, key, options = {}) {
       }
     })
     .then(() => Bluebird.fromCallback(db.del.bind(db, key, { sync: true })))
-    .tap(() => logger.info(' delete succeeded', key, options))
+    .tap(() => logger.info(' delete succeeded', key))
     .catch(() => {}); // suppress delete errors
 }
 

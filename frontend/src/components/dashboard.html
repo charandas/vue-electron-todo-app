@@ -17,6 +17,10 @@
     <h3 slot="header">Reset Checklist Session</h3>
     <h4 slot="body">Please confirm your choice</h4>
   </my-modal>
+  <my-modal v-if="deleteSystemTodoResult" :result="deleteSystemTodoResult">
+    <h3 slot="header">Are you a Green Agent?</h3>
+    <h4 slot="body">Only Green Agents can remove system todos.</h4>
+  </my-modal>
 
   <section class="main" v-show="todos.length">
     <input class="toggle-all" type="checkbox" v-model="allDone">

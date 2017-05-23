@@ -94,7 +94,8 @@ const MyDashboard = Vue.component('my-dashboard', {
       eventDate: new Date().toDateString(),
       loading: false,
       newTodo: '',
-      newSessionModalResult: null
+      newSessionModalResult: null,
+      deleteSystemTodoResult: null
     };
   },
   components: {
@@ -230,10 +231,26 @@ const MyDashboard = Vue.component('my-dashboard', {
     },
 
     removeTodo: function (todo) {
-      const removed = this.todos.splice(this.todos.indexOf(todo), 1);
-      if (removed) {
-        rpcClient.removeTodoAsync(todo);
-      }
+      const promise = new Bluebird((resolve) => {
+        if (todo.system) {
+          this.deleteSystemTodoResult = resolve;
+        } else {
+          resolve('ok');
+        }
+      });
+
+      promise
+      .then(result => {
+        this.deleteSystemTodoResult = null;
+        if (result === 'ok') {
+          const removed = this.todos.splice(this.todos.indexOf(todo), 1);
+          if (removed) {
+            return rpcClient.removeTodoAsync(Object.assign(todo, {
+              orderTemplateId: this.templateId.value
+            }));
+          }
+        }
+      });
     },
     // options: { hardRefresh = false }
     setConfig: function (config, options = {}) {

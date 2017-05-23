@@ -8,7 +8,7 @@ import uuidV4 from 'uuid/v4';
 import { scheduleReminder, unscheduleReminder, allScheduled } from './notifications';
 import config from './config-lib/index';
 import { getLogger, database as db } from './app_ready';
-import { setValue, deleteValue, getValues, initializeIfNotSet, setValueAfterLookupIndex } from './db-helpers';
+import { setValue, deleteValue, getValues, initializeIfNotSet, setValueAfterLookupIndex, getValueAfterLookupIndex } from './db-helpers';
 
 const todosTable = db.sublevel('todos');
 const remindersTable = db.sublevel('reminders');
@@ -42,10 +42,10 @@ function getConfig (todosTemplateId) {
       templateIds: config.get('workflows:templateIds'),
       todos: getTodos(todosTemplateId),
       reminders: getValues(remindersTable)
-    })
-    .tap(result => {
-      console.log(JSON.stringify(sortBy(result.todos, 'order')));
     });
+    /* .tap(result => {
+      console.log(JSON.stringify(sortBy(result.todos, 'order')));
+    }); */
 }
 
 const dbInitialized = Bluebird.all([
@@ -109,7 +109,7 @@ const routes = {
       const orderTemplateId = value.orderTemplateId;
       delete value.orderTemplateId;
 
-      logger.info('reorder-todo payload', value);
+      logger.silly('reorder-todo payload', value);
       return setValueAfterLookupIndex(ordersTable, {
         order,
         templateId: orderTemplateId,
@@ -125,19 +125,32 @@ const routes = {
     server.on('remove-todo', (req, next) => {
       const value = get(req, 'body.todo');
       const id = value.id;
+      console.log(value);
       return Bluebird
         .resolve(value)
-        .then(unscheduleReminder)
-        .then(() => {
+        .tap(unscheduleReminder)
+        .tap(() => {
           return Bluebird
             .all([
               deleteValue(todosTable, id, { indexProp: TODOS_INDEX_PROP, indexSub: todosIndexTable }),
               deleteValue(remindersTable, id)
-            ])
-            .tap(() => deleteValue(ordersTable, value.orderId, {
-              indexProp: ORDER_INDEX_PROP,
-              indexSub: ordersIndexTable
-            }));
+            ]);
+        })
+        .then(deletedTodo => {
+          return getValueAfterLookupIndex(ordersTable, {
+            order: deletedTodo.order,
+            templateId: deletedTodo.orderTemplateId,
+            todoId: id
+          }, {
+            indexProp: ORDER_INDEX_PROP,
+            indexSub: ordersIndexTable
+          });
+        })
+        .then(orderId => {
+          return deleteValue(ordersTable, orderId, {
+            indexProp: ORDER_INDEX_PROP,
+            indexSub: ordersIndexTable
+          });
         });
     });
 

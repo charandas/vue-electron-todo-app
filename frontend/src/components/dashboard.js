@@ -36,7 +36,6 @@ const templateIdStorage = {
 const STORAGE_KEY = 'todos-techeast';
 const todoStorage = {
   fetch: function (todosTemplate, { hardRefresh = false }) {
-    console.log(arguments);
     const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     const todos = !hardRefresh
       ? fromStorage || mapToTodos(todosTemplate)

@@ -1,4 +1,5 @@
 import Bluebird from 'bluebird';
+import assert from 'assert';
 
 // import errors from 'level-errors';
 import { getLogger } from './app_ready';
@@ -22,33 +23,30 @@ function _getValue (db, key) {
   });
 }
 
-// Options: { indexProp: null, indexSub: null }
+// Options: { indexProp: null }
 // typeof options.indexProp === 'function' must satisfy
 export function setValueAfterLookupIndex (db, value, options = {}) {
   const indexKey = `~INDEX~${options.indexProp(value)}`;
-  return _getValue(options.indexSub, indexKey)
+  return _getValue(db, indexKey)
     .then(index => _setValue(db, index, value));
 }
 
-// Options: { indexProp: null, indexSub: null }
+// Options: { indexProp: null }
 // typeof options.indexProp === 'function' must satisfy
-export function getValueAfterLookupIndex (db, value, options = {}) {
+export function lookupIndex (db, value, options = {}) {
   logger.info('to delete', value);
   const indexKey = `~INDEX~${options.indexProp(value)}`;
-  return _getValue(options.indexSub, indexKey);
+  return _getValue(db, indexKey);
 }
 
-// Options: { indexProp: null, indexSub: null }
+// Options: { indexProp: null }
 function _setValue (db, key, value, options = {}) {
   const values = [
     { key, value }
   ];
-  if (options.indexProp && options.indexSub) {
-    if (typeof options.indexProp === 'function') {
-      values.push({ key: `~INDEX~${options.indexProp(value)}`, value: key, prefix: options.indexSub });
-    } else {
-      values.push({ key: `~INDEX~${value[options.indexProp]}-${key}`, value: key, prefix: options.indexSub });
-    }
+  if (options.indexProp) {
+    assert(typeof options.indexProp === 'function');
+    values.push({ key: `~INDEX~${options.indexProp(value)}`, value: key });
   }
   return new Bluebird((resolve, reject) => {
     db.batch(values, function (err) {
@@ -62,10 +60,10 @@ function _setValue (db, key, value, options = {}) {
   });
 }
 
-// Options: { indexPropValue: null, indexSub: null }
+// Options: { indexPropValue: null }
 export function getValues (db, options = {}) {
   const getOptions = {};
-  if (options.indexPropValue && options.indexSub) {
+  if (options.indexPropValue) {
     Object.assign(getOptions, {
       gte: `~INDEX~${options.indexPropValue}`,
       lte: `~INDEX~${options.indexPropValue}~`
@@ -73,7 +71,7 @@ export function getValues (db, options = {}) {
   }
   const values = [];
   const promise = new Bluebird((resolve, reject) => {
-    (options.indexSub || db).createValueStream(getOptions)
+    db.createValueStream(getOptions)
     .on('data', function (data) {
       values.push(data);
     })
@@ -81,7 +79,7 @@ export function getValues (db, options = {}) {
     .on('error', reject);
   });
 
-  if (!options.indexSub) {
+  if (!options.indexPropValue) {
     return promise;
   }
 
@@ -93,7 +91,7 @@ export function getValues (db, options = {}) {
     });
 }
 
-// indexOpts: { indexProp, indexSub }
+// indexOpts: { indexProp }
 export function initializeIfNotSet (db, prefix, valueArray, indexOpts) {
   return Bluebird
     .each(valueArray, (value, index) => {
@@ -105,28 +103,26 @@ export function initializeIfNotSet (db, prefix, valueArray, indexOpts) {
     });
 }
 
-function _findAndDeleteIndex (db, key, { indexProp, indexSub }) {
+function _findAndDeleteIndex (db, key, { indexProp }) {
   return _getValue(db, key)
     .then(value => {
-      const indexKey = typeof indexProp === 'function'
-       ? `~INDEX~${indexProp(value)}`
-       : `~INDEX~${value[indexProp]}-${key}`;
+      assert(typeof indexProp === 'function');
+      const indexKey = `~INDEX~${indexProp(value)}`;
 
       return Bluebird
-        .fromCallback(indexSub.del.bind(indexSub, indexKey, { sync: true }))
+        .fromCallback(db.del.bind(db, indexKey, { sync: true }))
         .tap(() => logger.info('Index delete succeeded', indexKey));
     })
     .catch(() => {}); // suppress delete errors
 }
 
-// options: { indexProp: null, indexSub: null }
+// options: { indexProp: null }
 export function deleteValue (db, key, options = {}) {
   return Bluebird
     .try(() => {
-      if (options.indexProp && options.indexSub) {
+      if (options.indexProp) {
         return _findAndDeleteIndex(db, key, {
-          indexProp: options.indexProp,
-          indexSub: options.indexSub
+          indexProp: options.indexProp
         });
       }
     })

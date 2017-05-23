@@ -3,17 +3,24 @@
   "width": 800,
   "height": 600,
   "workflows": {
-    "templateIds": [
+    "templates": [
       {
+        "id":"d87e3499-4c80-45f6-b896-56f83c804f4f",
         "label": "Base Template",
-        "value": "base"
+        "value": "base",
+        "children": [
+          "sunday_satsang",
+          "special_teaching"
+        ]
       },
       {
+        "id":"b7e2b665-9f5a-4f2b-9636-0bfc1c9fc7f7",
         "label": "Sunday Satsang",
         "value": "sunday_satsang",
         "inherits": "base"
       },
       {
+        "id":"f7c1f96d-b16a-4258-9765-c69b03454650",
         "label": "Special Teaching",
         "value": "special_teaching",
         "inherits": "base"
@@ -133,39 +140,44 @@
         "order": 3,
         "templateId": "special_teaching"
       }, {
+        "id":"ac067011-fa7e-4ebe-8be6-a9615bd96a16",
+        "todoId": "cf49225f-93c8-4a79-bad7-29eca47f7d44",
+        "order": 4,
+        "templateId": "special_teaching"
+      }, {
         "id":"e9569d60-a7ab-4539-a218-0dcc0ee560c5",
         "todoId": "ffc26b57-d059-484b-982f-d2e23b9a59ec",
-        "order": 4,
+        "order": 5,
         "templateId": "special_teaching"
       }, {
         "id":"9eb931cd-634d-48ea-9f0f-bf2d7a9c1de9",
         "todoId": "cf40f752-8ffc-4dff-9f5d-8ba26191ae92",
-        "order": 5,
+        "order": 6,
         "templateId": "special_teaching"
       }, {
         "id":"3703d086-4701-4693-83b8-3f4068343a39",
         "todoId": "58ce1426-1b53-4d54-8dff-b6ff79f0d346",
-        "order": 6,
+        "order": 7,
         "templateId": "special_teaching"
       }, {
         "id": "96299f51-bdc8-4f1a-8f98-9f41b1023f9b",
         "todoId": "9ffdceff-9a8c-4169-a6de-a698661904e0",
-        "order": 7,
+        "order": 8,
         "templateId": "special_teaching"
       }, {
         "id":"309a1bb3-738b-4807-b355-9f0b9c060031",
         "todoId": "e13ad19a-91c7-4537-8f28-ba2ff615a997",
-        "order": 8,
+        "order": 9,
         "templateId": "special_teaching"
       }, {
         "id":"682d3422-3059-489a-8b50-95e750f8bcb4",
         "todoId": "f8d7f3d8-066f-4c63-a977-b832b0a33984",
-        "order": 9,
+        "order": 10,
         "templateId": "special_teaching"
       }, {
         "id":"2f61367f-6bb3-45b3-b9e9-46a441fc8cfb",
         "todoId": "6391201b-d837-460a-bacd-675a53e87478",
-        "order": 10,
+        "order": 11,
         "templateId": "special_teaching"
       }, {
         "todoId": "8f958132-13ff-431d-af3c-124b02c22325",
@@ -243,7 +255,7 @@
         "templateId": "base"
       }, {
         "id": "278bcd9e-47c1-409c-b2c8-9aa083fb5ff0",
-        "title": "Download CSV from bookings on jayakula.org",
+        "title": "Download spreadsheeet/CSV from bookings on jayakula.org",
         "templateId": "special_teaching"
       }, {
         "id": "6e3de05f-478e-4125-9356-7231ac965f53",
@@ -252,6 +264,10 @@
       }, {
         "id": "a80c01a0-e76c-4cea-8e9c-f05f56a0ae1f",
         "title": "Share URL on slack channel that you created",
+        "templateId": "special_teaching"
+      }, {
+        "id": "cf49225f-93c8-4a79-bad7-29eca47f7d44",
+        "title": "Delete the spreadsheeet/CSV from Downloads for confidentiality",
         "templateId": "special_teaching"
       }, {
         "id": "609ca38c-f2f1-4c40-9ffa-85ceac8d44d4",

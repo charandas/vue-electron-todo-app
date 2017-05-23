@@ -1,14 +1,23 @@
 import Bluebird from 'bluebird';
+import { app } from 'electron';
+import jetpack from 'fs-jetpack';
+import moment from 'moment';
 import get from 'lodash/get';
-import sortBy from 'lodash/sortBy';
-import map from 'lodash/map';
+// import sortBy from 'lodash/sortBy';
+import fp from 'lodash/fp';
 import find from 'lodash/find';
+import partial from 'lodash/partial';
 import uuidV4 from 'uuid/v4';
 
 import { scheduleReminder, unscheduleReminder, allScheduled } from './notifications';
 import config from './config-lib/index';
 import { getLogger, database as db } from './app_ready';
 import { setValue, deleteValue, getValues, initializeIfNotSet, setValueAfterLookupIndex, lookupIndex } from './db-helpers';
+
+const INITIALIZED_STATE_FILE = 'initalized.json';
+
+const templates = config.get('workflows:templates');
+const baseTemplateMetadata = find(templates, { value: 'base' });
 
 const todosTable = db.sublevel('todos');
 const remindersTable = db.sublevel('reminders');
@@ -18,6 +27,28 @@ const ordersTable = db.sublevel('orders');
 const ORDER_INDEX_PROP = value => `${value.templateId}-${value.todoId}`;
 
 const logger = getLogger({ label: 'routes' });
+const userData = jetpack.cwd(app.getPath('userData'));
+
+function addOrderToTodo (orders, templateId, todo) {
+  const order = find(orders, { todoId: todo.id });
+  if (!order) {
+    logger.warn(`Missing order for todo ${todo.id} for template ${templateId}`);
+    return;
+  }
+  return Object.assign(todo, { order: order.order });
+}
+
+function deleteOrderInDb (todoId, templateId) {
+  return lookupIndex(ordersTable, {
+    templateId: templateId,
+    todoId
+  }, {
+    indexProp: ORDER_INDEX_PROP
+  })
+    .then(orderId => deleteValue(ordersTable, orderId, {
+      indexProp: ORDER_INDEX_PROP
+    }));
+}
 
 function getTodos (todosTemplateId) {
   const promises = {
@@ -38,30 +69,53 @@ function getTodos (todosTemplateId) {
       if (todos) {
         allTodos = [ ...allTodos, ...todos ];
       }
-      return map(allTodos, todo => {
-        const order = find(orders, { todoId: todo.id });
-        return Object.assign(todo, { order: order.order });
-      });
+      return fp.flow(
+        fp.map(partial(addOrderToTodo, orders, todosTemplateId)),
+        fp.filter(Boolean)
+      )(allTodos);
     });
 }
 
 function getConfig (todosTemplateId) {
   return Bluebird
     .props({
-      templateIds: config.get('workflows:templateIds'),
+      templateIds: config.get('workflows:templates'),
       todos: getTodos(todosTemplateId),
       reminders: getValues(remindersTable)
-    })
-    .tap(result => {
-      console.log(JSON.stringify(sortBy(result.todos, 'order')));
     });
+    /* .tap(result => {
+      console.log(JSON.stringify(sortBy(result.todos, 'order')));
+    }); */
 }
 
-const dbInitialized = Bluebird.all([
-  initializeIfNotSet(todosTable, 'todos', config.get(`templates:todos`), { indexProp: TODOS_INDEX_PROP }),
-  initializeIfNotSet(ordersTable, 'orders', config.get(`templates:orders`), { indexProp: ORDER_INDEX_PROP }),
-  initializeIfNotSet(remindersTable, 'reminders', config.get(`templates:reminders`))
-]);
+function initializeAndCheckpointState () {
+  return Bluebird
+    .all([
+      initializeIfNotSet(todosTable, 'todos', config.get('templates:todos'), { indexProp: TODOS_INDEX_PROP }),
+      initializeIfNotSet(ordersTable, 'orders', config.get('templates:orders'), { indexProp: ORDER_INDEX_PROP }),
+      initializeIfNotSet(remindersTable, 'reminders', config.get('templates:reminders'))
+    ])
+    .then(() => {
+      return jetpack.write(userData.path(INITIALIZED_STATE_FILE), {
+        lastInitialized: moment().format()
+      }, {
+        atomic: true
+      });
+    })
+    .return(true);
+}
+
+function initialize () {
+  return Bluebird
+    .resolve(jetpack.existsAsync(userData.path(INITIALIZED_STATE_FILE)))
+    .then(existing => {
+      if (existing === 'file') {
+        // did not need to initialize, checkpoint exists
+        return false;
+      }
+      return initializeAndCheckpointState();
+    });
+}
 
 const routes = {
   configure (server) {
@@ -71,9 +125,14 @@ const routes = {
 
     server.on('get-config', (req, next) => {
       const value = get(req, 'body.options', {});
-      return dbInitialized
-        .return(value.templateId)
-        .then(getConfig)
+      return initialize()
+        .then(neededInitialize => {
+          return Bluebird.props({
+            neededInitialize,
+            configResult: getConfig(value.templateId)
+          });
+        })
+        .then(({ configResult, neededInitialize }) => Object.assign(configResult, { hardRefresh: neededInitialize }))
         .asCallback(next);
     });
 
@@ -143,18 +202,14 @@ const routes = {
             ]);
         })
         .then(deletedTodo => {
-          return lookupIndex(ordersTable, {
-            order: deletedTodo.order,
-            templateId: deletedTodo.orderTemplateId,
-            todoId: id
-          }, {
-            indexProp: ORDER_INDEX_PROP
-          });
-        })
-        .then(orderId => {
-          return deleteValue(ordersTable, orderId, {
-            indexProp: ORDER_INDEX_PROP
-          });
+          let deleteOrdersForTemplateIds = [ deletedTodo.orderTemplateId ];
+          if (deletedTodo.orderTemplateId === 'base') {
+            deleteOrdersForTemplateIds = [
+              ...deleteOrdersForTemplateIds,
+              ...baseTemplateMetadata.children
+            ];
+          }
+          return Bluebird.map(deleteOrdersForTemplateIds, templateId => deleteOrderInDb(deletedTodo.id, templateId));
         });
     });
 

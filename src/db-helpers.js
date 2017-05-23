@@ -1,5 +1,6 @@
 import Bluebird from 'bluebird';
 import assert from 'assert';
+import isEqual from 'lodash/isEqual';
 
 // import errors from 'level-errors';
 import { getLogger } from './app_ready';
@@ -96,6 +97,11 @@ export function initializeIfNotSet (db, prefix, valueArray, indexOpts) {
   return Bluebird
     .each(valueArray, (value, index) => {
       return _getValue(db, value.id)
+        .then(currentValue => {
+          if (!isEqual(value, currentValue)) {
+            return _setValue(db, value.id, Object.assign(value, { system: true }), indexOpts);
+          }
+        })
         .catch(() => { // Bluebird filter facility isn't working for errors.NotFoundError
           logger.info(`Initializing ${prefix}::${value.id}`);
           return _setValue(db, value.id, Object.assign(value, { system: true }), indexOpts);

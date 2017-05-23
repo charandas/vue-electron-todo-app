@@ -36,6 +36,7 @@ const templateIdStorage = {
 const STORAGE_KEY = 'todos-techeast';
 const todoStorage = {
   fetch: function (todosTemplate, { hardRefresh = false }) {
+    console.log(arguments);
     const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     const todos = !hardRefresh
       ? fromStorage || mapToTodos(todosTemplate)
@@ -249,12 +250,14 @@ const MyDashboard = Vue.component('my-dashboard', {
         }
       });
     },
-    // options: { hardRefresh = false }
+    // options: { hardRefresh = false }, also config from backend can have hardRefresh
     setConfig: function (config, options = {}) {
       console.log(config);
       this.config = config; // TODO: undocumented data
       this.templateIds = config.templateIds;
-      this.todos = sortBy(todoStorage.fetch(get(config, 'todos'), { hardRefresh: options.hardRefresh }), 'order');
+      this.todos = sortBy(todoStorage.fetch(get(config, 'todos'), {
+        hardRefresh: get(options, 'hardRefresh', config.hardRefresh)
+      }), 'order');
 
       const newTemplateId = templateIdStorage.get();
       // Triggering change on the same value would lead to infinite loop

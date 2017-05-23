@@ -12,6 +12,7 @@
 
       var path = require('path');
       module.paths.push(path.resolve(__dirname, '..', 'app.asar', 'node_modules'));
+      module.paths.push(path.resolve(__dirname, '..', 'app', 'node_modules')); // for development when __dirname is frontend
       path = undefined;
     </script>
 </head>

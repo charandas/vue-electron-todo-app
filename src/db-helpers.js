@@ -24,19 +24,17 @@ function _getValue (db, key) {
   });
 }
 
-// Options: { indexProp: null }
-// typeof options.indexProp === 'function' must satisfy
-export function setValueAfterLookupIndex (db, value, options = {}) {
-  const indexKey = `~INDEX~${options.indexProp(value)}`;
+export function setValueAfterLookupIndex (db, value, { indexProp }) {
+  assert(typeof indexProp === 'function');
+  const indexKey = `~INDEX~${indexProp(value)}`;
   return _getValue(db, indexKey)
     .then(index => _setValue(db, index, value));
 }
 
-// Options: { indexProp: null }
-// typeof options.indexProp === 'function' must satisfy
-export function lookupIndex (db, value, options = {}) {
+export function lookupIndex (db, value, { indexProp }) {
+  assert(typeof indexProp === 'function');
   logger.info('to delete', value);
-  const indexKey = `~INDEX~${options.indexProp(value)}`;
+  const indexKey = `~INDEX~${indexProp(value)}`;
   return _getValue(db, indexKey);
 }
 

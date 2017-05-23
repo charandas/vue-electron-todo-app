@@ -34,32 +34,19 @@ const templateIdStorage = {
 };
 
 const STORAGE_KEY = 'todos-techeast';
-// Of the form:
-// { 'sunday_satsang': [...allTheSundayTodos], 'special_teaching': [...allTheSpecialTodos] }
 const todoStorage = {
-  templateExists: function () {
-    const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
-    return !!get(fromStorage, templateIdStorage.get());
-  },
   fetch: function (todosTemplate, { hardRefresh = false }) {
     const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY));
     const todos = !hardRefresh
-      ? get(fromStorage, templateIdStorage.get(), mapToTodos(todosTemplate))
+      ? fromStorage || mapToTodos(todosTemplate)
       : mapToTodos(todosTemplate);
     return todos;
   },
   save: function (todos) {
-    // First parse current storage, we augment on previous states from different template ids
-    const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || {};
-    const toSave = Object.assign(fromStorage, { [templateIdStorage.get()]: todos });
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
   },
   remove: function () {
-    // First parse current storage, we augment on previous states from different template ids
-    // delete only the active key
-    const fromStorage = JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || {};
-    const toSave = Object.assign(fromStorage, { [templateIdStorage.get()]: null });
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    window.localStorage.removeItem(STORAGE_KEY);
   }
 };
 

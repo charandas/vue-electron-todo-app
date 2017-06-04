@@ -64,7 +64,7 @@ function createWindow () {
 
   if (runningEnv === 'development') {
     mainWindow.openDevTools();
-    BrowserWindow.addDevToolsExtension(path.resolve('./vue_devtools_3.1.2_0'));
+    BrowserWindow.addDevToolsExtension(path.resolve('./vue_devtools_3.1.3_0'));
   }
   return mainWindow;
 }

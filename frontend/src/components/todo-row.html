@@ -2,7 +2,7 @@
   <div :class=" {'hide-view': editing} ">
     <span class="drag-handle"></span>
     <input class="toggle" type="checkbox" v-model="todo.completed">
-    <label @dblclick="!todo.base || (orderTemplateId == 'base') && editTodo()">{{ todo.title }}</label>
+    <label @dblclick="(!todo.base || (orderTemplateId == 'base')) && editTodo()">{{ todo.title }}</label>
     <button v-tooltip.left="reminderMessaging"
      class="remind" @click="updateReminder()"><i class="mdi mdi-18px mdi-calendar-clock"></i></button>
     <button v-if="!todo.base || (orderTemplateId == 'base')" class="destroy" @click="removeTodo(todo)"></button>

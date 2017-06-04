@@ -33,6 +33,7 @@ function addOrderToTodo (orders, templateId, todo) {
   const order = find(orders, { todoId: todo.id });
   if (!order) {
     logger.warn(`Missing order for todo ${todo.id} for template ${templateId}`);
+    logger.warn(`Content for missing todo: ${todo.title}`);
     return;
   }
   return Object.assign(todo, { order: order.order });
@@ -67,7 +68,7 @@ function getTodos (todosTemplateId) {
     .then(({ todos, baseTodos, orders }) => {
       let allTodos = [ ...baseTodos ];
       if (todos) {
-        allTodos = [ ...allTodos, ...todos ];
+        allTodos.push(...todos);
       }
       return fp.flow(
         fp.map(partial(addOrderToTodo, orders, todosTemplateId)),
@@ -136,17 +137,27 @@ const routes = {
         .asCallback(next);
     });
 
+    // Adding is always on the template itself, not on a parent, so we need not use orderTemplateId property
     server.on('add-todo', (req, next) => {
       const value = get(req, 'body.todo');
+      const isEdit = !!value.id;
       const id = value.id || uuidV4();
       value.id = id;
 
       const order = value.order;
-      const orderTemplateId = value.orderTemplateId;
+      const orderTemplateId = value.templateId;
       delete value.order;
       delete value.orderTemplateId;
 
-      const orderId = uuidV4();
+      const orderToSave = {
+        order,
+        templateId: orderTemplateId,
+        todoId: id
+      };
+
+      const savedOrderPromise = isEdit
+        ? setValueAfterLookupIndex(ordersTable, orderToSave, { indexProp: ORDER_INDEX_PROP })
+        : setValue(ordersTable, uuidV4(), orderToSave, { indexProp: ORDER_INDEX_PROP });
 
       logger.silly('add-todo payload', value);
       return Bluebird
@@ -154,13 +165,7 @@ const routes = {
         savedTodo: setValue(todosTable, id, value, {
           indexProp: TODOS_INDEX_PROP
         }),
-        savedOrder: setValue(ordersTable, orderId, {
-          order,
-          templateId: orderTemplateId,
-          todoId: id
-        }, {
-          indexProp: ORDER_INDEX_PROP
-        })
+        savedOrderPromise
       })
       .return(Object.assign(value, { order: order }))
       .asCallback(next);
@@ -204,10 +209,7 @@ const routes = {
         .then(deletedTodo => {
           let deleteOrdersForTemplateIds = [ deletedTodo.orderTemplateId ];
           if (deletedTodo.orderTemplateId === 'base') {
-            deleteOrdersForTemplateIds = [
-              ...deleteOrdersForTemplateIds,
-              ...baseTemplateMetadata.children
-            ];
+            deleteOrdersForTemplateIds.push(...baseTemplateMetadata.children);
           }
           return Bluebird.map(deleteOrdersForTemplateIds, templateId => deleteOrderInDb(deletedTodo.id, templateId));
         });

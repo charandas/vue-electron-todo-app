@@ -7,4 +7,4 @@ app/*
 !app/README.md
 !app/package.json
 .DS_Store
-vue_devtools_3.1.2_0
+vue_devtools_3.1.3_0

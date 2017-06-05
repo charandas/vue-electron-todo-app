@@ -13,6 +13,7 @@ import { scheduleReminder, unscheduleReminder, allScheduled } from './notificati
 import config from './config-lib/index';
 import { getLogger, database as db } from './app_ready';
 import { setValue, deleteValue, getValues, initializeIfNotSet, setValueAfterLookupIndex, lookupIndex } from './db-helpers';
+import { extractAudioFromVideo } from './audio';
 
 const INITIALIZED_STATE_FILE = 'initalized.json';
 
@@ -230,6 +231,11 @@ const routes = {
       return deleteValue(remindersTable, id)
         .return(value)
         .tap(unscheduleReminder)
+        .asCallback(next);
+    });
+
+    server.on('extract-audio', (req, next) => {
+      return extractAudioFromVideo()
         .asCallback(next);
     });
   }

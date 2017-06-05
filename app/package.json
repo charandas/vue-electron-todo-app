@@ -21,6 +21,8 @@
     "continuation-local-storage": "^3.2.0",
     "electron-context-menu": "^0.8.0",
     "electron-rpc": "^2.0.1",
+    "ffmpeg-static": "^2.0.0",
+    "fluent-ffmpeg": "^2.1.2",
     "fs-jetpack": "^0.10.5",
     "level-errors": "^1.0.4",
     "level-sublevel": "^6.6.1",

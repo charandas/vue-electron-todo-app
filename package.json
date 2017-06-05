@@ -17,6 +17,9 @@
   "build": {
     "appId": "com.humanflow.techeast",
     "productName": "Tech Host Assistant",
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/*"
+    ],
     "files": [
       "background.*",
       "src/**/*",

@@ -251,7 +251,6 @@ const MyDashboard = Vue.component('my-dashboard', {
     },
     // options: { hardRefresh = false }, also config from backend can have hardRefresh
     setConfig: function (config, options = {}) {
-      console.log(config);
       this.config = config; // TODO: undocumented data
       this.templateIds = config.templateIds;
       this.todos = sortBy(todoStorage.fetch(get(config, 'todos'), {

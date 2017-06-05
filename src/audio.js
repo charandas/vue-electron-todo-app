@@ -2,15 +2,19 @@ import Bluebird from 'bluebird';
 import ffmpegStatic from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
 import path from 'path';
+import uuidV4 from 'uuid/v4';
+import { BrowserWindow } from 'electron';
+
 import { getLogger } from './app_ready';
 
 const logger = getLogger({ label: 'audio' });
 
-export function extractAudioFromVideo (movieUrl = '/Users/charandas/Movies/ManyCam/test.mp4') {
+export function extractAudioFromVideo ({ movieUrl = '/Users/charandas/Movies/ManyCam/test.mp4', taskId }) {
   const dirname = path.dirname(movieUrl);
   const extname = path.extname(movieUrl);
   const filename = path.basename(movieUrl, extname);
   const outputUrl = path.resolve(dirname, `${filename}-audio${extname}`);
+  const mainWindow = BrowserWindow.getFocusedWindow();
 
   logger.silly(`ffmpeg from path: ${ffmpegStatic.path}`);
 
@@ -26,8 +30,9 @@ export function extractAudioFromVideo (movieUrl = '/Users/charandas/Movies/ManyC
         logger.error('An error occurred: ', err.message, err.stack);
         reject(err);
       })
-      .on('data', chunk => { // TODO: not invoked for save, may be useful for a progress bar
-        logger.info(`Wrote ${chunk.length} bytes`);
+      .on('progress', progress => {
+        mainWindow.webContents.send('extractAudioProgress', Object.assign({}, progress, { taskId }));
+        logger.info(`Processing: ${progress.percent}% done`);
       })
       .on('end', () => {
         logger.info(`Processing finished and produced ${outputUrl}.`);

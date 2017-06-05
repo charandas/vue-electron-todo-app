@@ -3,9 +3,7 @@ import moment from 'moment';
 import each from 'lodash/each';
 import remove from 'lodash/remove';
 import find from 'lodash/find';
-
-// Set by the schedule function
-let mainWindow;
+import { BrowserWindow } from 'electron';
 
 import { getLogger, database as db } from './app_ready';
 import { getValue, getValues } from './db-helpers';
@@ -80,6 +78,7 @@ function _notify ({ message, reply = false, actions = 'Yes', closeLabel = 'No', 
       return;
     }
     if (reply) {
+      const mainWindow = BrowserWindow.getFocusedWindow();
       logger.info(metadata);
       if (channelName === 'confirmNewSession') {
         mainWindow.webContents.send(channelName, metadata.activationValue);
@@ -149,8 +148,7 @@ export function unscheduleReminder (todo) {
   }
 }
 
-export function scheduleAllReminders (_mainWindow) {
-  mainWindow = _mainWindow;
+export function scheduleAllReminders () {
   getValues(remindersTable)
     .then(reminders => {
       each(reminders, scheduleReminder);

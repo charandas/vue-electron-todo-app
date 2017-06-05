@@ -109,6 +109,10 @@ const MyDashboard = Vue.component('my-dashboard', {
       }
     });
 
+    electron.ipcRenderer.on('extractAudioProgress', (event, progress) => {
+      console.log(`Processing: ${progress.percent} for taskId ${progress.taskId}`);
+    });
+
     this.templateIdUnwatch = this.$watch('templateId', this.templateIdChangeHandler);
   },
 

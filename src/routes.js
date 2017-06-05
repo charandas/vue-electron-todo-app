@@ -235,7 +235,11 @@ const routes = {
     });
 
     server.on('extract-audio', (req, next) => {
-      return extractAudioFromVideo()
+      const task = get(req, 'body.task');
+      if (!task) {
+        return next(new Error('Missing task payload'));
+      }
+      return extractAudioFromVideo(task)
         .asCallback(next);
     });
   }

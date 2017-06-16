@@ -18,7 +18,8 @@
     "appId": "com.humanflow.techeast",
     "productName": "Tech Host Assistant",
     "asarUnpack": [
-      "node_modules/ffmpeg-static/*"
+      "node_modules/ffmpeg-static/*",
+      "node_modules/ffprobe-static/*"
     ],
     "files": [
       "background.*",

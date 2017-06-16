@@ -1,5 +1,6 @@
 import Bluebird from 'bluebird';
 import ffmpegStatic from 'ffmpeg-static';
+import ffprobeStatic from 'ffprobe-static';
 import ffmpeg from 'fluent-ffmpeg';
 import path from 'path';
 import uuidV4 from 'uuid/v4';
@@ -10,11 +11,14 @@ import { getLogger } from './app_ready';
 
 const logger = getLogger({ label: 'audio' });
 let ffmpegPath = ffmpegStatic.path;
+let ffprobePath = ffprobeStatic.path;
 
 if (config.get('NODE_ENV') === 'production') {
   ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked');
+  ffprobePath = ffprobePath.replace('app.asar', 'app.asar.unpacked');
 }
 logger.silly(`ffmpeg from path: ${ffmpegPath}`);
+logger.silly(`ffprobe from path: ${ffprobePath}`);
 
 export function extractAudioFromVideo ({ movieUrl, taskId = uuidV4() }) {
   const dirname = path.dirname(movieUrl);
@@ -26,6 +30,7 @@ export function extractAudioFromVideo ({ movieUrl, taskId = uuidV4() }) {
   return new Bluebird((resolve, reject) => {
     ffmpeg(movieUrl)
       .setFfmpegPath(ffmpegPath)
+      .setFfprobePath(ffprobePath)
       .audioBitrate('192k')
       .noVideo()
       .audioCodec('libmp3lame')
@@ -43,9 +48,6 @@ export function extractAudioFromVideo ({ movieUrl, taskId = uuidV4() }) {
       .on('end', () => {
         logger.info(`Processing finished and produced ${outputUrl}.`);
         resolve({ processed: true });
-      })
-      .on('stderr', stderrLine => {
-        logger.error(`From ffmpeg stderr: ${stderrLine}`);
       })
       .save(outputUrl);
   });

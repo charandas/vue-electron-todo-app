@@ -1,3 +1,4 @@
+import Bluebird from 'bluebird';
 import Client from '@node/electron-rpc/client';
 
 const client = new Client();
@@ -26,11 +27,18 @@ function removeTodo (todo, cb) {
   client.request('remove-todo', { todo }, cb);
 }
 
-export default {
+function extractAudio (task, cb) {
+  client.request('extract-audio', { task }, cb);
+}
+
+const rpcClient = {
   getConfig,
   addOrUpdateReminder,
   removeReminder,
   addOrUpdateTodo,
   removeTodo,
-  reorderTodo
+  reorderTodo,
+  extractAudio
 };
+
+export default Bluebird.promisifyAll(rpcClient);

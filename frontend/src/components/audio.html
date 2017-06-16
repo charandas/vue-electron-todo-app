@@ -1,0 +1,11 @@
+<div class="audio">
+    <div class="loader" :class="{ loading: loading }">
+        <div v-if="loading" class="output-url">Writing {{outputUrl}}</div>
+        <rise-loader class="spinner" :loading="loading" :size="'24px'"></rise-loader>
+        <div v-if="loading" class="progress">{{progressPercent}}%</div>
+    </div>
+    <v-button :disabled="loading" markup="success" @click="pickFile()"><i class="mdi mdi-18px mdi-video-file"></i>Pick Video File</v-button>
+    <form id="video-file-form">
+        <input id="video-file" type="file" @change="processPickedFile($event)" style="display: none">
+    <form id="fileform">
+</div>

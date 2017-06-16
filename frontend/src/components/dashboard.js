@@ -17,8 +17,6 @@ import MyTodoRow from './todo-row';
 
 import './dashboard.css!css';
 
-Bluebird.promisifyAll(rpcClient);
-
 const TEMPLATE_ID_STORAGE_KEY = 'templateId-techeast';
 const templateIdStorage = {
   get: function () {
@@ -99,6 +97,9 @@ const MyDashboard = Vue.component('my-dashboard', {
         next(vm => vm.setConfig(config));
       });
   },
+  destroyed: function () {
+    electron.ipcRenderer.removeAllListeners('checkOffTodo');
+  },
   created: function () {
     electron.ipcRenderer.on('checkOffTodo', (event, todoId) => {
       if (todoId) {
@@ -107,10 +108,6 @@ const MyDashboard = Vue.component('my-dashboard', {
           found.completed = true;
         }
       }
-    });
-
-    electron.ipcRenderer.on('extractAudioProgress', (event, progress) => {
-      console.log(`Processing: ${progress.percent} for taskId ${progress.taskId}`);
     });
 
     this.templateIdUnwatch = this.$watch('templateId', this.templateIdChangeHandler);

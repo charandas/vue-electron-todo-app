@@ -1,0 +1,36 @@
+.audio {
+  text-align: center;
+  padding: 130px;
+}
+
+.loader.loading {
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.loading .output-url {
+  font-weight: 100;
+  font-size: x-large;
+  color: white;
+  top: 35%;
+  position: relative;
+}
+
+.progress {
+  font-weight: 200;
+  font-size: xx-large;
+  color: white;
+  top: 65%;
+  position: relative;
+}
+
+.spinner {
+  top: 50%;
+  position: relative;
+}

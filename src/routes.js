@@ -236,7 +236,7 @@ const routes = {
 
     server.on('extract-audio', (req, next) => {
       const task = get(req, 'body.task');
-      if (!task) {
+      if (!task || !task.movieUrl) {
         return next(new Error('Missing task payload'));
       }
       return extractAudioFromVideo(task)

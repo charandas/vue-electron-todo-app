@@ -7,10 +7,11 @@ import { VueSelect } from 'vue-select';
 import 'mdi/css/materialdesignicons.css!css';
 
 import techeastTpl from './techeast.html!vtc';
+import './techeast.css!css';
 
 import './components/tooltip.css!css';
 import MyDashboard from './components/dashboard';
-import MySettings from './components/settings';
+import MyAudio from './components/audio';
 
 Vue.use(VueRouter);
 Vue.use(VTooltip);
@@ -24,8 +25,8 @@ const routes = [
     props: (route) => ({ visibility: route.query.visibility || 'all' })
   },
   {
-    path: '/settings',
-    component: MySettings
+    path: '/audio',
+    component: MyAudio
   }
 ];
 

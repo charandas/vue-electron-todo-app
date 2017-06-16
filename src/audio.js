@@ -9,11 +9,11 @@ import { getLogger } from './app_ready';
 
 const logger = getLogger({ label: 'audio' });
 
-export function extractAudioFromVideo ({ movieUrl = '/Users/charandas/Movies/ManyCam/test.mp4', taskId }) {
+export function extractAudioFromVideo ({ movieUrl, taskId = uuidV4() }) {
   const dirname = path.dirname(movieUrl);
   const extname = path.extname(movieUrl);
   const filename = path.basename(movieUrl, extname);
-  const outputUrl = path.resolve(dirname, `${filename}-audio${extname}`);
+  const outputUrl = path.resolve(dirname, `${filename}-audio.mp3`);
   const mainWindow = BrowserWindow.getFocusedWindow();
 
   logger.silly(`ffmpeg from path: ${ffmpegStatic.path}`);
@@ -31,7 +31,7 @@ export function extractAudioFromVideo ({ movieUrl = '/Users/charandas/Movies/Man
         reject(err);
       })
       .on('progress', progress => {
-        mainWindow.webContents.send('extractAudioProgress', Object.assign({}, progress, { taskId }));
+        mainWindow.webContents.send('extractAudioProgress', Object.assign({}, progress, { taskId, outputUrl, dirname }));
         logger.info(`Processing: ${progress.percent}% done`);
       })
       .on('end', () => {

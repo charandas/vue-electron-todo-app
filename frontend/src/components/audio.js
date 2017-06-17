@@ -36,14 +36,20 @@ const MyAudio = Vue.component('my-audio', {
         return;
       }
       this.loading = true;
-      rpcClient.extractAudioAsync({
-        movieUrl: event.target.files[0].path
-      });
+
       electron.ipcRenderer.on('extractAudioProgress', (event, progress) => {
         console.log(progress.percent);
-        this.outputUrl = progress.outputUrl;
-        this.progress = progress;
-        if (progress.percent >= 100) {
+        if (progress.percent < 100) {
+          this.outputUrl = progress.outputUrl;
+          this.progress = progress;
+        }
+      });
+
+      rpcClient
+        .extractAudioAsync({
+          movieUrl: event.target.files[0].path
+        })
+        .then(() => {
           electron.shell.showItemInFolder(this.progress.outputUrl);
 
           this.loading = false;
@@ -51,8 +57,7 @@ const MyAudio = Vue.component('my-audio', {
           fileInput.value = null;
           form.reset();
           electron.ipcRenderer.removeAllListeners('extractAudioProgress');
-        }
-      });
+        });
     }
   }
 });

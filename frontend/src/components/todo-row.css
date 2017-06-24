@@ -52,6 +52,26 @@
   text-decoration: line-through;
 }
 
+.view:hover button {
+  visibility: visible;
+}
+
+.view button { /* in all other case hide it */
+  visibility: hidden;
+}
+
+.view .promote-to-base {
+  position: absolute;
+  top: 0;
+  right: 80px;
+  bottom: 0;
+  margin: auto 0;
+  padding-left: 10px;
+  font-size: 30px;
+  color: #cc9a9a;
+  transition: color 0.2s ease-out;
+}
+
 .view .remind {
   position: absolute;
   top: 0;
@@ -65,7 +85,6 @@
 }
 
 .view .destroy {
-  display: none;
   position: absolute;
   top: 0;
   right: 10px;
@@ -84,10 +103,6 @@
 
 .view .destroy:after {
   content: "\00d7";
-}
-
-.view:hover .destroy {
-  display: block;
 }
 
 .view:hover .drag-handle {

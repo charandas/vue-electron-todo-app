@@ -3,7 +3,7 @@ import { app } from 'electron';
 import jetpack from 'fs-jetpack';
 import moment from 'moment';
 import get from 'lodash/get';
-// import sortBy from 'lodash/sortBy';
+import sortBy from 'lodash/sortBy';
 import find from 'lodash/find';
 import maxBy from 'lodash/maxBy';
 import partial from 'lodash/partial';
@@ -31,8 +31,8 @@ const logger = getLogger({ label: 'routes' });
 const userData = jetpack.cwd(app.getPath('userData'));
 
 function nextOrder (orders) {
-  const nextOrderNumber = maxBy(orders, 'order').order + 1;
-  return nextOrderNumber;
+  const nextOrderNumber = maxBy(orders, 'order');
+  return nextOrderNumber ? nextOrderNumber.order + 1 : 0;
 }
 
 function makeupAndSaveNewOrder (orders, templateId, todo) {
@@ -73,6 +73,7 @@ function deleteOrderInDb (todoId, templateId) {
 function getTodos (todosTemplateId) {
   const promises = {
     baseTodos: getValues(todosTable, { indexPropValue: 'base' }),
+    baseOrders: getValues(ordersTable, { indexPropValue: 'base' }),
     orders: getValues(ordersTable, { indexPropValue: todosTemplateId })
   };
 
@@ -84,8 +85,18 @@ function getTodos (todosTemplateId) {
 
   return Bluebird
     .props(promises)
-    .then(({ todos, baseTodos, orders }) => {
-      let allTodos = [ ...baseTodos ];
+    .then(({ todos, baseTodos, orders, baseOrders }) => {
+      const sortedBaseTodos = sortBy(baseTodos, todo => {
+        const foundOrder = find(baseOrders, { todoId: todo.id });
+        if (!foundOrder) {
+          logger.warn('Base order missing', todo);
+          // don't care about sorting
+          return 0;
+        }
+
+        return foundOrder.order;
+      });
+      const allTodos = [ ...sortedBaseTodos ];
       if (todos) {
         allTodos.push(...todos);
       }
@@ -96,6 +107,7 @@ function getTodos (todosTemplateId) {
 }
 
 function getConfig (todosTemplateId) {
+  logger.silly('Getting config', todosTemplateId);
   return Bluebird
     .props({
       templateIds: config.get('workflows:templates'),
@@ -108,12 +120,17 @@ function getConfig (todosTemplateId) {
 }
 
 function initializeAndCheckpointState () {
+  logger.silly('In init and checkpoint state');
   return Bluebird
     .all([
       initializeIfNotSet(todosTable, 'todos', config.get('templates:todos'), { indexProp: TODOS_INDEX_PROP }),
       initializeIfNotSet(ordersTable, 'orders', config.get('templates:orders'), { indexProp: ORDER_INDEX_PROP }),
-      initializeIfNotSet(remindersTable, 'reminders', config.get('templates:reminders'))
+      initializeIfNotSet(remindersTable, 'reminders', config.get('templates:reminders') || [])
     ])
+    .catch(error => {
+      logger.error(error);
+      throw error;
+    })
     .then(() => {
       return jetpack.write(userData.path(INITIALIZED_STATE_FILE), {
         lastInitialized: moment().format()
@@ -125,6 +142,7 @@ function initializeAndCheckpointState () {
 }
 
 function initialize () {
+  logger.silly('In initialize');
   return Bluebird
     .resolve(jetpack.existsAsync(userData.path(INITIALIZED_STATE_FILE)))
     .then(existing => {
@@ -134,6 +152,63 @@ function initialize () {
       }
       return initializeAndCheckpointState();
     });
+}
+
+function addOrUpdateTodo (value, promoteToBase = false, newBaseOrder) {
+  let cachedIdBeforePromotion;
+  let cachedTemplateIdBeforePromotion;
+  let cachedOrderBeforePromotion;
+
+  if (promoteToBase) {
+    cachedIdBeforePromotion = value.id;
+    cachedTemplateIdBeforePromotion = value.templateId;
+    cachedOrderBeforePromotion = value.order;
+
+    delete value.id;
+    value.templateId = 'base';
+    value.order = newBaseOrder;
+  }
+  const isEdit = !!value.id;
+  const id = value.id || cachedIdBeforePromotion || uuidV4();
+  value.id = id;
+
+  const order = value.order;
+  const orderTemplateId = value.templateId;
+  delete value.order;
+  delete value.orderTemplateId;
+
+  const orderToSave = {
+    order,
+    templateId: orderTemplateId,
+    todoId: id
+  };
+
+  const savedOrderPromise = isEdit
+    ? setValueAfterLookupIndex(ordersTable, orderToSave, { indexProp: ORDER_INDEX_PROP })
+    : setValue(ordersTable, uuidV4(), orderToSave, { indexProp: ORDER_INDEX_PROP });
+  let savedChildTemplateOrderPromise;
+
+  if (promoteToBase) {
+    savedChildTemplateOrderPromise =
+      setValue(ordersTable, uuidV4(), {
+        order: cachedOrderBeforePromotion,
+        templateId: cachedTemplateIdBeforePromotion,
+        todoId: cachedIdBeforePromotion
+      }, { indexProp: ORDER_INDEX_PROP });
+  }
+
+  logger.silly('add-todo payload', value);
+  const promises = {
+    savedTodo: setValue(todosTable, id, value, {
+      indexProp: TODOS_INDEX_PROP
+    }),
+    savedOrderPromise,
+    savedChildTemplateOrderPromise
+  };
+
+  return Bluebird
+  .props(promises)
+  .return(Object.assign(value, { order: order }));
 }
 
 const routes = {
@@ -158,35 +233,26 @@ const routes = {
     // Adding is always on the template itself, not on a parent, so we need not use orderTemplateId property
     server.on('add-todo', (req, next) => {
       const value = get(req, 'body.todo');
-      const isEdit = !!value.id;
-      const id = value.id || uuidV4();
-      value.id = id;
+      return addOrUpdateTodo(value)
+        .asCallback(next);
+    });
 
-      const order = value.order;
-      const orderTemplateId = value.templateId;
-      delete value.order;
-      delete value.orderTemplateId;
+    server.on('promote-todo-to-base', (req, next) => {
+      const value = get(req, 'body.todo');
 
-      const orderToSave = {
-        order,
-        templateId: orderTemplateId,
-        todoId: id
-      };
-
-      const savedOrderPromise = isEdit
-        ? setValueAfterLookupIndex(ordersTable, orderToSave, { indexProp: ORDER_INDEX_PROP })
-        : setValue(ordersTable, uuidV4(), orderToSave, { indexProp: ORDER_INDEX_PROP });
-
-      logger.silly('add-todo payload', value);
       return Bluebird
-      .props({
-        savedTodo: setValue(todosTable, id, value, {
-          indexProp: TODOS_INDEX_PROP
-        }),
-        savedOrderPromise
-      })
-      .return(Object.assign(value, { order: order }))
-      .asCallback(next);
+        .all([
+          deleteValue(todosTable, value.id, { indexProp: TODOS_INDEX_PROP }),
+          deleteValue(remindersTable, value.id)
+        ])
+        .then(() => {
+          return getValues(ordersTable, { indexPropValue: 'base' });
+        })
+        .then(orders => {
+          return nextOrder(orders);
+        })
+        .then(newOrder => addOrUpdateTodo(value, true, newOrder))
+        .asCallback(next);
     });
 
     server.on('reorder-todo', (req, next) => {

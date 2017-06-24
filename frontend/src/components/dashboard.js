@@ -95,7 +95,8 @@ const MyDashboard = Vue.component('my-dashboard', {
       .getConfigAsync({ templateId: templateIdStorage.get() })
       .then(config => {
         next(vm => vm.setConfig(config));
-      });
+      })
+      .catch(error => console.error(error));
   },
   destroyed: function () {
     electron.ipcRenderer.removeAllListeners('checkOffTodo');
@@ -176,8 +177,8 @@ const MyDashboard = Vue.component('my-dashboard', {
       }
     },
     nextOrder: function () {
-      const nextOrderNumber = maxBy(this.todos, 'order').order + 1;
-      return nextOrderNumber;
+      const nextOrderNumber = maxBy(this.todos, 'order');
+      return nextOrderNumber ? nextOrderNumber.order + 1 : 0;
     },
     persistNewOrder: function () {
       const oldTodos = this.todos;

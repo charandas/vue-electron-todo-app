@@ -33,6 +33,12 @@ const MyTodoRow = Vue.component('my-todo-row', {
     }
   },
   methods: {
+    promoteTodoToBase: function () {
+      this.$emit('edited', rpcClient
+        .promoteTodoToBaseAsync(this.todo)
+        .tap(() => Object.assign(this.todo, { base: true }))
+      );
+    },
     // Adds, removes, updates, or leaves untouched depending on modal result promise
     updateReminder: function () {
       const promise = new Bluebird((resolve) => {

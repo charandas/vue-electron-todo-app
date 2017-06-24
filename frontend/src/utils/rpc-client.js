@@ -23,6 +23,10 @@ function reorderTodo (todo, cb) {
   client.request('reorder-todo', { todo }, cb);
 }
 
+function promoteTodoToBase (todo, cb) {
+  client.request('promote-todo-to-base', { todo }, cb);
+}
+
 function removeTodo (todo, cb) {
   client.request('remove-todo', { todo }, cb);
 }
@@ -38,6 +42,7 @@ const rpcClient = {
   addOrUpdateTodo,
   removeTodo,
   reorderTodo,
+  promoteTodoToBase,
   extractAudio
 };
 

@@ -68,6 +68,7 @@ export function getValues (db, options = {}) {
       lte: `~INDEX~${options.indexPropValue}~`
     });
   }
+
   const values = [];
   const promise = new Bluebird((resolve, reject) => {
     db.createValueStream(getOptions)

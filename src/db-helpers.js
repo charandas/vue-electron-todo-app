@@ -54,7 +54,7 @@ function _setValue (db, key, value, options = {}) {
         reject(err);
       }
 
-      resolve(true);
+      resolve(value);
     });
   });
 }

@@ -4,8 +4,8 @@ import jetpack from 'fs-jetpack';
 import moment from 'moment';
 import get from 'lodash/get';
 // import sortBy from 'lodash/sortBy';
-import fp from 'lodash/fp';
 import find from 'lodash/find';
+import maxBy from 'lodash/maxBy';
 import partial from 'lodash/partial';
 import uuidV4 from 'uuid/v4';
 
@@ -30,14 +30,32 @@ const ORDER_INDEX_PROP = value => `${value.templateId}-${value.todoId}`;
 const logger = getLogger({ label: 'routes' });
 const userData = jetpack.cwd(app.getPath('userData'));
 
+function nextOrder (orders) {
+  const nextOrderNumber = maxBy(orders, 'order').order + 1;
+  return nextOrderNumber;
+}
+
+function makeupAndSaveNewOrder (orders, templateId, todo) {
+  logger.warn(`Missing order for todo ${todo.id} for template ${templateId}`);
+  logger.info(`Assuming new todo: ${todo.title}`);
+  const order = nextOrder(orders);
+
+  const orderToSave = {
+    order,
+    templateId,
+    todoId: todo.id
+  };
+  return setValue(ordersTable, uuidV4(), orderToSave, {
+    indexProp: ORDER_INDEX_PROP
+  });
+}
+
+// The value of returned promise is simply a todo with existing order field attached
 function addOrderToTodo (orders, templateId, todo) {
-  const order = find(orders, { todoId: todo.id });
-  if (!order) {
-    logger.warn(`Missing order for todo ${todo.id} for template ${templateId}`);
-    logger.warn(`Content for missing todo: ${todo.title}`);
-    return;
-  }
-  return Object.assign(todo, { order: order.order });
+  const _order = find(orders, { todoId: todo.id });
+  return Bluebird
+    .resolve(_order || makeupAndSaveNewOrder(orders, templateId, todo))
+    .then(order => Object.assign(todo, { order: order.order }));
 }
 
 function deleteOrderInDb (todoId, templateId) {
@@ -71,10 +89,9 @@ function getTodos (todosTemplateId) {
       if (todos) {
         allTodos.push(...todos);
       }
-      return fp.flow(
-        fp.map(partial(addOrderToTodo, orders, todosTemplateId)),
-        fp.filter(Boolean)
-      )(allTodos);
+
+      return Bluebird
+        .map(allTodos, partial(addOrderToTodo, orders, todosTemplateId));
     });
 }
 

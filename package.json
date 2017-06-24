@@ -1,6 +1,6 @@
 {
   "name": "techeast",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JK Tech East App.",
   "main": "app/background.js",
   "semistandard": {
